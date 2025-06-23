@@ -1,0 +1,7 @@
+Name,Age,Gender,Country
+John Doe,25,Male,USA
+Jane Smith,30,Female,Canada
+Robert Johnson,22,Male,UK
+Emily White,28,Female,Australia
+David Brown,35,Male,Germany
+Sophia Miller,27,Female,France

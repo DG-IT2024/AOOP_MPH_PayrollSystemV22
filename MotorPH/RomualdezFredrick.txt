@@ -1,0 +1,36 @@
+                   EMPLOYEE PAYSLIP
+-------------------------------------------------------
+EMPLOYEE INFORMATION:
+Name                          : Romualdez, Fredrick
+Employee Position/ Department : Account Manager
+Employee Number               : 15
+Period Start Date             : 02/01/24
+Period End Date               : 02/15/24
+Cut-off Covered Days          : 13
+
+EARNINGS:
+Basic Salary                  : P53,500.00
+Semi-monthly Rate             : P26,750.00
+Total Worked Hours            : 101
+Overtime Hour                 : P1.00
+Overtime Pay                  : P321.51
+Gross Income                  : P25,978.37
+
+DEDUCTIONS:
+SSS Deduction                 : P0.00
+PhilHealth Deduction          : P0.00
+Pag-Ibig Deduction            : P0.00
+Withholding Tax               : P0.00
+Total Deduction               : P0.00
+
+BENEFITS 
+Rice Subsidy                  : P0.00
+phone Allowance               : P0.00
+Clothing Allowance            : P0.00
+Total Benefits                : P0.00
+
+SUMMARY:
+Gross Income                  : P25,978.37
+Total Deduction               : P0.00
+Pay Adjustments               : P0.00
+Take-Home Pay                 : P25,978.37

@@ -1,0 +1,1271 @@
+/*
+Author @dgiltendez 
+Group 5
+
+# IT101_-A1103
+MotorPH Project
+
+The program will calculate the payroll based on the number of hours worked by an employee. You will be asked to provide the employee number, and time IN and time Out. 
+
+**Input Notes**
+- Separate time entries with comma
+- Write Time-In followed by Time-Out.
+- Time should follow HH:mm format.
+- Input 24-hour format
+
+**Limitations**
+- 12:00-13:00 (BreakTime). Not counted in computed worked hours
+- Maximum regular paid hours is 8 hours
+- Maximum worked days is 20days for one month.
+- Hourly rate is the quotient of BasicSalary divided by the product of maximum regulars hours (8) and maximum worked days(20). 
+- Gross Income (Pay for hours worked) is used to determine the SSS, PhilHealth, Pag-ibig deductions
+- Overtime is only computed if employee works for more than 8 hours
+- Overtime pay consideration.
+Options:
+  1. Don't credit overtime (rate set to 0)
+  2. Set overtime pay rate(e.g. 1.25)
+- Program computes for one month payroll.
+- Work starts at 8:00AM
+- Grace period of 10 mins. Considered late if Time-in 8:11.
+- Only consider worked hours per day. Any fraction thereof is not considered in the payroll computation
+
+**Features**
+- Clear Console (limited to platforms that allow ANSI. Generates newline after ANSI)
+- Continuous processing of payroll
+- TimeSheet is generated after encoding all the Time-In/Time-Out for the month
+- Computed regular and overtime worked hours are shown after each Time-In/Time-Out entry
+- Allows setting of overtime rate per day
+- Option to disregard overtime if it is not approved
+- Calculate overtime hours
+- Calculate regular hours
+- Calculate SSS, Pag-ibig, Philhealth, and Withholding tax
+- Calculate net salary based on worked hours, deductions, and benefits
+- Generate payslip after getting the employee number and timesheet
+
+
+ */
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class MotorPH_PayrollProcessingG5 {
+
+    private static ArrayList<Integer> daysList = new ArrayList<>();
+    private static ArrayList<String> timeInList = new ArrayList<>();
+    private static ArrayList<String> timeOutList = new ArrayList<>();
+    private static ArrayList<Integer> regularHoursList = new ArrayList<>();
+    private static ArrayList<Integer> overtimeHoursList = new ArrayList<>();
+    private static ArrayList<Double> overtimeRateList = new ArrayList<>();
+    private static int employeeNumber;
+    private static String lastName;
+    private static String firstName;
+    private static String birthday;
+    private static String address;
+    private static String phoneNumber;
+    private static String sssNumber;
+    private static String philhealthNumber;
+    private static String tinNumber;
+    private static String pagibigNumber;
+    private static String status;
+    private static String position;
+    private static String immediateSupervisor;
+    private static double basicSalary;
+    private static double riceSubsidy;
+    private static double phoneAllowance;
+    private static double clothingAllowance;
+    private static double grossSemiMonthlyRate;
+    private static double hourlyRate;
+    private static double actualHourlyRate;
+    private static Double SSS;
+    private static Double pagibig;
+    private static Double philHealth;
+    private static int index_;
+    private static int coveredDays;
+    private static int maxRegularHours;
+    private static int employeeNumber_;
+    private static int workedDays;
+
+    public MotorPH_PayrollProcessingG5(int employeeNumber, String lastName, String firstName, String birthday, String address,
+            String phoneNumber, String sssNumber, String philhealthNumber, String tinNumber,
+            String pagIbigNumber, String status, String position, String immediateSupervisor,
+            double basicSalary, double riceSubsidy, double phoneAllowance, double clothingAllowance) {
+        this.employeeNumber = employeeNumber;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.birthday = birthday;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.sssNumber = sssNumber;
+        this.philhealthNumber = philhealthNumber;
+        this.tinNumber = tinNumber;
+        this.pagibigNumber = pagIbigNumber;
+        this.status = status;
+        this.position = position;
+        this.immediateSupervisor = immediateSupervisor;
+        this.basicSalary = basicSalary;
+        this.riceSubsidy = riceSubsidy;
+        this.phoneAllowance = phoneAllowance;
+        this.clothingAllowance = clothingAllowance;
+    }
+
+    private static MotorPH_PayrollProcessingG5[] employeeDatabase() {
+
+        MotorPH_PayrollProcessingG5[] employee = new MotorPH_PayrollProcessingG5[34];
+
+        employee[0] = new MotorPH_PayrollProcessingG5(1, "Garcia", "Manuel III", "10/11/1983",
+                "Valero Carpark Building Valero Street 1227, Makati City", "966-860-270",
+                "44-4506057-3", "820126853951", "442-605-657-000", "691295330870",
+                "Regular", "Chief Executive Officer", null, 90000, 1500, 2000, 1000);
+
+        employee[1] = new MotorPH_PayrollProcessingG5(2, "Lim", "Antonio", "06/19/1988",
+                "San Antonio De Padua 2, Block 1 Lot 8 and 2, Dasmarinas, Cavite", "171-867-411",
+                "52-2061274-9", "331735646338", "683-102-776-000", "663904995411",
+                "Regular", "Chief Operating Officer", "Garcia, Manuel III", 60000, 1500, 2000, 1000);
+
+        employee[2] = new MotorPH_PayrollProcessingG5(3, "Aquino", "Bianca Sofia", "08/04/1989",
+                "Rm. 402 4/F Jiao Building Timog Avenue Cor. Quezon Avenue 1100, Quezon City", "966-889-370",
+                "30-8870406-2", "177451189665", "971-711-280-000", "171519773969",
+                "Regular", "Chief Finance Officer", "Garcia, Manuel III", 60000, 1500, 2000, 1000);
+
+        employee[3] = new MotorPH_PayrollProcessingG5(4, "Reyes", "Isabella", "06/16/1994",
+                "460 Solanda Street Intramuros 1000, Manila", "786-868-477",
+                "40-2511815-0", "341911411254", "876-809-437-000", "416946776041",
+                "Regular", "Chief Marketing Officer", "Garcia, Manuel III", 60000, 1500, 2000, 1000);
+
+        employee[4] = new MotorPH_PayrollProcessingG5(5, "Hernandez", "Eduard", "09/23/1989",
+                "National Highway, Gingoog,  Misamis Occidental", "088-861-012",
+                "50-5577638-1", "957436191812", "031-702-374-000", "952347222457",
+                "Regular", "IT Operations and Systems", "Lim, Antonio", 52670, 1500, 1000, 1000);
+
+        employee[5] = new MotorPH_PayrollProcessingG5(6, "Villanueva", "Andrea Mae", "02/14/1988",
+                "17/85 Stracke Via Suite 042, Poblacion, Las Piñas 4783 Dinagat Islands", "918-621-603",
+                "49-1632020-8", "382189453145", "317-674-022-000", "441093369646",
+                "Regular", "HR Manager", "Lim, Antonio", 52670, 1500, 1000, 1000);
+
+        employee[6] = new MotorPH_PayrollProcessingG5(7, "San Jose", "Brad", "03/15/1996",
+                "99 Strosin Hills, Poblacion, Bislig 5340 Tawi-Tawi", "797-009-261",
+                "40-2400714-1", "239192926939", "672-474-690-000", "210850209964",
+                "Regular", "HR Team Leader", "Villanueva, Andrea Mae", 42975, 1500, 800, 800);
+
+        employee[7] = new MotorPH_PayrollProcessingG5(8, "Romualdez", "Alice", "05/14/1992",
+                "12A/33 Upton Isle Apt. 420, Roxas City 1814 Surigao del Norte", "983-606-799",
+                "55-4476527-2", "545652640232", "888-572-294-000", "211385556888",
+                "Regular", "HR Rank and File", "San Jose, Brad", 22500, 1500, 500, 500);
+
+        employee[8] = new MotorPH_PayrollProcessingG5(9, "Atienza", "Rosie", "09/24/1948",
+                "90A Dibbert Terrace Apt. 190, San Lorenzo 6056 Davao del Norte", "266-036-427",
+                "41-0644692-3", "708988234853", "604-997-793-000", "260107732354",
+                "Regular", "HR Rank and File", "San Jose, Brad", 22500, 1500, 500, 500);
+
+        employee[9] = new MotorPH_PayrollProcessingG5(10, "Alvaro", "Roderick", "03/30/1988",
+                "#284 T. Morato corner, Scout Rallos Street, Quezon City", "053-381-386",
+                "64-7605054-4", "578114853194", "525-420-419-000", "799254095212",
+                "Regular", "Accounting Head", "Aquino, Bianca Sofia", 52670, 1500, 1000, 1000);
+
+        employee[10] = new MotorPH_PayrollProcessingG5(11, "Salcedo", "Anthony", "09/14/1993",
+                "93/54 Shanahan Alley Apt. 183, Santo Tomas 1572 Masbate", "070-766-300",
+                "26-9647608-3", "126445315651", "210-805-911-000", "218002473454",
+                "Regular", "Payroll Manager", "Alvaro, Roderick", 50825, 1500, 1000, 1000);
+
+        employee[11] = new MotorPH_PayrollProcessingG5(12, "Lopez", "Josie", "01/14/1987",
+                "49 Springs Apt. 266, Poblacion, Taguig 3200 Occidental Mindoro", "478-355-427",
+                "44-8563448-3", "431709011012", "218-489-737-000", "113071293354",
+                "Regular", "Payroll Team Leader", "Salcedo, Anthony", 38475, 1500, 800, 800);
+
+        employee[12] = new MotorPH_PayrollProcessingG5(13, "Farala", "Martha", "01/11/1942",
+                "42/25 Sawayn Stream, Ubay 1208 Zamboanga del Norte", "329-034-366",
+                "45-5656375-0", "233693897247", "210-835-851-000", "631130283546",
+                "Regular", "Payroll Rank and File", "Salcedo, Anthony", 24000, 1500, 500, 500);
+
+        employee[13] = new MotorPH_PayrollProcessingG5(14, "Martinez", "Leila", "07/11/1970",
+                "37/46 Kulas Roads, Maragondon 0962 Quirino", "877-110-749",
+                "27-2090996-4", "515741057496", "275-792-513-000", "101205445886",
+                "Regular", "Payroll Rank and File", "Salcedo, Anthony", 24000, 1500, 500, 500);
+
+        employee[14] = new MotorPH_PayrollProcessingG5(15, "Romualdez", "Fredrick", "03/10/1985",
+                "22A/52 Lubowitz Meadows, Pililla 4895 Zambales", "023-079-009",
+                "26-8768374-1", "308366860059", "598-065-761-000", "223057707853",
+                "Regular", "Account Manager", "Lim, Antonio", 53500, 1500, 1000, 1000);
+
+        employee[15] = new MotorPH_PayrollProcessingG5(16, "Mata", "Christian", "10/21/1987",
+                "90 O'Keefe Spur Apt. 379, Catigbian 2772 Sulu", "783-776-744",
+                "49-2959312-6", "824187961962", "103-100-522-000", "631052853464",
+                "Regular", "Account Team Leader", "Romualdez, Fredrick", 42975, 1500, 800, 800);
+        employee[16] = new MotorPH_PayrollProcessingG5(17, "De Leon", "Selena", "02/20/1975",
+                "89A Armstrong Trace, Compostela 7874 Maguindanao", "975-432-139",
+                "27-2090208-8", "587272469938", "482-259-498-000", "719007608464",
+                "Regular", "Account Team Leader", "Romualdez, Fredrick", 41850, 1500, 800, 800);
+
+        employee[17] = new MotorPH_PayrollProcessingG5(18, "San Jose", "Allison", "06/24/1986",
+                "08 Grant Drive Suite 406, Poblacion, Iloilo City 9186 La Union", "179-075-129",
+                "45-3251383-0", "745148459521", "121-203-336-000", "114901859343",
+                "Regular", "Account Rank and File", "Mata, Christian", 22500, 1500, 500, 500);
+
+        employee[18] = new MotorPH_PayrollProcessingG5(19, "Rosario", "Cydney", "10/06/1996",
+                "93A/21 Berge Points, Tapaz 2180 Quezon", "868-819-912",
+                "49-1629900-2", "579253435499", "122-244-511-000", "265104358643",
+                "Regular", "Account Rank and File", "Mata, Christian", 22500, 1500, 500, 500);
+
+        employee[19] = new MotorPH_PayrollProcessingG5(20, "Bautista", "Mark", "02/12/1991",
+                "65 Murphy Center Suite 094, Poblacion, Palayan 5636 Quirino", "683-725-348",
+                "49-1647342-5", "399665157135", "273-970-941-000", "260054585575",
+                "Regular", "Account Rank and File", "Mata, Christian", 23250, 1500, 500, 500);
+
+        employee[20] = new MotorPH_PayrollProcessingG5(21, "Lazaro", "Darlene", "11/25/1985",
+                "47A/94 Larkin Plaza Apt. 179, Poblacion, Caloocan 2751 Quirino", "740-721-558",
+                "45-5617168-2", "606386917510", "354-650-951-000", "104907708845",
+                "Probationary", "Account Rank and File", "Mata, Christian", 23250, 1500, 500, 500);
+
+        employee[21] = new MotorPH_PayrollProcessingG5(22, "Delos Santos", "Kolby", "02/26/1980",
+                "06A Gulgowski Extensions, Bongabon 6085 Zamboanga del Sur", "739-443-033",
+                "52-0109570-6", "357451271274", "187-500-345-000", "113017988667",
+                "Probationary", "Account Rank and File", "Mata, Christian", 24000, 1500, 500, 500);
+
+        employee[22] = new MotorPH_PayrollProcessingG5(23, "Santos", "Vella", "12/31/1983",
+                "99A Padberg Spring, Poblacion, Mabalacat 3959 Lanao del Sur", "955-879-269",
+                "52-9883524-3", "548670482885", "101-558-994-000", "360028104576",
+                "Probationary", "Account Rank and File", "Mata, Christian", 22500, 1500, 500, 500);
+
+        employee[23] = new MotorPH_PayrollProcessingG5(24, "Del Rosario", "Tomas", "12/18/1978",
+                "80A/48 Ledner Ridges, Poblacion, Kabankalan 8870 Marinduque", "882-550-989",
+                "45-5866331-6", "953901539995", "560-735-732-000", "913108649964",
+                "Probationary", "Account Rank and File", "Mata, Christian", 22500, 1500, 500, 500);
+
+        employee[24] = new MotorPH_PayrollProcessingG5(25, "Tolentino", "Jacklyn", "05/19/1984",
+                "96/48 Watsica Flats Suite 734, Poblacion, Malolos 1844 Ifugao", "675-757-366",
+                "47-1692793-0", "753800654114", "841-177-857-000", "210546661243",
+                "Probationary", "Account Rank and File", "De Leon, Selena", 24000, 1500, 500, 500);
+
+        employee[25] = new MotorPH_PayrollProcessingG5(26, "Gutierrez", "Percival", "12/18/1970",
+                "58A Wilderman Walks, Poblacion, Digos 5822 Davao del Sur", "512-899-876",
+                "40-9504657-8", "797639382265", "502-995-671-000", "210897095686",
+                "Probationary", "Account Rank and File", "De Leon, Selena", 24750, 1500, 500, 500);
+
+        employee[26] = new MotorPH_PayrollProcessingG5(27, "Manalaysay", "Garfield", "08/28/1986",
+                "60 Goyette Valley Suite 219, Poblacion, Tabuk 3159 Lanao del Sur", "948-628-136",
+                "45-3298166-4", "810909286264", "336-676-445-000", "211274476563",
+                "Probationary", "Account Rank and File", "De Leon, Selena", 24750, 1500, 500, 500);
+
+        employee[27] = new MotorPH_PayrollProcessingG5(28, "Villegas", "Lizeth", "12/12/1981",
+                "66/77 Mann Views, Luisiana 1263 Dinagat Islands", "332-372-215",
+                "40-2400719-4", "934389652994", "210-395-397-000", "122238077997",
+                "Probationary", "Account Rank and File", "De Leon, Selena", 24000, 1500, 500, 500);
+
+        employee[28] = new MotorPH_PayrollProcessingG5(29, "Ramos", "Carol", "08/20/1978",
+                "72/70 Stamm Spurs, Bustos 4550 Iloilo", "250-700-389",
+                "60-1152206-4", "351830469744", "395-032-717-000", "212141893454",
+                "Probationary", "Account Rank and File", "De Leon, Selena", 22500, 1500, 500, 500);
+
+        employee[29] = new MotorPH_PayrollProcessingG5(30, "Maceda", "Emelia", "04/14/1973",
+                "50A/83 Bahringer Oval Suite 145, Kiamba 7688 Nueva Ecija", "973-358-041",
+                "54-1331005-0", "465087894112", "215-973-013-000", "515012579765",
+                "Probationary", "Account Rank and File", "De Leon, Selena", 22500, 1500, 500, 500);
+
+        employee[30] = new MotorPH_PayrollProcessingG5(31, "Aguilar", "Delia", "01/27/1989",
+                "95 Cremin Junction, Surallah 2809 Cotabato", "529-705-439",
+                "52-1859253-1", "136451303068", "599-312-588-000", "110018813465",
+                "Probationary", "Account Rank and File", "De Leon, Selena", 22500, 1500, 500, 500);
+
+        employee[31] = new MotorPH_PayrollProcessingG5(32, "Castro", "John Rafael", "02/09/1992",
+                "Hi-way, Yati, Liloan Cebu", "332-424-955", "26-7145133-4",
+                "601644902402", "404-768-309-000", "697764069311", "Regular",
+                "Sales & Marketing", "Reyes, Isabella", 52670, 1500, 1000, 1000);
+
+        employee[32] = new MotorPH_PayrollProcessingG5(33, "Martinez", "Carlos Ian", "11/16/1990",
+                "Bulala, Camalaniugan", "078-854-208", "11-5062972-7",
+                "380685387212", "256-436-296-000", "993372963726", "Regular",
+                "Supply Chain and Logistics", "Reyes, Isabella", 52670, 1500, 1000, 1000);
+
+        employee[33] = new MotorPH_PayrollProcessingG5(34, "Santos", "Beatriz", "08/07/1990",
+                "Agapita Building, Metro Manila", "526-639-511", "20-2987501-5",
+                "918460050077", "911-529-713-000", "874042259378", "Regular",
+                "Customer Service and Relations", "Reyes, Isabella", 52670, 1500, 1000, 1000);
+
+        return employee;
+    }
+
+    public static void main(String[] args) {
+
+        MotorPH_PayrollProcessingG5[] employee = employeeDatabase();
+
+        coveredDays = 20; //Set to maximum workings day in a month
+
+        maxRegularHours = 8; //Set to maximum regular hours in a day
+             
+        while (true) {
+
+            Scanner entry = new Scanner(System.in);
+
+            // Enter Employee Number
+            employeeNoEntry();
+          
+            System.out.println(index_);
+            // Printing Employee Information
+            employeeInformation(employee,employeeNumber_);
+
+            // Enter TimeIn/ TimeOut connected to WorkedDays Computation
+            timeEntry(employeeNumber_, coveredDays, maxRegularHours);
+
+            printTimeSheet(daysList, timeInList, timeOutList, regularHoursList, overtimeHoursList, overtimeRateList);
+
+            processPayroll(employeeNumber_, maxRegularHours, workedDays, coveredDays, regularHoursList, overtimeHoursList, overtimeRateList);
+
+            //wrong input handling
+            String response;
+            do {
+                System.out.println("\n---Select the next operation---");
+                System.out.println("A. Process Another Payroll.");
+                System.out.println("B. Clear the console");
+                System.out.println("C. View Timesheet ");
+                System.out.println("D. Terminate Program.");
+                response = entry.nextLine().trim().toLowerCase(); // remove whitespaces
+                if (!response.equals("a") && !response.equals("b") && !response.equals("c") && !response.equals("d")) {
+                    System.out.println("--- Error: Invalid input. Please choose from the available options.");
+                }
+            } while (!response.equals("a") && !response.equals("b") && !response.equals("c") && !response.equals("d"));
+
+            switch (response) {
+                case "a":       // Process Another Payroll.
+                    continue;
+                case "b":       //Clear the console
+                    System.out.println("\033c"); // remove all the prior text (tested on command prompt)
+                    clearTerminal(); //generates empty nextlines to hide the text
+                    System.out.println("Console Cleared");
+                    continue;
+                case "c":       //View Timesheet
+                    printTimeSheet(daysList, timeInList, timeOutList, regularHoursList, overtimeHoursList, overtimeRateList);
+                    continue;
+                case "d":       //Terminate Program
+                    System.out.print("Terminating Program...");
+                    System.exit(0); //close java virtual machine
+                    break;
+                default:
+                    System.out.println("--- Error: Invalid input. Please choose from the available options.");
+
+            }
+        }
+
+    }
+
+    public static int employeeNoEntry() {
+
+        Scanner employeeNoEntry = new Scanner(System.in);
+
+        while (true) {
+            try {
+                //Employee Entry
+                System.out.println("\nEnter Employee Number(1-" + employeeNumberDB().length + "):");
+                String employeeNumberEntry = employeeNoEntry.nextLine();
+                employeeNumber_ = Integer.parseInt(employeeNumberEntry);
+
+                // Validate employee number
+                if (employeeNumber_ > employeeDatabase().length || employeeNumber_ <= 0) { // maximum emloyee
+                    throw new IllegalArgumentException("Invalid Input.---");
+                }
+
+                return employeeNumber_;
+
+            } catch (NumberFormatException e) {
+                System.out.println("--- Error: Invalid Input. Please enter a valid Employee Number. ---");
+            } catch (IllegalArgumentException e) {
+                System.out.println("--- Error: " + e.getMessage());
+            }
+
+        }
+
+    }
+
+    public static void timeEntry(int employeeNumber_, int coveredDays, int maxRegularHours) {
+
+        Scanner timeEntryScan = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\nEnter how many days the employee worked.");
+            System.out.println("(Note: maximum working days is set to " + coveredDays + " days.)");
+
+            String workedDaysInput = timeEntryScan.nextLine();
+
+            double overtimeRate_;
+
+            // Clear previous entries
+            daysList.clear();
+            timeInList.clear();
+            timeOutList.clear();
+            regularHoursList.clear();
+            overtimeHoursList.clear();
+            overtimeRateList.clear();
+
+            //Error Handling for workedDays Entry   
+            try {
+                workedDays = Integer.parseInt(workedDaysInput);
+            } catch (NumberFormatException e) {
+                System.out.println("--- Error: Invalid input. Please enter a valid number of days.");
+                continue; // Restart the loop
+            }
+            if (workedDays > coveredDays) {
+                System.out.println("--- Error: Invalid input. The number of days worked exceeds the covered days.");
+                continue;
+            }
+
+            if (workedDays < 0) {
+                System.out.println("--- Error: Invalid input. No worked days to compute.");
+                continue;
+            }
+
+            //Enter TimeIn / TimeOut
+            for (int i = 1; i <= workedDays; i++) {
+                System.out.println("\nEnter Day " + i + ": TimeIn, TimeOut\n(Format: HH:mm,HH:mm)");
+                String inputLine = timeEntryScan.nextLine();
+
+                // check if timeIn and timeOut is in valid time format
+                String[] timeSheet = inputLine.split(",");
+                if (timeSheet.length != 2 || !isValidTimeFormat(timeSheet[0].trim()) || !isValidTimeFormat(timeSheet[1].trim())) {
+                    System.out.println("--- Error: Invalid input format. Please enter time in the correct format.---\n Example: 08:00,17:00 ");
+                    i -= 1; //Repeat the loop at the same day
+                    continue;
+                }
+
+                String timeIn = timeSheet[0].trim();
+                String timeOut = timeSheet[1].trim();
+
+                //Error Handling for timeformat
+                try {
+                    var parsedTimeIn = LocalTime.parse(timeIn); // Parse the TimeIN into a LocalTime object
+                    var parsedTimeOut = LocalTime.parse(timeOut); // Parse the TimeOut into a LocalTime object
+                } catch (Exception e) {
+                    System.out.println("---Error parsing time: " + e.getMessage() + ". Correct format: HH:mm. ---");
+                    i -= 1; //Repeat the loop at the same day
+                    continue;
+                }
+
+                daysList.add(i); // append days to daysList
+                timeInList.add(timeIn);// append days to timeInList
+                timeOutList.add(timeOut);// append days to timeOutList
+
+                int dailyWorkedHours = calculateWorkedHours(timeIn, timeOut);
+
+                int workedregularHours = Math.min(dailyWorkedHours, maxRegularHours);
+                regularHoursList.add(workedregularHours);
+
+                int workedOvertimeHours = 0;
+                if (dailyWorkedHours > maxRegularHours) {
+                    workedOvertimeHours = dailyWorkedHours - maxRegularHours;
+                }
+
+                //Print computed regular hours and overtime
+                regularOvertimeView(workedregularHours, workedOvertimeHours);
+
+                //Overtime pay consideration
+                overtimeRate_ = 0; // set to zero for no workedOvertimeHours
+
+                if (workedOvertimeHours > 0) {
+                    overtimeRate_ = overtimeRateInput(); // overtime pay rate prompt if there's computed overtime hours
+                    if (overtimeRate_ == 0) {
+                        workedOvertimeHours = 0; //If the overtime rate is set to 0, reset overtime hours to 0
+                    }
+                }
+
+                //Overtime hours and rate consideration
+                overtimeHoursList.add(workedOvertimeHours);
+                overtimeRateList.add(overtimeRate_);
+
+            }
+
+            break;
+        }
+
+    }
+
+    public static void employeeInformation(MotorPH_PayrollProcessingG5[] employee,int employeeNumber_) {
+
+        index_ = employeeNumber_ - 1;
+        double actualHourlyRate = basicSalary / (coveredDays * maxRegularHours);
+
+        //Print All information of the Employee
+        System.out.println("");
+        System.out.printf("%" + (55 + "EMPLOYEE INFORMATION".length()) / 2 + "s%n", "EMPLOYEE INFORMATION");
+        System.out.println("-".repeat(55));
+        System.out.printf("%-30s: %s%n", "Employee No.", employee[index_].employeeNumber);
+        System.out.printf("%-30s: %s%n", "Last Name", employee[index_].lastName);
+        System.out.printf("%-30s: %s%n", "First Name", employee[index_].firstName);
+        System.out.printf("%-30s: %s%n", "Birthday", employee[index_].birthday);
+        System.out.printf("%-30s: %s%n", "Address", employee[index_].address);
+        System.out.printf("%-30s: %s%n", "Phone Number", employee[index_].phoneNumber);
+        System.out.printf("%-30s: %s%n", "SSS Number", employee[index_].sssNumber);
+        System.out.printf("%-30s: %s%n", "Philhealth Number", employee[index_].philhealthNumber);
+        System.out.printf("%-30s: %s%n", "TIN Number", employee[index_].tinNumber);
+        System.out.printf("%-30s: %s%n", "Pag-ibig Number", employee[index_].pagibig);
+        System.out.printf("%-30s: %s%n", "Status", employee[index_].status);
+        System.out.printf("%-30s: %s%n", "Position", employee[index_].position);
+        System.out.printf("%-30s: %s%n", "Immediate Supervisor", employee[index_].immediateSupervisor);
+        System.out.printf("%-30s: P%,.2f%n", "Basic Salary", employee[index_].basicSalary);
+        System.out.printf("%-30s: P%,.2f%n", "Rice Subsidy", employee[index_].riceSubsidy);
+        System.out.printf("%-30s: P%,.2f%n", "Phone Allowance", employee[index_].phoneAllowance);
+        System.out.printf("%-30s: P%,.2f%n", "Clothing Allowance", employee[index_].clothingAllowance);
+        System.out.printf("%-30s: P%,.2f%n", "Gross Semi-monthly Rate", employee[index_].grossSemiMonthlyRate);
+        System.out.printf("%-30s: P%,.2f%n", "Hourly Rate", actualHourlyRate);
+        System.out.println("-".repeat(55));
+
+    }
+
+    public static int calculateWorkedHours(String timeIn, String timeOut) {
+        // break time 12:00PM to 13:00PM
+        // parsed timeIn and timeOut       
+
+        LocalTime parsedTimeIn = LocalTime.parse(timeIn); // Parse the TimeIN into a LocalTime object
+        LocalTime parsedTimeOut = LocalTime.parse(timeOut); // Parse the TimeOut into a LocalTime object
+
+        //Grace period consideration
+        int gracePeriod = 10; // grace period in minutes
+
+        LocalTime OfficeStart = LocalTime.of(8, 0);//Set Office starts 8AM
+
+        LocalTime targetTime = LocalTime.of(8, gracePeriod + 1); //parameter for grace period after Office start        
+
+        if (parsedTimeIn.isBefore(targetTime) && parsedTimeIn.getHour() == OfficeStart.getHour()) {  //if within graceperiod 8:00AM - 8:10AM. set TimeIN = 8:00AM
+            parsedTimeIn = OfficeStart;
+        }
+
+        //Breaktime
+        LocalTime breakStart = LocalTime.of(12, 0);//Set breaktime starts 12PM
+        LocalTime breakEnd = LocalTime.of(13, 00);//Set breaktime ends before 1PM
+
+        //Exclude breaktime for counting time worked. 
+        if (parsedTimeIn.isBefore(breakStart) && parsedTimeOut.isBefore(LocalTime.of(12, 59))) {
+            parsedTimeOut = breakStart;
+        }
+        if (parsedTimeIn.isAfter(LocalTime.of(11, 59)) && parsedTimeOut.isAfter(breakEnd)) {
+            parsedTimeIn = breakEnd;
+        }
+
+        // Calculate the difference in minutes
+        int totalMinutesIn = parsedTimeIn.getHour() * 60 + parsedTimeIn.getMinute();
+        int totalMinutesOut = parsedTimeOut.getHour() * 60 + parsedTimeOut.getMinute();
+
+        int workedMinutes = totalMinutesOut - totalMinutesIn;
+
+        // Calculate the worked hours. only consider hours. paid by the hour.
+        int workedHour = workedMinutes / 60;
+
+        //Deduct Breaktime in the total worked hours
+        int breakTime = 0; // initialize breakTime
+        if (parsedTimeIn.isBefore(breakStart) && parsedTimeOut.isAfter(LocalTime.of(12, 59))) { //TimeIn during breaktime is not counted
+            breakTime = 1;
+        }
+
+        if (parsedTimeIn.equals(breakStart) && parsedTimeOut.equals(breakEnd)) { //TimeIn during breaktime is not counted
+            breakTime = 1;
+        }
+
+        int workedHour_ = workedHour - breakTime;
+
+        return workedHour_;
+
+    }
+
+    public static Integer regularWorkedHours(ArrayList< Integer> regularHoursList) {
+        int totalRegularHour = 0;
+
+        for (int i = 0; i < regularHoursList.size(); i++) {
+            totalRegularHour += regularHoursList.get(i);
+        }
+        return totalRegularHour;
+    }
+
+    public static Integer overtimeHours(ArrayList<Integer> overtimeHoursList) {
+
+        int totalOvertimeHour = 0;
+
+        for (int i = 0; i < overtimeHoursList.size(); i++) {
+            totalOvertimeHour += overtimeHoursList.get(i);
+        }
+
+        return totalOvertimeHour;
+    }
+
+    public static double overtimeRateInput() {
+
+        Scanner overtimeRateEntry = new Scanner(System.in);
+
+        while (true) {
+            try {
+                //Overtime Rate 
+                System.out.println("\nEnter Overtime Pay rate: (Example 1.25) ");
+                System.out.println("(Set rate to 0 if you don't want to credit the overtime hours)");
+
+                String overtimeRate = overtimeRateEntry.nextLine();
+                double overtimeRate_ = Double.parseDouble(overtimeRate);
+
+                if (overtimeRate_ < 0) {
+                    System.out.println("--- Error: Invalid Input. Overtime rate must be non-negative. ---");
+                    continue;
+                }
+
+                if (overtimeRate_ > 0 && overtimeRate_ < 1) {
+                    System.out.println("--- Error: Invalid Input. Overtime rate must be greater than 1. --- \nExample: 1.25");
+                    continue;
+                }
+
+                return overtimeRate_;
+
+            } catch (NumberFormatException e) {
+                System.out.println("--- Error: Invalid Input. Please enter a valid number. ---");
+            }
+        }
+    }
+
+    public static double weightedOvertimeHour(ArrayList< Integer> overtimeHoursList, ArrayList<Double> overtimeRateList) {
+        double overtimeHourPay = 0; // product of overime hours and overtime pay rate 
+
+        for (int i = 0; i < overtimeHoursList.size(); i++) {
+            overtimeHourPay += overtimeHoursList.get(i) * overtimeRateList.get(i);//sum of  weighted Overtime   }
+        }
+        return overtimeHourPay;
+    }
+
+    public static void regularOvertimeView(int workedregularHours, int workedOvertimeHours) {
+
+        System.out.println("-".repeat(55));
+        System.out.println("Regular Hours : " + workedregularHours);
+        System.out.println("Overtime Hours : " + workedOvertimeHours);
+        System.out.println("-".repeat(55));
+    }
+
+    public static boolean isValidTimeFormat(String time) {
+        boolean checkValidformat = false;
+        if (time.matches("\\d{2}:\\d{2}") || time.matches("([01]?[0-9]|2[0-3]):[0-5][0-9]")) {
+            checkValidformat = true;
+        }
+
+        return checkValidformat;
+    }
+
+    public static void printTimeSheet(ArrayList<Integer> daysList, ArrayList<String> timeInList,
+            ArrayList<String> timeOutList,
+            ArrayList<Integer> regularHoursList,
+            ArrayList<Integer> overtimeHoursList,
+            ArrayList<Double> overtimeRateList) {
+
+        //print format
+        System.out.printf("\n\n%" + (55 + "x x x x x x x TIMESHEET x x x x x x x".length()) / 2 + "s%n", "x x x x x x x TIMESHEETx x x x x x x\n");
+        System.out.printf("%-5s%-12s%-12s%-14s%-12s%-19s\n", "Day", "Time-In", "Time-Out", "Worked Hour", "Overtime", "Overtime Rate");
+        for (int i = 0; i < daysList.size(); i++) {
+            System.out.printf("%-5d%-12s%-12s%-14d%-12d%-19.2f\n", daysList.get(i), timeInList.get(i), timeOutList.get(i), regularHoursList.get(i), overtimeHoursList.get(i), overtimeRateList.get(i));
+        }
+        System.out.println("");
+        System.out.println(" x".repeat(27));
+    }
+
+    public static void processPayroll(int employeeNumber_, int maxRegularHours, int workedDays, int coveredDays, ArrayList<Integer> regularHoursList, ArrayList<Integer> overtimeHoursList, ArrayList<Double> overtimeRateList) {
+
+        index_ = employeeNumber_ - 1; //determine the values of each variable
+
+        //Employee Information   
+        String employeePosition_;
+        double grossSemi_monthlyRate;
+
+        employeePosition_ = employeePosition(index_);
+        lastName = employeeNameDB(index_).get(0);
+        firstName = employeeNameDB(index_).get(1);
+        grossSemi_monthlyRate = basicSalaryDB(index_) / 2;
+        basicSalary = basicSalaryDB(index_);
+
+        //Benefits
+        double totalBenefits;
+
+        riceSubsidy = riceSubsidyDB(index_);
+        phoneAllowance = phoneAllowanceDB(index_);
+        clothingAllowance = clothingAllowanceDB(index_);
+        totalBenefits = riceSubsidy + phoneAllowance + clothingAllowance;
+
+        // Determine Regular Working Hours and Overtime HOurs
+        int regularWorkedHour;
+        int overtimeHour;
+
+        regularWorkedHour = regularWorkedHours(regularHoursList);
+        overtimeHour = overtimeHours(overtimeHoursList);
+
+        // Computation of Earnings
+        double dailyRateCutoff;
+        double hourlyRateCutoff;
+        double grossIncome;
+        double regularPay;
+        double overtimePay;
+        double takeHomePay;
+
+        dailyRateCutoff = basicSalary / coveredDays;
+        hourlyRateCutoff = dailyRateCutoff / maxRegularHours;
+        regularPay = hourlyRateCutoff * regularWorkedHour;
+        overtimePay = weightedOvertimeHour(overtimeHoursList, overtimeRateList) * hourlyRateCutoff;
+        grossIncome = regularPay + overtimePay;
+
+        //Government Deductions (SSS, PhilHealth, Pagibig)
+        double sssDeduction;
+        double philHealthDeduction;
+        double pagIbigDeduction;
+        double benefitDeduction;
+        double netMonthPay;
+        double withHoldingTax;
+        double totalDeduction;
+        double taxableMonthlyPay;
+        double basis;
+
+        basis = basicSalary;  //Value to be considered to determine SSS, Philhealth and Pag-ibig
+        sssDeduction = calculateSSS(basis);
+        philHealthDeduction = calculatePhilHealth(basis);
+        pagIbigDeduction = calculatePagIbig(basis);
+        benefitDeduction = sssDeduction + pagIbigDeduction + philHealthDeduction;
+        netMonthPay = grossIncome - benefitDeduction;
+        taxableMonthlyPay = netMonthPay;
+        withHoldingTax = calculateWHTax(taxableMonthlyPay);
+        totalDeduction = withHoldingTax + benefitDeduction;
+        takeHomePay = grossIncome - totalDeduction + totalBenefits;
+
+        //Print PaySlip
+        // Print Personal Information Section
+        System.out.println();
+        System.out.printf("%" + (55 + "EMPLOYEE PAYSLIP".length()) / 2 + "s%n", "EMPLOYEE PAYSLIP");
+        System.out.println("-".repeat(55));
+        System.out.println("EMPLOYEE INFORMATION:");
+        System.out.printf("%-30s: %s, %s%n", "Name", lastName, firstName);
+        System.out.printf("%-30s: %s%n", "Employee Position/ Department", employeePosition_);
+        System.out.printf("%-30s: %d%n", "Employee Number", employeeNumber_);
+        System.out.printf("%-30s: %s%n", "Cut-off Covered Days", coveredDays);
+
+        // Print Earnings Section
+        System.out.println("\nEARNINGS:");
+        System.out.printf("%-30s: P%,.2f%n", "Basic Salary", basicSalary);
+        System.out.printf("%-30s: P%,.2f%n", "Semi-monthly Rate", grossSemi_monthlyRate);
+        System.out.printf("%-30s: P%,.2f%n", "Hourly Rate", hourlyRateCutoff);
+        System.out.printf("%-30s: %d%n", "Days Worked", workedDays);
+        System.out.printf("%-30s: %d%n", "Hours Worked ", regularWorkedHour);
+        System.out.printf("%-30s: P%,.2f%n", "Regular Pay ", regularPay);
+        System.out.printf("%-30s: %d%n", "Overtime Hour", overtimeHour);
+        System.out.printf("%-30s: P%,.2f%n", "Overtime Pay", overtimePay);
+        System.out.printf("%-30s: P%,.2f%n", "Gross Income", grossIncome);
+
+        // Print Deductions Section
+        System.out.println("\nDEDUCTIONS:");
+        System.out.printf("%-30s: P%,.2f%n", "SSS Deduction", sssDeduction);
+        System.out.printf("%-30s: P%,.2f%n", "PhilHealth Deduction", philHealthDeduction);
+        System.out.printf("%-30s: P%,.2f%n", "Pag-Ibig Deduction", pagIbigDeduction);
+        System.out.printf("%-30s: P%,.2f%n", "Withholding Tax", withHoldingTax);
+        System.out.printf("%-30s: P%,.2f%n", "Total Deduction", totalDeduction);
+
+        // Print Benefits Section
+        System.out.println("\nBENEFITS ");
+        System.out.printf("%-30s: P%,.2f%n", "Rice Subsidy", riceSubsidy);
+        System.out.printf("%-30s: P%,.2f%n", "Phone Allowance", phoneAllowance);
+        System.out.printf("%-30s: P%,.2f%n", "Clothing Allowance", clothingAllowance);
+        System.out.printf("%-30s: P%,.2f%n", "Total Benefits", totalBenefits);
+
+        // Print Summary Section
+        System.out.println("\nSUMMARY:");
+        System.out.printf("%-30s: P%,.2f%n", "Gross Income", grossIncome);
+        System.out.printf("%-30s: P%,.2f%n", "Total Benefits", totalBenefits);
+        System.out.printf("%-30s: P%,.2f%n", "Total Deduction", totalDeduction);
+        System.out.printf("%-30s: P%,.2f%n", "Take-Home Pay", takeHomePay);
+
+    }
+
+    /*public static void printPaySlip(String LastName, String firstName) {
+        Scanner printOption = new Scanner(System.in);
+
+        String response;
+        do {
+            System.out.println("\nWould like to save the generated payslip to a textfile?(Yes/No)");
+            response = entry.nextLine().trim().toLowerCase(); // remove whitespaces
+            if (!response.equals("yes") && !response.equals("no")) {
+                System.out.println("--- Error: Invalid input. Please choose from the available options.");
+            }
+        } while (!response.equals("yes") && !response.equals("no"));
+
+        if (response.equals("yes")) {
+            String fileName = LastName + firstName +"_" +getCurrentDate()+"payroll.txt" 
+            System.out.println("Payroll is saved in  fileName");
+
+        }
+    }
+
+    }
+     */
+    public static void clearTerminal() {
+        for (int i = 0; i < 60; i++) {    //creates nexline 60
+            System.out.println("");
+        }
+    }
+
+    public static double calculateSSS(double basis) {
+        ArrayList<Integer> sssSalary = new ArrayList<>();
+        ArrayList<Double> sssContribution = new ArrayList<>();
+
+        // create Salary range
+        for (int i = 0; i < 44; i++) {
+            int premium = 3250 + 500 * i;
+            sssSalary.add(premium);
+        }
+
+        // create contribution range
+        for (int i = 0; i < 44; i++) {
+            double contribution = 135 + 22.5 * i;
+            sssContribution.add(contribution);
+        }
+
+        // determine SSS deduction
+        double SSS_ = 0;
+        for (int i = 0; i < 44; i++) {
+            if (basis < sssSalary.get(i)) {
+                SSS_ = sssContribution.get(i);
+                break;
+            } else {
+                SSS_ = 1125.0;   // max contribution
+            }
+        }
+        return SSS_;
+    }
+
+    public static double calculatePagIbig(double basis) {
+        double pagIBIG = 0;
+
+        if (basis >= 1000 && basis <= 1500) {
+            pagIBIG = basis * 0.01;
+        } else if (basis > 1500) {
+            pagIBIG = basis * 0.02;
+        }
+
+        double maxContribution = 100.0; //  set max pag-ibig contribution to 100 
+        double pagIBIG_ = Math.min(pagIBIG, maxContribution);
+
+        return pagIBIG_;
+    }
+
+    public static double calculatePhilHealth(double basis) {
+        double philHealthRate = basis * 0.03 / 2; // Employees contribution half of 3% of basicSalary.2020 mandate
+
+        int minValue = 300 / 2; // minimum value
+        int maxValue = 1800 / 2; // maximum value
+        double philHealth_;
+        philHealth_ = Math.min(Math.max(philHealthRate, minValue), maxValue);
+
+        return philHealth_;
+    }
+
+    public static double calculateWHTax(double taxableMonthlyPay) {
+        double[] BIRincomeThresholds = {
+            20833,
+            33333,
+            66667,
+            166667,
+            666667,};
+
+        double[] BIRTaxRate = {0,
+            0.2 * (taxableMonthlyPay - BIRincomeThresholds[0]),
+            2500 + 0.25 * (taxableMonthlyPay - BIRincomeThresholds[1]),
+            10833 + 0.3 * (taxableMonthlyPay - BIRincomeThresholds[2]),
+            40833.33 + 0.32 * (taxableMonthlyPay - BIRincomeThresholds[3]),
+            200833.33 + 0.35 * (taxableMonthlyPay - BIRincomeThresholds[4]),};
+
+        double whTax = 0;
+        for (int i = 0; i < BIRincomeThresholds.length; i++) {
+            if (taxableMonthlyPay < BIRincomeThresholds[i]) {
+                whTax = BIRTaxRate[i];
+                break;
+            } else {
+                whTax = BIRTaxRate[i + 1];
+            }
+        }
+        return whTax;
+    }
+
+    //Methods below are for the database
+    public static ArrayList<String> employeeNameDB(int index_) {
+        String[] lastName = {
+            "Garcia",
+            "Lim",
+            "Aquino",
+            "Reyes",
+            "Hernandez",
+            "Villanueva",
+            "San Jose",
+            "Romualdez",
+            "Atienza",
+            "Alvaro",
+            "Salcedo",
+            "Lopez",
+            "Farala",
+            "Martinez",
+            "Romualdez",
+            "Mata",
+            "De Leon",
+            "San Jose",
+            "Rosario",
+            "Bautista",
+            "Lazaro",
+            "Delos Santos",
+            "Santos",
+            "Del Rosario",
+            "Tolentino",
+            "Gutierrez",
+            "Manalaysay",
+            "Villegas",
+            "Ramos",
+            "Maceda",
+            "Aguilar",
+            "Castro",
+            "Martinez",
+            "Santos"
+        };
+
+        // Create Array with First Names
+        String[] firstName = {
+            "Manuel III",
+            "Antonio",
+            "Bianca Sofia",
+            "Isabella",
+            "Eduard",
+            "Andrea Mae",
+            "Brad",
+            "Alice",
+            "Rosie",
+            "Roderick",
+            "Anthony",
+            "Josie",
+            "Martha",
+            "Leila",
+            "Fredrick",
+            "Christian",
+            "Selena",
+            "Allison",
+            "Cydney",
+            "Mark",
+            "Darlene",
+            "Kolby",
+            "Vella",
+            "Tomas",
+            "Jacklyn",
+            "Percival",
+            "Garfield",
+            "Lizeth",
+            "Carol",
+            "Emelia",
+            "Delia",
+            "John Rafael",
+            "Carlos Ian",
+            "Beatriz"
+        };
+
+        ArrayList<String> employeeName = new ArrayList<>();
+        employeeName.add(lastName[index_]);
+        employeeName.add(firstName[index_]);
+
+        return employeeName;
+    }
+
+    public static int[] employeeNumberDB() {
+        int[] employeeNumber = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+            11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+            31, 32, 33, 34};
+
+        return employeeNumber;
+    }
+
+    public static double basicSalaryDB(int index_) {
+        int[] salaries = {90000, 60000, 60000, 60000, 52670, 52670, 42975, 22500, 22500, 52670,
+            50825, 38475, 24000, 24000, 53500, 42975, 41850, 22500, 22500, 23250,
+            23250, 24000, 22500, 22500, 24000, 24750, 24750, 24000, 22500, 22500,
+            22500, 52670, 52670, 52670};
+
+        int basicSalary = salaries[index_];
+        return basicSalary;
+    }
+
+    public static double phoneAllowanceDB(int index_) {
+        // Phone allowance based on search criteria
+        int[] phoneAllowance = {
+            2000, 2000, 2000, 2000, 1000, 1000, 800, 500, 500, 1000,
+            1000, 800, 500, 500, 1000, 800, 800, 500, 500, 500,
+            500, 500, 500, 500, 500, 500, 500, 500, 500, 500,
+            500, 1000, 1000, 1000,};
+
+        int phoneAllowance_ = phoneAllowance[index_];
+        return phoneAllowance_;
+    }
+
+    public static double clothingAllowanceDB(int index_) {
+        // Clothing allowance based on search criteria
+        int[] clothingAllowance = {1000, 1000, 1000, 1000, 1000, 1000, 800, 500, 500, 1000,
+            1000, 800, 500, 500, 1000, 800, 800, 500, 500, 500,
+            500, 500, 500, 500, 500, 500, 500, 500, 500, 500,
+            500, 1000, 1000, 1000};
+
+        int clothingAllowance_ = clothingAllowance[index_];
+        return clothingAllowance_;
+    }
+
+    public static double riceSubsidyDB(int index_) {
+
+        int riceSubsidy = 1500;
+        return riceSubsidy;
+    }
+
+    public static String employeePosition(int index_) {
+
+        String[] employeePosition = {
+            "Chief Executive Officer",
+            "Chief Operating Officer",
+            "Chief Finance Officer",
+            "Chief Marketing Officer",
+            "IT Operations and Systems",
+            "HR Manager",
+            "HR Team Leader",
+            "HR Rank and File",
+            "HR Rank and File",
+            "Accounting Head",
+            "Payroll Manager",
+            "Payroll Team Leader",
+            "Payroll Rank and File",
+            "Payroll Rank and File",
+            "Account Manager",
+            "Account Team Leader",
+            "Account Team Leader",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Sales & Marketing",
+            "Supply Chain and Logistics",
+            "Customer Service and Relations"
+        };
+
+        String employeePosition_ = employeePosition[index_];
+
+        return employeePosition_;
+
+    }
+
+    public static String birthdayDB(int index_) {
+
+        String[] birthdayDB = {
+            "10/11/1983", "06/19/1988", "08/04/1989", "06/16/1994", "09/23/1989",
+            "02/14/1988", "03/15/1996", "05/14/1992", "09/24/1948", "03/30/1988",
+            "09/14/1993", "01/14/1987", "01/11/1942", "07/11/1970", "03/10/1985",
+            "10/21/1987", "02/20/1975", "06/24/1986", "10/06/1996", "02/12/1991",
+            "11/25/1985", "02/26/1980", "12/31/1983", "12/18/1978", "05/19/1984",
+            "12/18/1970", "08/28/1986", "12/12/1981", "08/20/1978", "04/14/1973",
+            "01/27/1989", "02/09/1992", "11/16/1990", "08/07/1990"
+        };
+
+        String birthdayDB_ = birthdayDB[index_];
+
+        return birthdayDB_;
+
+    }
+
+    public static String addressDB(int index_) {
+
+        String[] addressDB = {
+            "Valero Carpark Building Valero Street 1227, Makati City",
+            "San Antonio De Padua 2, Block 1 Lot 8 and 2, Dasmarinas, Cavite",
+            "Rm. 402 4/F Jiao Building Timog Avenue Cor. Quezon Avenue 1100, Quezon City",
+            "460 Solanda Street Intramuros 1000, Manila",
+            "National Highway, Gingoog, Misamis Occidental",
+            "17/85 Stracke Via Suite 042, Poblacion, Las Piñas 4783 Dinagat Islands",
+            "99 Strosin Hills, Poblacion, Bislig 5340 Tawi-Tawi",
+            "12A/33 Upton Isle Apt. 420, Roxas City 1814 Surigao del Norte",
+            "90A Dibbert Terrace Apt. 190, San Lorenzo 6056 Davao del Norte",
+            "#284 T. Morato corner, Scout Rallos Street, Quezon City",
+            "93/54 Shanahan Alley Apt. 183, Santo Tomas 1572 Masbate",
+            "49 Springs Apt. 266, Poblacion, Taguig 3200 Occidental Mindoro",
+            "42/25 Sawayn Stream, Ubay 1208 Zamboanga del Norte",
+            "37/46 Kulas Roads, Maragondon 0962 Quirino",
+            "22A/52 Lubowitz Meadows, Pililla 4895 Zambales",
+            "90 O'Keefe Spur Apt. 379, Catigbian 2772 Sulu",
+            "89A Armstrong Trace, Compostela 7874 Maguindanao",
+            "08 Grant Drive Suite 406, Poblacion, Iloilo City 9186 La Union",
+            "93A/21 Berge Points, Tapaz 2180 Quezon",
+            "65 Murphy Center Suite 094, Poblacion, Palayan 5636 Quirino",
+            "47A/94 Larkin Plaza Apt. 179, Poblacion, Caloocan 2751 Quirino",
+            "06A Gulgowski Extensions, Bongabon 6085 Zamboanga del Sur",
+            "99A Padberg Spring, Poblacion, Mabalacat 3959 Lanao del Sur",
+            "80A/48 Ledner Ridges, Poblacion, Kabankalan 8870 Marinduque",
+            "96/48 Watsica Flats Suite 734, Poblacion, Malolos 1844 Ifugao",
+            "58A Wilderman Walks, Poblacion, Digos 5822 Davao del Sur",
+            "60 Goyette Valley Suite 219, Poblacion, Tabuk 3159 Lanao del Sur",
+            "66/77 Mann Views, Luisiana 1263 Dinagat Islands",
+            "72/70 Stamm Spurs, Bustos 4550 Iloilo",
+            "50A/83 Bahringer Oval Suite 145, Kiamba 7688 Nueva Ecija",
+            "95 Cremin Junction, Surallah 2809 Cotabato",
+            "Hi-way, Yati, Liloan Cebu",
+            "Bulala, Camalaniugan",
+            "Agapita Building, Metro Manila"
+        };
+        String addressDB_ = addressDB[index_];
+
+        return addressDB_;
+    }
+
+    public static String phoneNumberDB(int index_) {
+        String[] phoneNumberDB = {
+            "966-860-270", "171-867-411", "966-889-370", "786-868-477", "088-861-012",
+            "918-621-603", "797-009-261", "983-606-799", "266-036-427", "053-381-386",
+            "070-766-300", "478-355-427", "329-034-366", "877-110-749", "023-079-009",
+            "783-776-744", "975-432-139", "179-075-129", "868-819-912", "683-725-348",
+            "740-721-558", "739-443-033", "955-879-269", "882-550-989", "675-757-366",
+            "512-899-876", "948-628-136", "332-372-215", "250-700-389", "973-358-041",
+            "529-705-439", "332-424-955", "078-854-208", "526-639-511"
+        };
+        String phoneNumberDB_ = phoneNumberDB[index_];
+
+        return phoneNumberDB_;
+    }
+
+    public static String sssNumberDB(int index_) {
+        String[] sssNumberDB = {
+            "44-4506057-3", "52-2061274-9", "30-8870406-2", "40-2511815-0", "50-5577638-1",
+            "49-1632020-8", "40-2400714-1", "55-4476527-2", "41-0644692-3", "64-7605054-4",
+            "26-9647608-3", "44-8563448-3", "45-5656375-0", "27-2090996-4", "26-8768374-1",
+            "49-2959312-6", "27-2090208-8", "45-3251383-0", "49-1629900-2", "49-1647342-5",
+            "45-5617168-2", "52-0109570-6", "52-9883524-3", "45-5866331-6", "47-1692793-0",
+            "40-9504657-8", "45-3298166-4", "40-2400719-4", "60-1152206-4", "54-1331005-0",
+            "52-1859253-1", "26-7145133-4", "11-5062972-7", "20-2987501-5"
+        };
+        String sssNumberDB_ = sssNumberDB[index_];
+
+        return sssNumberDB_;
+    }
+
+    public static String philhealthNoDB(int index_) {
+        String[] philhealthNoDB = {
+            "820126853951", "331735646338", "177451189665", "341911411254", "957436191812",
+            "382189453145", "239192926939", "545652640232", "708988234853", "578114853194",
+            "126445315651", "431709011012", "233693897247", "515741057496", "308366860059",
+            "824187961962", "587272469938", "745148459521", "579253435499", "399665157135",
+            "606386917510", "357451271274", "548670482885", "953901539995", "753800654114",
+            "797639382265", "810909286264", "934389652994", "351830469744", "465087894112",
+            "136451303068", "601644902402", "380685387212", "918460050077"
+        };
+        String philhealthNoDB_ = philhealthNoDB[index_];
+
+        return philhealthNoDB_;
+    }
+
+    public static String pagibigDB(int index_) {
+        String[] pagibigNumbers = {
+            "691295330870", "663904995411", "171519773969", "416946776041", "952347222457",
+            "441093369646", "210850209964", "211385556888", "260107732354", "799254095212",
+            "218002473454", "113071293354", "631130283546", "101205445886", "223057707853",
+            "631052853464", "719007608464", "114901859343", "265104358643", "260054585575",
+            "104907708845", "113017988667", "360028104576", "913108649964", "210546661243",
+            "210897095686", "211274476563", "122238077997", "212141893454", "515012579765",
+            "110018813465", "697764069311", "993372963726", "874042259378"
+        };
+        String pagibigNumbers_ = pagibigNumbers[index_];
+
+        return pagibigNumbers_;
+    }
+
+    public static String tinNoDB(int index_) {
+        String[] tinNumbers = {
+            "442-605-657-000", "683-102-776-000", "971-711-280-000", "876-809-437-000", "031-702-374-000",
+            "317-674-022-000", "672-474-690-000", "888-572-294-000", "604-997-793-000", "525-420-419-000",
+            "210-805-911-000", "218-489-737-000", "210-835-851-000", "275-792-513-000", "598-065-761-000",
+            "103-100-522-000", "482-259-498-000", "121-203-336-000", "122-244-511-000", "273-970-941-000",
+            "354-650-951-000", "187-500-345-000", "101-558-994-000", "560-735-732-000", "841-177-857-000",
+            "502-995-671-000", "336-676-445-000", "210-395-397-000", "395-032-717-000", "215-973-013-000",
+            "599-312-588-000", "404-768-309-000", "256-436-296-000", "911-529-713-000"
+        };
+
+        String tinNumbers_ = tinNumbers[index_];
+
+        return tinNumbers_;
+    }
+
+    public static String employeePositionDB(int index_) {
+
+        String[] employeePosition = {
+            "Chief Executive Officer",
+            "Chief Operating Officer",
+            "Chief Finance Officer",
+            "Chief Marketing Officer",
+            "IT Operations and Systems",
+            "HR Manager",
+            "HR Team Leader",
+            "HR Rank and File",
+            "HR Rank and File",
+            "Accounting Head",
+            "Payroll Manager",
+            "Payroll Team Leader",
+            "Payroll Rank and File",
+            "Payroll Rank and File",
+            "Account Manager",
+            "Account Team Leader",
+            "Account Team Leader",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Account Rank and File",
+            "Sales & Marketing",
+            "Supply Chain and Logistics",
+            "Customer Service and Relations"
+        };
+
+        String employeePosition_ = employeePosition[index_];
+
+        return employeePosition_;
+
+    }
+
+    public static String immediateSupervisorsDB(int index_) {
+        String[] immediateSupervisorsDB = {
+            "N/A", "Garcia, Manuel III", "Garcia, Manuel III", "Garcia, Manuel III", "Lim, Antonio",
+            "Lim, Antonio", "Villanueva, Andrea Mae", "San, Jose Brad", "San, Jose Brad", "Aquino, Bianca Sofia",
+            "Alvaro, Roderick", "Salcedo, Anthony", "Salcedo, Anthony", "Salcedo, Anthony", "Lim, Antonio",
+            "Romualdez, Fredrick", "Romualdez, Fredrick", "Mata, Christian", "Mata, Christian", "Mata, Christian",
+            "Mata, Christian", "Mata, Christian", "Mata, Christian", "Mata, Christian", "De Leon, Selena",
+            "De Leon, Selena", "De Leon, Selena", "De Leon, Selena", "De Leon, Selena", "De Leon, Selena",
+            "De Leon, Selena", "Reyes, Isabella", "Reyes, Isabella", "Reyes, Isabella"
+        };
+
+        String immediateSupervisorsDB_ = immediateSupervisorsDB[index_];
+
+        return immediateSupervisorsDB_;
+    }
+
+    public static String employeeStatusDB(int index_) {
+        String[] employeeStatusDB = {
+            "Regular", "Regular", "Regular", "Regular", "Regular", "Regular",
+            "Regular", "Regular", "Regular", "Regular", "Regular", "Regular",
+            "Regular", "Regular", "Regular", "Regular", "Regular", "Regular",
+            "Regular", "Regular", "Probationary", "Probationary", "Probationary", "Probationary",
+            "Probationary", "Probationary", "Probationary", "Probationary", "Probationary", "Probationary",
+            "Regular", "Regular", "Regular", "Regular"
+        };
+
+        String employeeStatusDB_ = employeeStatusDB[index_];
+
+        return employeeStatusDB_;
+
+    }
+
+}

@@ -1,0 +1,1 @@
+Employee#      Employee Name                    GrossPay        SSS         PhilHealth          PagIbig         WitholdingTax           Benefits       NetPay         
