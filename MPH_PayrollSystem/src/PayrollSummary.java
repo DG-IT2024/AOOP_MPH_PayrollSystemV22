@@ -194,6 +194,7 @@ public class PayrollSummary extends javax.swing.JFrame {
             jComboBoxCoveredPeriod.addItem(period);
         }
     }
+    
 
 //    
     public void filterByCategory(String coveredPeriod, String employeeNumber) {

@@ -24,12 +24,12 @@ public class LoginController {
         }
     }
 
-    public List<String> getPermissions(String username) {
-        try {
-            return loginService.getUserPermissions(username);
-        } catch (Exception e) {
-            System.err.println("Permission fetch error: " + e.getMessage());
-            return List.of();
-        }
-    }
+//    public List<String> getPermissions(String username) {
+//        try {
+//            return loginService.getUserPermissions(username);
+//        } catch (Exception e) {
+//            System.err.println("Permission fetch error: " + e.getMessage());
+//            return List.of();
+//        }
+//    }
 }

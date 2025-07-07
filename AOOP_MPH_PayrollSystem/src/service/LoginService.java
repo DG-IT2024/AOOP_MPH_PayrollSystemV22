@@ -12,13 +12,12 @@ import dao.LoginDAO;
 import model.Login;
 import model.Password;
 
-import model.Permission;
+
 import util.DBConnect;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 import javax.swing.JOptionPane;
 import org.mindrot.jbcrypt.BCrypt;
@@ -35,23 +34,7 @@ public class LoginService {
         this.loginDAO = new LoginDAO(conn);
     }
 
-//    public boolean authenticate(String username, String rawPassword) throws Exception {
-//        Login login = loginDAO.getLoginByUsername(username);
-//        if (login == null) return false;
-//        Password pw = loginDAO.getPasswordByLoginId(login.getLoginId());
-//        return rawPassword.equals(pw.getPasswordSaltHash()); // Replace with BCrypt in production
-//    }
-//    public boolean authenticate(String username, String rawPassword) throws Exception {
-//        Login login = loginDAO.getLoginByUsername(username);
-//        if (login == null) {
-//            return false;
-//        }
-//
-//        Password pw = loginDAO.getPasswordByLoginId(login.getLoginId());
-//
-//        return BCrypt.checkpw(rawPassword, pw.getPasswordSaltHash());
-//
-//    }
+
     public boolean authenticate(String username, String rawPassword) throws Exception {
 
         Login login = loginDAO.getLoginByUsername(username);
@@ -77,10 +60,7 @@ public class LoginService {
             return false;
         }
 
-//        // Debug password_id and password_salt_hash
-//        System.out.println("Password ID: " + pw.getPasswordId());
-//        System.out.println("Entered Password: " + rawPassword);
-//        System.out.println("Password Hash from DB: " + pw.getPasswordSaltHash());
+
         //// Step 4: Compare using BCrypt
         boolean match = checkPassword(rawPassword, pw.getPasswordSaltHash());
 
@@ -117,16 +97,22 @@ public class LoginService {
         return BCrypt.checkpw(inputPassword, storedHashedPassword);
     }
 
-    public List<String> getUserPermissions(String username) throws Exception {
-        Login login = loginDAO.getLoginByUsername(username);
-        if (login == null) {
-            return Collections.emptyList();
-        }
-        List<Permission> perms = loginDAO.getPermissionsByLoginId(login.getLoginId());
-        List<String> names = new ArrayList<>();
-        for (Permission p : perms) {
-            names.add(p.getPermissionName());
-        }
-        return names;
+//    public List<String> getUserPermissions(String username) throws Exception {
+//        Login login = loginDAO.getLoginByUsername(username);
+//        if (login == null) {
+//            return Collections.emptyList();
+//        }
+//        List<Permission> perms = loginDAO.getPermissionsByLoginId(login.getLoginId());
+//        List<String> names = new ArrayList<>();
+//        for (Permission p : perms) {
+//            names.add(p.getPermissionName());
+//        }
+//        return names;
+//    }
+
+    public void resetLoginAttempts(String username) throws Exception {
+        loginDAO.resetLoginAttempts(username);
+
     }
+
 }
