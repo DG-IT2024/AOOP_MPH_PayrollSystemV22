@@ -1,10 +1,9 @@
 package ui;
 
-import java.sql.Date;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import service.LeaveRequestService;
 import util.DateUtil;
 
@@ -15,24 +14,27 @@ Doesn't allow startDate to be after endDate
 User can update or cancel leave application that is still pending
 Leave Status will be marked as pending, approved and rejected
  */
-public class LeaveApplicationUser extends javax.swing.JFrame {
+public final class LeaveApplicationUser extends javax.swing.JFrame {
 
-    private int empId;
+    private static int empId;
 
     /**
      * Creates new form LeaveApplicationUser
      *
+     * @param empId
      * @throws java.lang.Exception
      */
-    public LeaveApplicationUser() throws Exception {
+    public LeaveApplicationUser(int empId) throws Exception {
+        LeaveApplicationUser.empId = empId;
+
         initComponents();
         viewUserLeave();
         displayUserDetails();
+
     }
 
     public void viewUserLeave() throws Exception {
         LeaveRequestService service = new LeaveRequestService();
-        empId = 10005;   //to be changed
         service.loadLeaveToTable(jTableLeaveApplications, empId, null);
     }
 
@@ -77,7 +79,7 @@ public class LeaveApplicationUser extends javax.swing.JFrame {
     }
 
     public double calculateLeave(java.util.Date startDate, java.util.Date endDate) throws Exception {
-               int leaveDays = DateUtil.getLeaveDaysExcludingSundays(startDate, endDate);
+        int leaveDays = DateUtil.getLeaveDaysExcludingSundays(startDate, endDate);
 
         // If you want to allow double return for future half-day handling
         double calcLeave = (double) leaveDays;
@@ -204,14 +206,14 @@ public class LeaveApplicationUser extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+            .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButtonPayroll1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonPayroll, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonProfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonLeaveApp, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
+                    .addComponent(jButtonPayroll1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonExit, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonPayroll, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+                    .addComponent(jButtonLeaveApp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
                 .addGap(21, 21, 21))
         );
         jPanel4Layout.setVerticalGroup(
@@ -425,7 +427,12 @@ public class LeaveApplicationUser extends javax.swing.JFrame {
     }//GEN-LAST:event_jTableLeaveApplicationsMouseClicked
 
     private void jButtonProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonProfileActionPerformed
-
+        try {
+            new EmployeeProfileUser(empId).setVisible(true);
+            this.setVisible(false);
+        } catch (Exception ex) {
+            Logger.getLogger(LeaveApplicationUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButtonProfileActionPerformed
 
     private void jButtonLeaveAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLeaveAppActionPerformed
@@ -433,11 +440,34 @@ public class LeaveApplicationUser extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonLeaveAppActionPerformed
 
     private void jButtonPayrolljButtonAttendanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPayrolljButtonAttendanceActionPerformed
+        try {
+            // TODO add your handling code here:
 
+            AttendanceUser attendance = new AttendanceUser(empId);
+            attendance.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeProfileAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButtonPayrolljButtonAttendanceActionPerformed
 
     private void jButtonExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExitActionPerformed
-        // TODO add your handling code here:
+        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?", "Confirm Exit",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        // Check the user's response
+        if (response == JOptionPane.YES_OPTION) {
+            try {
+                // Hide the current window
+                setVisible(false);
+
+                // Show the login manager window
+                new LoginView().setVisible(true);
+            } catch (IOException ex) {
+
+            }
+        }        // TODO add your handling code here:
 
     }//GEN-LAST:event_jButtonExitActionPerformed
 
@@ -478,7 +508,7 @@ public class LeaveApplicationUser extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new LeaveApplicationUser().setVisible(true);
+                    new LeaveApplicationUser(empId).setVisible(true);
                 } catch (Exception ex) {
                     Logger.getLogger(LeaveApplicationUser.class.getName()).log(Level.SEVERE, null, ex);
                 }

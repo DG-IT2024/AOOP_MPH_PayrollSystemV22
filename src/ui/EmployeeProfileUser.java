@@ -4,75 +4,78 @@ import service.EmployeeService;
 import controller.EmployeeController;
 
 import java.awt.Toolkit;
+import java.io.IOException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import model.Employee;
 
-public class EmployeeProfileUser extends javax.swing.JFrame {
+public final class EmployeeProfileUser extends javax.swing.JFrame {
+
+    private static int empId;
 
     private final EmployeeService service = new EmployeeService();
 
-    public EmployeeProfileUser() throws Exception {
+    public EmployeeProfileUser(int empId) throws Exception {
+        EmployeeProfileUser.empId = empId;
+
         initComponents();
-        int employeeNumber = 10005;
-        showDetailsFromDB(employeeNumber); 
+        showDetailsFromDB();
     }
 
-    public void showDetailsFromDB(int employeeNumber) {
-    try {
-        Employee employee = service.findEmployeeById(employeeNumber);
-        if (employee != null) {
-            jTextFieldEmployeeNum.setText(String.valueOf(employee.getEmployeeId()));
-            jTextFieldLastName.setText(employee.getLastName());
-            jTextFieldFirstName.setText(employee.getFirstName());
+    public void showDetailsFromDB() {
+        try {
+            Employee employee = service.findEmployeeById(empId);
+            if (employee != null) {
+                jTextFieldEmployeeNum.setText(String.valueOf(employee.getEmployeeId()));
+                jTextFieldLastName.setText(employee.getLastName());
+                jTextFieldFirstName.setText(employee.getFirstName());
 
-            // Format birthdate (Date to String)
-            if (employee.getBirthdate() != null) {
-                jTextFieldBirthday.setText(new java.text.SimpleDateFormat("yyyy-MM-dd")
-                        .format(employee.getBirthdate()));
+                // Format birthdate (Date to String)
+                if (employee.getBirthdate() != null) {
+                    jTextFieldBirthday.setText(new java.text.SimpleDateFormat("yyyy-MM-dd")
+                            .format(employee.getBirthdate()));
+                } else {
+                    jTextFieldBirthday.setText("");
+                }
+
+                // Combine address fields
+                String address = String.format("%s, %s, %s, %s, %s",
+                        safe(employee.getStreet()),
+                        safe(employee.getBarangay()),
+                        safe(employee.getCity()),
+                        safe(employee.getProvince()),
+                        safe(employee.getZip()));
+                jTextAreaAddress.setText(address);
+
+                jTextFieldPhoneNum.setText(employee.getPhoneNumber());
+                jTextFieldSSSnum.setText(employee.getSssNumber());
+                jTextFieldPhilhealthNum.setText(employee.getPhilhealthNumber());
+                jTextFieldTINnum.setText(employee.getTinNumber());
+                jTextFieldPagibigNum.setText(employee.getPagibigNumber());
+                jTextFieldStatus.setText(employee.getStatus());
+                jTextFieldPosition.setText(employee.getPosition());
+                jTextFieldSupervisor.setText(employee.getImmediateSupervisor());
+
+                // For double values, handle formatting as string
+                jTextFieldBasicSalary.setText(String.format("%.2f", employee.getBasicSalary()));
+                jTextFieldRiceSubsidy.setText(String.format("%.2f", employee.getRiceSubsidy()));
+                jTextFieldPhoneAllow.setText(String.format("%.2f", employee.getPhoneAllowance()));
+                jTextFieldClothAllow.setText(String.format("%.2f", employee.getClothingAllowance()));
             } else {
-                jTextFieldBirthday.setText("");
+                JOptionPane.showMessageDialog(null, "Employee not found.");
             }
-
-            // Combine address fields
-            String address = String.format("%s, %s, %s, %s, %s",
-                    safe(employee.getStreet()),
-                    safe(employee.getBarangay()),
-                    safe(employee.getCity()),
-                    safe(employee.getProvince()),
-                    safe(employee.getZip()));
-            jTextAreaAddress.setText(address);
-
-            jTextFieldPhoneNum.setText(employee.getPhoneNumber());
-            jTextFieldSSSnum.setText(employee.getSssNumber());
-            jTextFieldPhilhealthNum.setText(employee.getPhilhealthNumber());
-            jTextFieldTINnum.setText(employee.getTinNumber());
-            jTextFieldPagibigNum.setText(employee.getPagibigNumber());
-            jTextFieldStatus.setText(employee.getStatus());
-            jTextFieldPosition.setText(employee.getPosition());
-            jTextFieldSupervisor.setText(employee.getImmediateSupervisor());
-
-            // For double values, handle formatting as string
-            jTextFieldBasicSalary.setText(String.format("%.2f", employee.getBasicSalary()));
-            jTextFieldRiceSubsidy.setText(String.format("%.2f", employee.getRiceSubsidy()));
-            jTextFieldPhoneAllow.setText(String.format("%.2f", employee.getPhoneAllowance()));
-            jTextFieldClothAllow.setText(String.format("%.2f", employee.getClothingAllowance()));
-        } else {
-            JOptionPane.showMessageDialog(null, "Employee not found.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage());
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage());
     }
-}
 
 // Optional helper to avoid "null" strings in address
-private String safe(String s) {
-    return s == null ? "" : s;
-}
-
+    private String safe(String s) {
+        return s == null ? "" : s;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -433,15 +436,15 @@ private String safe(String s) {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButtonPayroll1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonPayroll, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                    .addComponent(jButtonProfile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButtonExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonPayroll, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonProfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonLeaveApp, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
-                .addGap(21, 21, 21))
+                    .addComponent(jButtonLeaveApp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonPayroll1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -567,13 +570,53 @@ private String safe(String s) {
     }//GEN-LAST:event_jButtonProfileActionPerformed
 
     private void jButtonLeaveAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLeaveAppActionPerformed
+
+        try {
+            // TODO add your handling code here:
+
+            LeaveApplicationUser leaveEmployee = new LeaveApplicationUser(empId);
+            leaveEmployee.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeProfileAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
     }//GEN-LAST:event_jButtonLeaveAppActionPerformed
 
     private void jButtonAttendanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAttendanceActionPerformed
+        try {
+            // TODO add your handling code here:
+
+            AttendanceUser attendance = new AttendanceUser(empId);
+            attendance.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeProfileAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButtonAttendanceActionPerformed
 
     private void jButtonExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExitActionPerformed
         // TODO add your handling code here:
+
+        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?", "Confirm Exit",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        // Check the user's response
+        if (response == JOptionPane.YES_OPTION) {
+            try {
+                // Hide the current window
+                setVisible(false);
+
+                // Show the login manager window
+                new LoginView().setVisible(true);
+            } catch (IOException ex) {
+
+            }
+        }
+
 
     }//GEN-LAST:event_jButtonExitActionPerformed
 
@@ -612,7 +655,7 @@ private String safe(String s) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new EmployeeProfileUser().setVisible(true);
+                    new EmployeeProfileUser(empId).setVisible(true);
                 } catch (Exception ex) {
                     Logger.getLogger(EmployeeProfileUser.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -11,7 +11,7 @@ public class Attendance_sp {
     private Time timeIn;
     private Time timeOut;
     private Double regularHoursCalc;
-    private Integer overtimeRate; 
+    private Double overtimeRate; 
     private Double overtimeHoursCalc;
     private Date overtimeUpdatedDate;
     private String lastName;
@@ -30,7 +30,7 @@ public class Attendance_sp {
             Time timeIn,
             Time timeOut,
             Double regularHoursCalc,
-            Integer overtimeRate,
+            Double overtimeRate,
             Double overtimeHoursCalc,
             Date overtimeUpdatedDate,
             String lastName,
@@ -104,11 +104,11 @@ public class Attendance_sp {
         this.regularHoursCalc = regularHoursCalc;
     }
 
-    public Integer getOvertimeRate() {
+    public Double getOvertimeRate() {
         return overtimeRate;
     }
 
-    public void setOvertimeRate(Integer overtimeRate) {
+    public void setOvertimeRate(Double overtimeRate) {
         this.overtimeRate = overtimeRate;
     }
 

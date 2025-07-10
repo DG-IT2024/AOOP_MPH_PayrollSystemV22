@@ -3,35 +3,43 @@ package ui;
 import controller.AttendanceController;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-
+import javax.swing.table.DefaultTableModel;
+import model.Attendance_sp;
 import service.AttendanceService;
-
-import static util.DateUtil.formatDate;
-
 import util.InputValidator;
 
 public class AttendanceAdmin extends javax.swing.JFrame {
 
     private AttendanceController controller;
+    private static int empId;
+    private static int approverId;
 
-    public AttendanceAdmin() throws Exception {
+    public AttendanceAdmin(int empId, int approverId) throws Exception {
+        this.empId = empId ;
+        this.approverId = approverId ;
+
         initComponents();
+        displayEmployeeDetail();
 
     }
 
-    private void loadAttendanceDetails() throws Exception {
+    private void displayEmployeeDetail() throws Exception {
+        jTextFieldEmployeeNum.setText(String.valueOf(empId));
+
         AttendanceService service = new AttendanceService();
         controller = new AttendanceController(service);
-        controller.loadAttendanceToTable(jTableTimeSheet); // Load data at startup
+        Attendance_sp attendance = controller.getAttendance(empId, null, null);
+
+        String employeeName = attendance.getLastName() + " , " + attendance.getFirstName();
+        jTextFieldName.setText(employeeName);
 
     }
 
-    private void loadFilteredAttendanceDetails() throws Exception {
+    public void loadFilteredAttendanceDetails() throws Exception {
         AttendanceService service = new AttendanceService();
         controller = new AttendanceController(service);
 
@@ -55,8 +63,8 @@ public class AttendanceAdmin extends javax.swing.JFrame {
         java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
         java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
 
-        double TotalWorkedHours = service.getTotalRegularHours(employeeId, sqlStartDate, sqlEndDate);
-        return TotalWorkedHours;
+        double totalWorkedHours = service.getRegularHours(employeeId, sqlStartDate, sqlEndDate);
+        return totalWorkedHours;
     }
 
     private double displayTotalOvertime() throws Exception {
@@ -69,8 +77,8 @@ public class AttendanceAdmin extends javax.swing.JFrame {
         java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
         java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
 
-        double TotalOvertime = service.getOvertimeRegularHours(employeeId, sqlStartDate, sqlEndDate);
-        return TotalOvertime;
+        double totalOvertime = service.getOvertimeHours(employeeId, sqlStartDate, sqlEndDate);
+        return totalOvertime;
     }
 
     private void loadAllFilteredAttendanceDetails() throws Exception {
@@ -85,6 +93,13 @@ public class AttendanceAdmin extends javax.swing.JFrame {
         java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
 
         controller.loadAttendanceToFilteredTable(jTableTimeSheet, employeeId, sqlStartDate, sqlEndDate); // Load data at startup
+    }
+
+    private void getAttendanceIds() throws Exception {
+        AttendanceService service = new AttendanceService();
+        controller = new AttendanceController(service);
+
+        controller.getAttendanceIds(jTableTimeSheet); // Load data at startup
     }
 
     private boolean checkAttendanceInputFields() {
@@ -175,6 +190,8 @@ public class AttendanceAdmin extends javax.swing.JFrame {
         jTableTimeSheet = new javax.swing.JTable();
         jDateChooserEndDate = new com.toedter.calendar.JDateChooser();
         jDateChooserStartDate = new com.toedter.calendar.JDateChooser();
+        jButtonVIEW = new javax.swing.JButton();
+        jButtonUpdate = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -201,7 +218,7 @@ public class AttendanceAdmin extends javax.swing.JFrame {
                 jButtonPrintTimesheetActionPerformed(evt);
             }
         });
-        jPanel2.add(jButtonPrintTimesheet, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 150, -1));
+        jPanel2.add(jButtonPrintTimesheet, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 150, -1));
 
         jButtonCalculate.setText("CALCULATE");
         jButtonCalculate.addActionListener(new java.awt.event.ActionListener() {
@@ -209,7 +226,7 @@ public class AttendanceAdmin extends javax.swing.JFrame {
                 jButtonCalculateActionPerformed(evt);
             }
         });
-        jPanel2.add(jButtonCalculate, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 150, -1));
+        jPanel2.add(jButtonCalculate, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 150, -1));
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(8, 207, 180, 283));
 
@@ -222,6 +239,7 @@ public class AttendanceAdmin extends javax.swing.JFrame {
 
         jTextFieldName.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.gray));
         jTextFieldName.setDisabledTextColor(new java.awt.Color(51, 51, 51));
+        jTextFieldName.setEnabled(false);
         jTextFieldName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldNameActionPerformed(evt);
@@ -240,6 +258,7 @@ public class AttendanceAdmin extends javax.swing.JFrame {
         jTextFieldEmployeeNum.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.gray));
         jTextFieldEmployeeNum.setCaretColor(new java.awt.Color(51, 51, 51));
         jTextFieldEmployeeNum.setDisabledTextColor(new java.awt.Color(51, 51, 51));
+        jTextFieldEmployeeNum.setEnabled(false);
         jTextFieldEmployeeNum.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldEmployeeNumActionPerformed(evt);
@@ -260,13 +279,13 @@ public class AttendanceAdmin extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("SUMMARY");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 170, -1, -1));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 170, -1, -1));
 
         jLabel7.setText("Overtime Hours");
-        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 250, -1, -1));
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 250, -1, -1));
 
         jLabel9.setText("Regular Hours");
-        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 210, -1, -1));
+        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 210, -1, -1));
 
         jTextFieldRegularHours.setEditable(false);
         jTextFieldRegularHours.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -275,28 +294,20 @@ public class AttendanceAdmin extends javax.swing.JFrame {
                 jTextFieldRegularHoursActionPerformed(evt);
             }
         });
-        getContentPane().add(jTextFieldRegularHours, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 210, 50, -1));
+        getContentPane().add(jTextFieldRegularHours, new org.netbeans.lib.awtextra.AbsoluteConstraints(1110, 200, 50, -1));
 
         jTextFieldOvertimeHours.setEditable(false);
         jTextFieldOvertimeHours.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        getContentPane().add(jTextFieldOvertimeHours, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 250, 50, -1));
+        getContentPane().add(jTextFieldOvertimeHours, new org.netbeans.lib.awtextra.AbsoluteConstraints(1110, 240, 50, -1));
 
         jTableTimeSheet.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "DATE", "TIME-IN", "TIME-OUT", "REGULAR", "OVERTIME"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
             }
-        });
+        ));
         jTableTimeSheet.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jTableTimeSheet.getTableHeader().setReorderingAllowed(false);
         jTableTimeSheet.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -305,20 +316,8 @@ public class AttendanceAdmin extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(jTableTimeSheet);
-        if (jTableTimeSheet.getColumnModel().getColumnCount() > 0) {
-            jTableTimeSheet.getColumnModel().getColumn(0).setResizable(false);
-            jTableTimeSheet.getColumnModel().getColumn(0).setPreferredWidth(60);
-            jTableTimeSheet.getColumnModel().getColumn(1).setResizable(false);
-            jTableTimeSheet.getColumnModel().getColumn(1).setPreferredWidth(40);
-            jTableTimeSheet.getColumnModel().getColumn(2).setResizable(false);
-            jTableTimeSheet.getColumnModel().getColumn(2).setPreferredWidth(40);
-            jTableTimeSheet.getColumnModel().getColumn(3).setResizable(false);
-            jTableTimeSheet.getColumnModel().getColumn(3).setPreferredWidth(40);
-            jTableTimeSheet.getColumnModel().getColumn(4).setResizable(false);
-            jTableTimeSheet.getColumnModel().getColumn(4).setPreferredWidth(40);
-        }
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 170, 400, 390));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 170, 760, 390));
 
         jDateChooserEndDate.setBackground(new java.awt.Color(255, 255, 255));
         jDateChooserEndDate.setToolTipText("");
@@ -341,8 +340,25 @@ public class AttendanceAdmin extends javax.swing.JFrame {
         });
         getContentPane().add(jDateChooserStartDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 70, 160, 30));
 
+        jButtonVIEW.setText("VIEW");
+        jButtonVIEW.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jButtonVIEW.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonVIEWActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonVIEW, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 110, -1, -1));
+
+        jButtonUpdate.setText("UPDATE");
+        jButtonUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonUpdateActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 530, -1, -1));
+
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/photos/Attendance.jpg"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 810, 620));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1220, 620));
 
         pack();
         setLocationRelativeTo(null);
@@ -385,6 +401,7 @@ public class AttendanceAdmin extends javax.swing.JFrame {
 
             jTextFieldOvertimeHours.setText(String.valueOf(displayTotalOvertime()));
             jTextFieldRegularHours.setText(String.valueOf(displayTotalWorkedHours()));
+            getAttendanceIds();
 
         } catch (Exception ex) {
             Logger.getLogger(AttendanceAdmin.class.getName()).log(Level.SEVERE, null, ex);
@@ -449,6 +466,46 @@ public class AttendanceAdmin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonPrintTimesheetActionPerformed
 
+    private void jButtonVIEWActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVIEWActionPerformed
+        // TODO add your handling code here:
+
+        if (!checkAttendanceInputFields()) {
+            // One or more fields are empty, so stop further processing
+            return;
+        }
+
+        try {
+
+            loadFilteredAttendanceDetails();
+            displayTotalWorkedHours();
+
+        } catch (Exception ex) {
+            Logger.getLogger(AttendanceAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_jButtonVIEWActionPerformed
+
+    private void jButtonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = jTableTimeSheet.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a row before editing!", "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) jTableTimeSheet.getModel();
+        int selectedRowIndex = jTableTimeSheet.getSelectedRow();
+        String attendance_Id = model.getValueAt(selectedRowIndex, 0).toString();
+        int attendanceId = Integer.parseInt(attendance_Id);
+
+        TimesheetDialog dialog = new TimesheetDialog(this, attendanceId, approverId);
+        dialog.setVisible(true);
+        if (dialog.isSubmitted()) {          
+        }
+
+    }//GEN-LAST:event_jButtonUpdateActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -484,7 +541,7 @@ public class AttendanceAdmin extends javax.swing.JFrame {
             public void run() {
 
                 try {
-                    new AttendanceAdmin().setVisible(true);
+                    new AttendanceAdmin(empId, approverId).setVisible(true);
                 } catch (Exception ex) {
                     Logger.getLogger(EmployeeProfileAdmin.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -498,6 +555,8 @@ public class AttendanceAdmin extends javax.swing.JFrame {
     private javax.swing.JButton jButtonCalculate;
     private javax.swing.JButton jButtonClose;
     private javax.swing.JButton jButtonPrintTimesheet;
+    private javax.swing.JButton jButtonUpdate;
+    private javax.swing.JButton jButtonVIEW;
     private com.toedter.calendar.JDateChooser jDateChooserEndDate;
     private com.toedter.calendar.JDateChooser jDateChooserStartDate;
     private javax.swing.JLabel jLabel1;

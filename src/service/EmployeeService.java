@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.util.List;
 import util.DBConnect;
 
+import static util.InputValidator.validateEmployee;
+
 public class EmployeeService {
 
     private EmployeeDAO employeeDAO;
@@ -26,6 +28,8 @@ public class EmployeeService {
     }
 
     public void addEmployee(Employee employee) throws SQLException {
+        isIdDuplicate(employee);
+        validateEmployee(employee);
         employeeDAO.createEmployee(employee);
     }
 
@@ -40,7 +44,7 @@ public class EmployeeService {
     public List<Employee> listAllEmployees() throws SQLException {
         return employeeDAO.getAllEmployees();
     }
-    
+
     public void printAllEmployees() {
         try {
             List<Employee> employees = employeeDAO.getAllEmployees(); // call the method in this class
@@ -52,5 +56,22 @@ public class EmployeeService {
             System.out.println(e.getMessage());
         }
     }
+
+    public boolean hasDuplicateGovtId(Employee employee) {
+        return employeeDAO.isGovtIdDuplicate(
+                employee.getSssNumber(),
+                employee.getTinNumber(),
+                employee.getPhilhealthNumber(),
+                employee.getPagibigNumber()
+        );
+    }
+    
+   public void isIdDuplicate(Employee employee){
+       if (hasDuplicateGovtId(employee)) {
+           throw new IllegalArgumentException("Duplicate government ID found");
+        }
+       
+   }
+   
 
 }

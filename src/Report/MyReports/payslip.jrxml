@@ -1,0 +1,180 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="payslip" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="822c06d0-883b-4c1b-969f-6f2825a91366">
+	<query language="sql"><![CDATA[]]></query>
+	<background splitType="Stretch"/>
+	<title height="107" splitType="Stretch">
+		<element kind="image" uuid="db806f08-30a6-4bbf-8a4c-7373cb9a5fc7" x="0" y="0" width="544" height="83">
+			<expression><![CDATA["C:/Users/danilo/Documents/AOOP_MPH_PayrollSystem/src/header.png"]]></expression>
+		</element>
+	</title>
+	<pageHeader height="62" splitType="Stretch">
+		<element kind="staticText" uuid="ea5971df-1319-4085-af9c-28b7eda2122c" x="0" y="10" width="549" height="30" forecolor="#000066" fontSize="19.0" underline="true" bold="true" hTextAlign="Center">
+			<text><![CDATA[EMPLOYEE PAYSLIP]]></text>
+		</element>
+	</pageHeader>
+	<detail>
+		<band height="81" splitType="Stretch">
+			<element kind="staticText" uuid="ce562b48-accf-4bd3-ab5a-7a6e1f9a1c0d" mode="Opaque" x="30" y="-1" width="100" height="20" forecolor="#FFFFFF" backcolor="#000066" fontName="SansSerif" bold="true">
+				<text><![CDATA[PAYSLIP NO.]]></text>
+			</element>
+			<element kind="staticText" uuid="9ff7ec70-5e80-4b5c-9c0e-782a84e1a028" mode="Opaque" x="30" y="20" width="100" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="SansSerif" bold="true">
+				<text><![CDATA[EMPLOYEE ID	]]></text>
+			</element>
+			<element kind="staticText" uuid="92af5ef3-6679-4d9d-aa92-bca8231fed15" mode="Opaque" x="30" y="40" width="100" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="SansSerif" bold="true">
+				<text><![CDATA[EMPLOYEE NAME]]></text>
+			</element>
+			<element kind="staticText" uuid="eb333989-9b55-4cc4-81bb-09bc37fce19d" mode="Opaque" x="285" y="-1" width="140" height="20" forecolor="#FFFFFF" backcolor="#000066" fontName="SansSerif" bold="true">
+				<text><![CDATA[PERIOD START DATE]]></text>
+			</element>
+			<element kind="textField" uuid="5d7e8649-78db-46ae-93e7-31b055130fce" x="135" y="-1" width="100" height="19">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="textField" uuid="f83ba961-a9d6-4fe7-a1b1-e0f2f87a2016" x="135" y="20" width="100" height="18">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="textField" uuid="452fe00c-10f4-4a01-8212-7c045bfc4f2c" x="135" y="40" width="100" height="18">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="staticText" uuid="9a67c338-5679-4943-97d1-fa5481f92fa1" mode="Opaque" x="285" y="20" width="140" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="SansSerif" bold="true">
+				<text><![CDATA[PERIOD END DATE]]></text>
+			</element>
+			<element kind="staticText" uuid="d5867fc3-12e7-40f5-9cc2-c1226c9ceabf" mode="Opaque" x="285" y="40" width="140" height="30" forecolor="#FFFFFF" backcolor="#000066" fontName="SansSerif" bold="true">
+				<text><![CDATA[EMPLOYEE POSITION/DEPARTMENT]]></text>
+			</element>
+			<element kind="textField" uuid="3b4b361a-369e-4022-8922-8e5341f506fa" x="430" y="0" width="100" height="19">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="textField" uuid="6edd9f65-0d47-4c07-84ba-2fc9f848179b" x="430" y="20" width="100" height="19">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="textField" uuid="76837239-3e0b-4f2b-a44d-8b7fc97c143b" x="430" y="40" width="100" height="30">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+		</band>
+		<band height="112">
+			<element kind="staticText" uuid="1ff9dea4-2198-4b8e-b9f0-4ef94e913788" mode="Opaque" x="30" y="0" width="500" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="Arial Black">
+				<text><![CDATA[EARNINGS]]></text>
+			</element>
+			<element kind="staticText" uuid="77da677c-3448-4d6b-81d3-df6ae31fc7ea" x="30" y="20" width="100" height="19">
+				<text><![CDATA[Monthly Rate]]></text>
+			</element>
+			<element kind="staticText" uuid="3e705357-e36c-45c1-8c1b-802bc276f992" x="30" y="38" width="100" height="19">
+				<text><![CDATA[Daily Rate]]></text>
+			</element>
+			<element kind="staticText" uuid="b1c857e1-a7ec-46ba-b56b-7e62f89bea4b" x="30" y="58" width="100" height="19" fontName="SansSerif">
+				<text><![CDATA[Days Worked]]></text>
+			</element>
+			<element kind="textField" uuid="4887b4be-6959-4ff4-b091-7887fbfbaeb7" x="428" y="20" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="textField" uuid="1e5c4dad-159c-4ed8-9c9d-950f5fd64dc2" x="428" y="38" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="staticText" uuid="d02ce3c1-f1a8-47af-8326-1a16e6fc7511" x="30" y="77" width="100" height="19" fontName="Arial Black">
+				<text><![CDATA[GROSS INCOME]]></text>
+			</element>
+			<element kind="textField" uuid="d7763e56-4bd3-4367-b80d-4b8b1fd686cf" x="430" y="74" width="100" height="19" fontName="Arial Black" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="textField" uuid="5cc2d62b-22dc-4059-ba9e-43574eac29d7" x="430" y="56" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+		</band>
+		<band height="106">
+			<element kind="staticText" uuid="539db90a-b299-4730-a8d4-02d6d0dfde57" mode="Opaque" x="30" y="0" width="500" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="Arial Black">
+				<text><![CDATA[BENEFITS]]></text>
+			</element>
+			<element kind="staticText" uuid="8cc6703d-b46a-417d-b695-cf4d659548ee" x="30" y="20" width="100" height="19">
+				<text><![CDATA[Rice Subsidy]]></text>
+			</element>
+			<element kind="staticText" uuid="1351d83c-af56-4316-a6da-631214d5dd7a" x="30" y="38" width="100" height="19">
+				<text><![CDATA[Phone Allowance]]></text>
+			</element>
+			<element kind="staticText" uuid="1bdd6cf5-0a68-4012-b72a-54bc2e178fd1" x="30" y="58" width="100" height="19" fontName="SansSerif">
+				<text><![CDATA[Clothing Allowance]]></text>
+			</element>
+			<element kind="textField" uuid="fb06d34d-bb77-4949-aa77-b4e8940e10b0" x="428" y="20" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="textField" uuid="6a832047-1d00-4a71-997f-9d9959b58978" x="428" y="38" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="staticText" uuid="f933b181-563c-4d3b-a034-5790d3e6340a" x="30" y="77" width="100" height="19" fontName="Arial Black">
+				<text><![CDATA[TOTAL]]></text>
+			</element>
+			<element kind="textField" uuid="f604ce51-a76f-4330-a5da-61b1c219468e" x="430" y="74" width="100" height="19" fontName="Arial Black" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="textField" uuid="93714e40-e546-490d-b8ec-c35ef495efa5" x="430" y="56" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+		</band>
+		<band height="129">
+			<element kind="staticText" uuid="1c8a4513-9b84-476f-8bfc-8284a66b65c4" mode="Opaque" x="32" y="10" width="500" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="Arial Black">
+				<text><![CDATA[DEDUCTIONS]]></text>
+			</element>
+			<element kind="staticText" uuid="9280f623-0028-4c0a-95e9-b1df05ba4df3" x="32" y="30" width="100" height="19">
+				<text><![CDATA[Social Security System]]></text>
+			</element>
+			<element kind="staticText" uuid="9eb4ff9e-6811-47c8-a4b1-e92e39b832ab" x="32" y="48" width="100" height="19">
+				<text><![CDATA[Philhealth]]></text>
+			</element>
+			<element kind="staticText" uuid="7f931a44-5487-44b4-9204-1986b1f197cf" x="32" y="68" width="100" height="19" fontName="SansSerif">
+				<text><![CDATA[Pag-ibig]]></text>
+			</element>
+			<element kind="textField" uuid="9beca91f-d249-454a-9316-b1ebc22d61bb" x="430" y="30" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="textField" uuid="54c03449-3bd7-4dac-9ec2-8f3a211e503b" x="430" y="48" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="textField" uuid="2d33ef34-3176-4f83-87a6-34e128de6d71" x="432" y="87" width="100" height="19" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="staticText" uuid="6eb064c6-1348-4fad-94eb-e836fa6a890c" x="32" y="110" width="100" height="19" fontName="Arial Black">
+				<text><![CDATA[TOTAL]]></text>
+			</element>
+			<element kind="textField" uuid="d087bd98-de43-4958-a0cc-f3d6b8da0acc" x="432" y="87" width="100" height="19" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="textField" uuid="a9cd5132-27dd-43c6-a323-d380271f071d" x="432" y="66" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+			<element kind="staticText" uuid="8231023e-36c8-408b-be2a-737e2e14baac" x="32" y="87" width="100" height="19" fontName="SansSerif">
+				<text><![CDATA[Withholding Tax]]></text>
+			</element>
+			<element kind="textField" uuid="43acfa3f-2711-45c8-9186-27b37f9e0c47" x="432" y="106" width="100" height="19" fontName="Arial Black" hTextAlign="Right">
+				<expression><![CDATA["Text Field"]]></expression>
+			</element>
+		</band>
+	</detail>
+	<summary height="119" splitType="Stretch">
+		<element kind="staticText" uuid="75d98757-66fc-4ea2-aee6-1166b1d6f16d" mode="Opaque" x="30" y="10" width="500" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="Arial Black">
+			<text><![CDATA[SUMMARY]]></text>
+		</element>
+		<element kind="staticText" uuid="8eedc3e8-7e2e-46a9-9f03-98eb4b6a4275" x="30" y="30" width="100" height="19">
+			<text><![CDATA[Gross Income]]></text>
+		</element>
+		<element kind="staticText" uuid="59ce6805-a5b4-45d7-8a1b-80f2fa00a80e" x="30" y="48" width="100" height="19">
+			<text><![CDATA[Benefits]]></text>
+		</element>
+		<element kind="staticText" uuid="7e3f09ed-2432-483b-a119-341225300b78" x="30" y="68" width="100" height="19" fontName="SansSerif">
+			<text><![CDATA[Deductions]]></text>
+		</element>
+		<element kind="textField" uuid="f9a8d3c9-eb10-4dcf-8554-20ef3443795c" x="430" y="32" width="100" height="18" hTextAlign="Right">
+			<expression><![CDATA["Text Field"]]></expression>
+		</element>
+		<element kind="textField" uuid="ad6f1419-7ce3-457b-9df1-2727da15ac1b" x="430" y="50" width="100" height="18" hTextAlign="Right">
+			<expression><![CDATA["Text Field"]]></expression>
+		</element>
+		<element kind="textField" uuid="ece2fd53-ddce-4014-a9fa-a69303380c05" x="432" y="86" width="100" height="24" fontName="Arial Black" hTextAlign="Right">
+			<expression><![CDATA["Text Field"]]></expression>
+		</element>
+		<element kind="textField" uuid="e5ac6eab-f470-4c5c-aa9c-c288d8ceb0de" x="432" y="68" width="100" height="18" hTextAlign="Right">
+			<expression><![CDATA["Text Field"]]></expression>
+		</element>
+		<element kind="staticText" uuid="13ca5f79-f11b-412b-be79-b96b72efad1e" x="30" y="93" width="100" height="19" fontName="Arial Black">
+			<text><![CDATA[TAKE HOME PAY]]></text>
+		</element>
+	</summary>
+</jasperReport>

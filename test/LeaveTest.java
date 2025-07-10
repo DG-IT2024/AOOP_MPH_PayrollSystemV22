@@ -14,8 +14,8 @@ import util.DateUtil;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LeaveTest {
 
-    private static Connection conn;
     private LeaveRequestService leaveRequestService;
+    private static Connection conn;
 
     @BeforeAll
     public static void setupDB() throws Exception {

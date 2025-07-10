@@ -3,6 +3,7 @@ package controller;
 import service.AttendanceService;
 import model.Attendance;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -29,21 +30,21 @@ public class AttendanceController {
 
     public void loadAttendanceToFilteredTable(JTable table, int employeeId, Date startDate, Date endDate) throws SQLException {
         List<Attendance_sp> attendance = service.listAttendanceByEmployeeAndDateRange(employeeId, startDate, endDate);
-        DefaultTableModel model = AttendanceUtil.toTableModel_sp(attendance);
+        DefaultTableModel model = AttendanceUtil.attendanceListToTableModel(attendance);
         table.setModel(model);
     }
-
-    public void loadAllAttendanceToFilteredTable(JTable table, int employeeId, Date startDate, Date endDate) throws SQLException {
+    
+    public void loadBasicAttendanceToFilteredTable(JTable table, int employeeId, Date startDate, Date endDate) throws SQLException {
         List<Attendance_sp> attendance = service.listAttendanceByEmployeeAndDateRange(employeeId, startDate, endDate);
         DefaultTableModel model = AttendanceUtil.toTableModel_sp(attendance);
         table.setModel(model);
     }
+    
 
-    public Attendance getAttendance(int id) {
+    public Attendance_sp getAttendance(int id, Date startDate, Date endDate) {
         try {
-            return service.readAttendance(id);
+            return service.readAttendance(id, startDate, endDate);
         } catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -52,8 +53,16 @@ public class AttendanceController {
         try {
             service.updateAttendance(att);
         } catch (SQLException e) {
-            e.printStackTrace();
         }
+    }
+
+    public ArrayList<Integer> getAttendanceIds(JTable table) {
+
+        ArrayList<Integer> ids = AttendanceUtil.getAttendanceIdsFromTable(table);
+        // Print each ID
+        for (Integer id : ids) {
+          }
+        return ids;
     }
 
 }

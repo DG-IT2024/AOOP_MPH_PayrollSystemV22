@@ -4,7 +4,6 @@ import controller.LoginController;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.awt.Toolkit;
 import javax.swing.*;
 import service.LoginService;
 
@@ -18,17 +17,11 @@ public class LoginView extends javax.swing.JFrame {
 
     public LoginView() throws IOException {
         initComponents();
+
         try {
             loginController = new LoginController(new LoginService());
         } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to initialize login service.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-//        setIconImage();
-    }
-
-    private void setIconImage() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo.jpg")));
     }
 
     /**
@@ -133,14 +126,17 @@ public class LoginView extends javax.swing.JFrame {
         String inputPassword = new String(jPasswordFieldInput.getPassword());
 
         boolean isLoggedIn = loginController.processLogin(inputUsername, inputPassword);
-
         if (isLoggedIn) {
-            JOptionPane.showMessageDialog(this, "Login successful");
-            // open dashboard or next screen
+            try {
+                loginController.directToPanel(inputUsername);// open dashboard or next screen
+                this.setVisible(false);
+            } catch (Exception ex) {
+                Logger.getLogger(LoginView.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
             
-        }
 
+        }
 
     }//GEN-LAST:event_jButtonLogInActionPerformed
 

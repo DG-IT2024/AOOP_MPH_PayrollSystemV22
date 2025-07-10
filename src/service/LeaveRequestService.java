@@ -78,4 +78,11 @@ public class LeaveRequestService {
         leaveRequestDAO.addLeaveRequest(employeeId, leaveType, startDate, endDate, calcLeave, reason);
     }
 
+    
+     public int getPendingLeaveRequestCount() throws SQLException {
+        List<LeaveRequest_sp> pendingRequests = leaveRequestDAO.getLeaveRequests(null, "PENDING");
+        return pendingRequests.size();
+    }
+
+  
 }

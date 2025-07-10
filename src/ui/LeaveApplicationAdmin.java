@@ -10,14 +10,16 @@ import util.LeaveRequestUtil;
 
 public class LeaveApplicationAdmin extends javax.swing.JFrame {
 
-    private final int approverEmployeeId = 10001;
+    private  static int approverEmployeeId;
 
     /**
      * Creates new form LeaveApplicationUser
+     * @throws java.lang.Exception
      */
-    public LeaveApplicationAdmin() throws Exception {
+    public LeaveApplicationAdmin (int empId) throws Exception {
         initComponents();
         viewAllLeave();
+        approverEmployeeId = empId;
 
     }
 
@@ -583,7 +585,7 @@ public class LeaveApplicationAdmin extends javax.swing.JFrame {
 
     private void jButtonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseActionPerformed
         // TODO add your handling code here:
-//        handleWindowClosing();
+            this.setVisible(false);
     }//GEN-LAST:event_jButtonCloseActionPerformed
 
     /**
@@ -620,7 +622,7 @@ public class LeaveApplicationAdmin extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new LeaveApplicationAdmin().setVisible(true);
+                    new LeaveApplicationAdmin(approverEmployeeId).setVisible(true);
                 } catch (Exception ex) {
                     Logger.getLogger(LeaveApplicationAdmin.class.getName()).log(Level.SEVERE, null, ex);
                 }

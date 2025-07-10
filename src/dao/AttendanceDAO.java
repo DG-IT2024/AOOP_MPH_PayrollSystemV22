@@ -3,6 +3,7 @@ package dao;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JTextField;
 import model.Attendance;
 import model.Attendance_sp;
 
@@ -22,7 +23,7 @@ public class AttendanceDAO {
         att.setTimeIn(rs.getTime("time_in"));
         att.setTimeOut(rs.getTime("time_out"));
         att.setRegularHoursCalc(rs.getDouble("regular_hours_calc"));
-        att.setOvertimeRate(rs.getObject("overtime_rate") != null ? rs.getInt("overtime_rate") : null);
+        att.setOvertimeRate(rs.getObject("overtime_rate") != null ? rs.getDouble("overtime_rate") : null);
         att.setOvertimeHoursCalc(rs.getObject("overtime_hours_calc") != null ? rs.getDouble("overtime_hours_calc") : null);
         att.setOvertimeUpdatedDate(rs.getDate("overtime_updated_date")); // <-- FIXED
         att.setLastName(rs.getString("last_name"));
@@ -33,6 +34,70 @@ public class AttendanceDAO {
         return att;
     }
 
+    public List<Attendance_sp> getAttendanceByEmployeeAndDateRange(int employeeId, Date startDate, Date endDate) throws SQLException {
+        String sql = "{CALL sp_attendance(?,?,?)}";
+        List<Attendance_sp> attendanceList = new ArrayList<>();
+        try (CallableStatement stmt = conn.prepareCall(sql)) {
+            stmt.setInt(1, employeeId);
+            stmt.setDate(2, startDate);
+            stmt.setDate(3, endDate);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Attendance_sp attendance = mapAttendance(rs);
+                    attendanceList.add(attendance);
+                }
+            }
+        }
+        return attendanceList;
+    }
+
+    public List<Attendance_sp> getAllAttendanceByDateRange(int employeeId, Date startDate, Date endDate) throws SQLException {
+        String sql = "{CALL sp_attendance(null,?,?)}";
+        List<Attendance_sp> attendanceList = new ArrayList<>();
+        try (CallableStatement stmt = conn.prepareCall(sql)) {
+            stmt.setInt(1, employeeId);
+            stmt.setDate(2, startDate);
+            stmt.setDate(3, endDate);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Attendance_sp attendance = mapAttendance(rs);
+                    attendanceList.add(attendance);
+                }
+            }
+        }
+        return attendanceList;
+    }
+
+    public Attendance_sp getAllAttendance(int employeeId, Date startDate, Date endDate) throws SQLException {
+        String sql = "{CALL sp_attendance(?, ?, ?)}";
+        try (CallableStatement stmt = conn.prepareCall(sql)) {
+            stmt.setInt(1, employeeId);
+
+            if (startDate != null) {
+                stmt.setDate(2, startDate);
+            } else {
+                stmt.setNull(2, java.sql.Types.DATE);
+            }
+
+            if (endDate != null) {
+                stmt.setDate(3, endDate);
+            } else {
+                stmt.setNull(3, java.sql.Types.DATE);
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Attendance_sp attendance = mapAttendance(rs);
+                    return attendance;
+                }
+            }
+        }
+        return null;
+    }
+
+    // using Attendance Table
     // Basic attendance mapping (no overtime info)
     private Attendance mapBasicAttendance(ResultSet rs) throws SQLException {
         Attendance att = new Attendance();
@@ -80,7 +145,6 @@ public class AttendanceDAO {
         stmt.executeUpdate();
     }
 
-
     public List<Attendance> getAllAttendanceRecords() throws SQLException {
         List<Attendance> attendanceList = new ArrayList<>();
         String sql = "SELECT * FROM attendance";
@@ -105,93 +169,50 @@ public class AttendanceDAO {
         return null;
     }
 
-    public List<Attendance_sp> getAttendanceByEmployeeAndDateRange(int employeeId, Date startDate, Date endDate) throws SQLException {
-        String sql = "{CALL sp_attendance(?,?,?)}";
-        List<Attendance_sp> attendanceList = new ArrayList<>();
+    public void updateAttendanceOvertimeFields(
+            int attendanceId,
+            Time timeIn,
+            Time timeOut,
+            Double otRate,
+            Date overtimeUpdatedDate,
+            Integer overtimeApproverId
+    ) throws SQLException {
+        String sql = "{CALL sp_update_attendance(?, ?, ?, null, ?, null, ?, ?)}";
         try (CallableStatement stmt = conn.prepareCall(sql)) {
-            stmt.setInt(1, employeeId);
-            stmt.setDate(2, startDate);
-            stmt.setDate(3, endDate);
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Attendance_sp attendance = mapAttendance(rs);
-                    attendanceList.add(attendance);
-                }
+            stmt.setInt(1, attendanceId);
+
+            if (timeIn != null) {
+                stmt.setTime(2, timeIn);
+            } else {
+                stmt.setNull(2, java.sql.Types.TIME);
             }
-        }
-        return attendanceList;
-    }
-    
-        
-    public List<Attendance_sp> getAllAttendanceByDateRange(int employeeId, Date startDate, Date endDate) throws SQLException {
-        String sql = "{CALL sp_attendance(null,?,?)}";
-        List<Attendance_sp> attendanceList = new ArrayList<>();
-        try (CallableStatement stmt = conn.prepareCall(sql)) {
-            stmt.setInt(1, employeeId);
-            stmt.setDate(2, startDate);
-            stmt.setDate(3, endDate);
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Attendance_sp attendance = mapAttendance(rs);
-                    attendanceList.add(attendance);
-                }
+            if (timeOut != null) {
+                stmt.setTime(3, timeOut);
+            } else {
+                stmt.setNull(3, java.sql.Types.TIME);
             }
-        }
-        return attendanceList;
-    }
-    
+            if (otRate != null) {
+                stmt.setDouble(4, otRate);
+            } else {
+                stmt.setNull(4, java.sql.Types.DOUBLE);
+            }
 
-//    // Get attendance by employee and date range using stored procedure sp_attendance
-//    public List<Attendance> getAttendanceByEmployeeAndDateRange(int employeeId, Date startDate, Date endDate) throws SQLException {
-//        List<Attendance> attendances = new ArrayList<>();
-//        String sql = "{CALL sp_attendance(?, ?, ?)}";
-//        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-//            stmt.setInt(1, employeeId);
-//            stmt.setDate(2, startDate);
-//            stmt.setDate(3, endDate);
-//            try (ResultSet rs = stmt.executeQuery()) {
-//                while (rs.next()) {
-//                    attendances.add(mapAttendance(rs)); // Make sure mapAttendance maps all fields returned by the procedure
-//                }
-//            }
-//        }
-//        return attendances;
-//    }
-    // Get attendance with overtime and approver details for employee and date range
-//    public List<Attendance> getAttendanceWithOvertimeAndApprover(int employeeId, Date startDate, Date endDate) throws SQLException {
-//        List<Attendance> attendances = new ArrayList<>();
-//        String sql
-//                = "SELECT a.attendance_id, a.employee_id, a.date, a.time_in, a.time_out, a.regular_hours_calc, "
-//                + "o.otrate_id, o.overtime_hours_calc, o.updated_date, "
-//                + "e.last_name, e.first_name, o.approver_id, eo.last_name AS approver_last_name, eo.first_name AS approver_first_name "
-//                + "FROM attendance a "
-//                + "LEFT JOIN overtime o ON a.attendance_id = o.attendance_id "
-//                + "JOIN employee e ON a.employee_id = e.employee_id "
-//                + "LEFT JOIN employee eo ON o.approver_id = eo.employee_id "
-//                + "WHERE a.employee_id = ? AND a.date BETWEEN ? AND ?";
-//        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-//            stmt.setInt(1, employeeId);
-//            stmt.setDate(2, startDate);
-//            stmt.setDate(3, endDate);
-//            try (ResultSet rs = stmt.executeQuery()) {
-//                while (rs.next()) {
-//                    attendances.add(mapAttendance(rs));
-//                }
-//            }
-//        }
-//        return attendances;
-//    }
-//}
-//    public void addAttendance(Attendance att) throws SQLException {
-//        String sql = "INSERT INTO attendance (employee_id, date, time_in, time_out, regular_hours_calc) VALUES (?, ?, ?, ?, ?)";
-//        PreparedStatement stmt = conn.prepareStatement(sql);
-//        stmt.setInt(1, att.getEmployeeId());
-//        stmt.setDate(2, att.getDate());
-//        stmt.setTime(3, att.getTimeIn());
-//        stmt.setTime(4, att.getTimeOut());
-//        stmt.setInt(5, att.getRegularHoursCalc());
-//        stmt.executeUpdate();
-//    }
+            if (overtimeUpdatedDate != null) {
+                stmt.setDate(5, overtimeUpdatedDate);
+            } else {
+                stmt.setNull(5, java.sql.Types.DATE);
+            }
+
+            if (overtimeApproverId != null) {
+                stmt.setInt(6, overtimeApproverId);
+            } else {
+                stmt.setNull(6, java.sql.Types.INTEGER);
+            }
+
+            stmt.executeUpdate();
+        }
+    }
+
 }
