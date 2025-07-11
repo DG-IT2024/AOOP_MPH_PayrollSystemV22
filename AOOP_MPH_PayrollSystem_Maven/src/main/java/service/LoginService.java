@@ -12,15 +12,14 @@ import dao.LoginDAO;
 import model.Login;
 import model.Password;
 
-
 import util.DBConnect;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
+import model.Role;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class LoginService {
@@ -35,46 +34,6 @@ public class LoginService {
         this.loginDAO = new LoginDAO(conn);
     }
 
-//    public boolean authenticate(String username, String rawPassword) throws Exception {
-//        Login login = loginDAO.getLoginByUsername(username);
-//
-    //// Step 1: Check if username exists
-//        if (login == null) {
-//            System.out.println("Authentication failed: Invalid username or password.");
-//            return false;
-//        }
-//
-//// Step 2: Check if account has exceeded maximum login attempts
-//        if (isBlocked(username)) {
-//            System.out.println("Authentication failed: Account is blocked due to too many failed login attempts.");
-//            return false;
-//        }
-//
-//// Step 3: Get hashed password by login ID
-//        Password pw = loginDAO.getPasswordByLoginId(login.getLoginId());
-//        if (pw == null || pw.getPasswordSaltHash() == null) {
-//            System.out.println("Authentication failed: No password record found.");
-//            return false;
-//        }
-//
-//// Step 4: Compare using BCrypt
-//        boolean match = checkPassword(rawPassword, pw.getPasswordSaltHash());
-//
-//        if (match) {
-//            loginDAO.resetLoginAttempts(username);
-//            System.out.println("Authentication successful.");
-//        } else {
-//            loginDAO.incrementLoginAttempts(username);
-//            if (isBlocked(username)) {
-//                System.out.println("Authentication failed: Account is now blocked due to too many failed login attempts.");
-//            } else {
-//                System.out.println("Authentication failed: Invalid username or password.");
-//            }
-//        }
-//
-//        return match;
-//
-//    }
     public boolean authenticate(String username, String rawPassword) throws Exception {
 
         Login login = loginDAO.getLoginByUsername(username);
@@ -85,8 +44,7 @@ public class LoginService {
             return false;
         }
 
-//        // Debug login_id
-//        System.out.println("Login ID: " + login.getLoginId());
+        // Debug login_id
         //// Step 2: Check if account has exceed maximum login_attempts
         if (isBlocked(username)) {
             JOptionPane.showMessageDialog(null, "Account is blocked due to too many failed login attempts.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -96,10 +54,9 @@ public class LoginService {
         //// Step 3: Get hashed password by login ID
         Password pw = loginDAO.getPasswordByLoginId(login.getLoginId());
         if (pw == null || pw.getPasswordSaltHash() == null) {
-//            System.out.println("No password record found for user");
+
             return false;
         }
-
 
         //// Step 4: Compare using BCrypt
         boolean match = checkPassword(rawPassword, pw.getPasswordSaltHash());
@@ -117,8 +74,6 @@ public class LoginService {
             }
         }
 
-//        //        boolean match = BCrypt.checkpw(rawPassword, pw.getPasswordSaltHash());
-//        System.out.println("Password match: " + match);
         return match;
     }
 
@@ -137,22 +92,33 @@ public class LoginService {
         return BCrypt.checkpw(inputPassword, storedHashedPassword);
     }
 
-//    public List<String> getUserPermissions(String username) throws Exception {
-//        Login login = loginDAO.getLoginByUsername(username);
-//        if (login == null) {
-//            return Collections.emptyList();
-//        }
-//        List<Permission> perms = loginDAO.getPermissionsByLoginId(login.getLoginId());
-//        List<String> names = new ArrayList<>();
-//        for (Permission p : perms) {
-//            names.add(p.getPermissionName());
-//        }
-//        return names;
-//    }
-
+//    
     public void resetLoginAttempts(String username) throws Exception {
         loginDAO.resetLoginAttempts(username);
 
     }
+
+    public String getRole(String username) throws Exception {
+        Login login = loginDAO.getLoginByUsername(username);
+        if (login == null) {
+            return null; // or throw an exception if user not found
+        }
+
+        List<Role> roles = loginDAO.getRolesByLoginId(login.getLoginId());
+        if (roles.isEmpty()) {
+            return null; // or return "No role assigned"
+        }
+
+        return roles.get(0).getRoleName();
+    }
+
+    public void updateLastLogin(String username) throws Exception {
+        loginDAO.updateLastLogin(username);
+    }
+
+    public Login getLoginDetail(String username) throws Exception {
+        return loginDAO.getLoginByUsername(username);
+    }
+
 
 }

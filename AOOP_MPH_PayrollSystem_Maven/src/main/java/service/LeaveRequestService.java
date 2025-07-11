@@ -62,9 +62,8 @@ public class LeaveRequestService {
         // If no record is found, return empty or default values
         return new String[]{"", ""};
     }
-    
-    
-  public void addLeaveRequest(int employeeId, String leaveType, Date startDate, Date endDate, double calcLeave, String reason) throws Exception {
+
+    public void addLeaveRequest(int employeeId, String leaveType, Date startDate, Date endDate, double calcLeave, String reason) throws Exception {
 
         // Defensive: Check if dates are selected
         if (startDate == null || endDate == null) {
@@ -79,4 +78,11 @@ public class LeaveRequestService {
         leaveRequestDAO.addLeaveRequest(employeeId, leaveType, startDate, endDate, calcLeave, reason);
     }
 
+    
+     public int getPendingLeaveRequestCount() throws SQLException {
+        List<LeaveRequest_sp> pendingRequests = leaveRequestDAO.getLeaveRequests(null, "PENDING");
+        return pendingRequests.size();
+    }
+
+  
 }

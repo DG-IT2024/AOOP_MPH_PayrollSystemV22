@@ -1,11 +1,17 @@
 package ui;
 
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import controller.AttendanceController;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.Toolkit;
+import java.sql.SQLException;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import model.Attendance_sp;
+import net.sf.jasperreports.engine.JRException;
+import service.AttendanceService;
+import service.PayrollSummaryService;
+import util.ReportUtil;
 
 /**
  *
@@ -13,17 +19,56 @@ import java.awt.Toolkit;
  */
 public class PayrollProcessing extends javax.swing.JFrame {
 
-    private final int empId = 10001;
+    private AttendanceController controller;
+
+    private static int empId;
 
     /**
      * Creates new form PayrollProcessing
      *
+     * @param empId
      * @throws java.io.FileNotFoundException
      */
-    public PayrollProcessing() throws FileNotFoundException, IOException {
-
+    public PayrollProcessing(int empId) throws Exception {
+        this.empId = empId;
         initComponents();
-      
+        displayEmployeeDetail();
+        displaySalaryBenefits();
+    }
+
+    private void displayEmployeeDetail() throws Exception {
+        jTextFieldEmployeeNum.setText(String.valueOf(empId));
+
+        AttendanceService service = new AttendanceService();
+        controller = new AttendanceController(service);
+        Attendance_sp attendance = controller.getAttendance(empId, null, null);
+        jTextFieldLastName.setText(attendance.getLastName());
+        jTextFieldFirstName.setText(attendance.getFirstName());
+
+    }
+
+    private void displayWorkedHours() throws Exception {
+        AttendanceService service = new AttendanceService();
+
+        int employeeId = Integer.parseInt(jTextFieldEmployeeNum.getText().trim());
+        java.util.Date startDate = jDateChooserStartDate.getDate();
+        java.util.Date endDate = jDateChooserEndDate.getDate();
+
+        java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+        java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+
+        double totalRegularHours = service.getRegularHours(employeeId, sqlStartDate, sqlEndDate);
+        double totalOvertimeHours = service.getOvertimeHours(employeeId, sqlStartDate, sqlEndDate);
+
+        jTextFieldRegularHours.setText(Double.toString(totalRegularHours));
+        jTextFieldOvertimeHours.setText(Double.toString(totalOvertimeHours));
+
+    }
+
+    private void displaySalaryBenefits() throws Exception {
+
+        PayrollSummaryService payroll = new PayrollSummaryService();
+        jTextFieldBenefits.setText(String.valueOf((payroll.benefits(empId))));
     }
 
     /**
@@ -57,6 +102,7 @@ public class PayrollProcessing extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jTextFieldPagibigDeduction = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
+        jDateChooserEndDate = new com.toedter.calendar.JDateChooser();
         jTextFieldWHT = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
@@ -71,21 +117,23 @@ public class PayrollProcessing extends javax.swing.JFrame {
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         jTextFieldBasicSalary = new javax.swing.JTextField();
-        jComboBoxCoveredPeriod = new javax.swing.JComboBox<>();
-        jButtonClose = new javax.swing.JButton();
-        jButtonAddtoRecords = new javax.swing.JButton();
-        jButtonCompute1 = new javax.swing.JButton();
         jLabel25 = new javax.swing.JLabel();
         jTextFieldOvertimeHours = new javax.swing.JTextField();
         jLabel26 = new javax.swing.JLabel();
-        jLabel24 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jDateChooserStartDate = new com.toedter.calendar.JDateChooser();
+        jButtonCompute1 = new javax.swing.JButton();
+        jButtonClose = new javax.swing.JButton();
+        jButtonPrintPayslip = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
 
         jLabel21.setText("Month");
 
         jLabel22.setText("Month");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("GILTENDEZ | OOP | A1102");
+        setTitle("AOOP | A2101");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255, 0));
@@ -216,6 +264,18 @@ public class PayrollProcessing extends javax.swing.JFrame {
         jLabel12.setText("Withholding Tax");
         jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, -1, -1));
 
+        jDateChooserEndDate.setBackground(new java.awt.Color(255, 255, 255));
+        jDateChooserEndDate.setToolTipText("");
+        jDateChooserEndDate.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jDateChooserEndDateKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jDateChooserEndDateKeyTyped(evt);
+            }
+        });
+        jPanel1.add(jDateChooserEndDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 80, 160, 30));
+
         jTextFieldWHT.setEditable(false);
         jTextFieldWHT.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.gray));
         jTextFieldWHT.setDisabledTextColor(new java.awt.Color(51, 51, 51));
@@ -227,12 +287,14 @@ public class PayrollProcessing extends javax.swing.JFrame {
         });
         jPanel1.add(jTextFieldWHT, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 330, 170, 22));
 
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel13.setText("Summary");
-        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 130, -1, -1));
+        jLabel13.setToolTipText("");
+        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 130, 220, -1));
 
-        jLabel14.setText("Gross Income");
-        jPanel1.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 163, -1, -1));
+        jLabel14.setText("End Date");
+        jPanel1.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 90, -1, -1));
 
         jTextFieldGrossIncome_S.setEditable(false);
         jTextFieldGrossIncome_S.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.gray));
@@ -246,7 +308,7 @@ public class PayrollProcessing extends javax.swing.JFrame {
         jPanel1.add(jTextFieldGrossIncome_S, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 160, 112, 22));
 
         jLabel15.setText("Benefits");
-        jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 193, -1, -1));
+        jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 190, -1, -1));
 
         jTextFieldBenefits.setEditable(false);
         jTextFieldBenefits.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.gray));
@@ -271,7 +333,7 @@ public class PayrollProcessing extends javax.swing.JFrame {
         jPanel1.add(jTextFieldTotalDeductions, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 220, 112, 22));
 
         jLabel16.setText("Total Deductions");
-        jPanel1.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 223, -1, -1));
+        jPanel1.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 220, -1, -1));
 
         jTextFieldTakeHomePay.setEditable(false);
         jTextFieldTakeHomePay.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.gray));
@@ -282,10 +344,11 @@ public class PayrollProcessing extends javax.swing.JFrame {
                 jTextFieldTakeHomePayActionPerformed(evt);
             }
         });
-        jPanel1.add(jTextFieldTakeHomePay, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 250, 112, 22));
+        jPanel1.add(jTextFieldTakeHomePay, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 270, 112, 22));
 
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel17.setText("TAKE-HOME PAY");
-        jPanel1.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 253, -1, -1));
+        jPanel1.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 270, -1, -1));
 
         jTextFieldHourlyRate.setEditable(false);
         jTextFieldHourlyRate.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.gray));
@@ -315,49 +378,6 @@ public class PayrollProcessing extends javax.swing.JFrame {
         });
         jPanel1.add(jTextFieldBasicSalary, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 150, 170, 22));
 
-        jComboBoxCoveredPeriod.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.white));
-        jComboBoxCoveredPeriod.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jComboBoxCoveredPeriodMouseClicked(evt);
-            }
-        });
-        jComboBoxCoveredPeriod.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxCoveredPeriodActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jComboBoxCoveredPeriod, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 40, 240, -1));
-
-        jButtonClose.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButtonClose.setText("CLOSE");
-        jButtonClose.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.white));
-        jButtonClose.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCloseActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButtonClose, new org.netbeans.lib.awtextra.AbsoluteConstraints(522, 310, 70, 23));
-
-        jButtonAddtoRecords.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButtonAddtoRecords.setText("Add to Records");
-        jButtonAddtoRecords.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.white));
-        jButtonAddtoRecords.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAddtoRecordsActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButtonAddtoRecords, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 310, 140, 23));
-
-        jButtonCompute1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButtonCompute1.setText("Compute");
-        jButtonCompute1.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.white));
-        jButtonCompute1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCompute1ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButtonCompute1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 80, 83, 23));
-
         jLabel25.setText("Overtime");
         jPanel1.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 100, -1, -1));
 
@@ -375,10 +395,58 @@ public class PayrollProcessing extends javax.swing.JFrame {
         jLabel26.setText("Regular");
         jPanel1.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 100, -1, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 70, 620, 360));
+        jLabel20.setText("Gross Income");
+        jPanel1.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 160, -1, -1));
 
-        jLabel24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/photos/PayrollD.jpg"))); // NOI18N
-        getContentPane().add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 880, 470));
+        jLabel23.setText("Start Date");
+        jPanel1.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 50, -1, -1));
+
+        jDateChooserStartDate.setBackground(new java.awt.Color(255, 255, 255));
+        jDateChooserStartDate.setToolTipText("");
+        jDateChooserStartDate.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jDateChooserStartDateKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jDateChooserStartDateKeyTyped(evt);
+            }
+        });
+        jPanel1.add(jDateChooserStartDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 40, 160, 30));
+
+        jButtonCompute1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButtonCompute1.setText("Compute");
+        jButtonCompute1.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.white));
+        jButtonCompute1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCompute1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButtonCompute1, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 313, 110, 30));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 50, 620, 360));
+
+        jButtonClose.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButtonClose.setText("CLOSE");
+        jButtonClose.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.white));
+        jButtonClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCloseActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonClose, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 360, 140, 23));
+
+        jButtonPrintPayslip.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButtonPrintPayslip.setText("PRINT PAYSLIP");
+        jButtonPrintPayslip.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.white));
+        jButtonPrintPayslip.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPrintPayslipActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonPrintPayslip, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, 140, 23));
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PayrollD.jpg"))); // NOI18N
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 860, 440));
 
         pack();
         setLocationRelativeTo(null);
@@ -451,34 +519,83 @@ public class PayrollProcessing extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldBasicSalaryActionPerformed
 
-    private void jComboBoxCoveredPeriodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCoveredPeriodActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxCoveredPeriodActionPerformed
-
-    private void jComboBoxCoveredPeriodMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBoxCoveredPeriodMouseClicked
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_jComboBoxCoveredPeriodMouseClicked
-
     private void jButtonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseActionPerformed
+this.setVisible(false);
+
+
         // TODO add your handling code here:
-      
+
 
     }//GEN-LAST:event_jButtonCloseActionPerformed
 
-    private void jButtonAddtoRecordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddtoRecordsActionPerformed
-      
-    }//GEN-LAST:event_jButtonAddtoRecordsActionPerformed
+    private void jButtonPrintPayslipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrintPayslipActionPerformed
+        try {
+            java.util.Date startDate = jDateChooserStartDate.getDate();
+            java.util.Date endDate = jDateChooserEndDate.getDate();
+
+            java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+            java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+
+            int employeeId = Integer.parseInt(jTextFieldEmployeeNum.getText());
+
+            // Show confirmation dialog
+            int response = JOptionPane.showConfirmDialog(
+                    this,
+                    "Do you also want to save the payslip as PDF?",
+                    "Save as PDF",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (response == JOptionPane.YES_OPTION) {
+                ReportUtil.connectJaspter(employeeId, jTextFieldLastName.getText(), sqlStartDate, sqlEndDate);
+
+            }
+
+            ReportUtil.viewReport(employeeId, sqlStartDate, sqlEndDate);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(PayrollUser.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JRException ex) {
+            Logger.getLogger(PayrollUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_jButtonPrintPayslipActionPerformed
 
     private void jButtonCompute1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCompute1ActionPerformed
-        // TODO add your handling code here:
-     
+        try {
+            // TODO add your handling code here:
+            displayWorkedHours();
+        } catch (Exception ex) {
+            Logger.getLogger(PayrollProcessing.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }//GEN-LAST:event_jButtonCompute1ActionPerformed
 
     private void jTextFieldOvertimeHoursActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldOvertimeHoursActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldOvertimeHoursActionPerformed
+
+    private void jDateChooserEndDateKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jDateChooserEndDateKeyPressed
+        // TODO add your handling code here:
+        Date startDate = jDateChooserEndDate.getDate();
+        System.out.println(startDate);
+
+    }//GEN-LAST:event_jDateChooserEndDateKeyPressed
+
+    private void jDateChooserEndDateKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jDateChooserEndDateKeyTyped
+        // TODO add your handling code here:
+        Date startDate = jDateChooserEndDate.getDate();
+        System.out.println(startDate);
+
+    }//GEN-LAST:event_jDateChooserEndDateKeyTyped
+
+    private void jDateChooserStartDateKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jDateChooserStartDateKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jDateChooserStartDateKeyPressed
+
+    private void jDateChooserStartDateKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jDateChooserStartDateKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jDateChooserStartDateKeyTyped
 
     /**
      * @param args the command line arguments
@@ -507,12 +624,14 @@ public class PayrollProcessing extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new PayrollProcessing().setVisible(true);
-                } catch (IOException ex) {
+                    new PayrollProcessing(empId).setVisible(true);
+                } catch (Exception ex) {
                     Logger.getLogger(PayrollProcessing.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -521,10 +640,11 @@ public class PayrollProcessing extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAddtoRecords;
     private javax.swing.JButton jButtonClose;
     private javax.swing.JButton jButtonCompute1;
-    private javax.swing.JComboBox<String> jComboBoxCoveredPeriod;
+    private javax.swing.JButton jButtonPrintPayslip;
+    private com.toedter.calendar.JDateChooser jDateChooserEndDate;
+    private com.toedter.calendar.JDateChooser jDateChooserStartDate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -536,9 +656,11 @@ public class PayrollProcessing extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;

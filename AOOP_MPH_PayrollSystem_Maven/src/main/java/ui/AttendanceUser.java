@@ -1,6 +1,7 @@
 package ui;
 
 import controller.AttendanceController;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -8,26 +9,34 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import model.Attendance_sp;
 
 import service.AttendanceService;
-
-import static util.DateUtil.formatDate;
 
 import util.InputValidator;
 
 public class AttendanceUser extends javax.swing.JFrame {
 
     private AttendanceController controller;
+    private static int empId;
 
-    public AttendanceUser() throws Exception {
+    public AttendanceUser(int empId) throws Exception {
+        this.empId = empId;
         initComponents();
+
+        displayEmployeeDetail();
 
     }
 
-    private void loadAttendanceDetails() throws Exception {
+    private void displayEmployeeDetail() throws Exception {
+        jTextFieldEmployeeNum.setText(String.valueOf(empId));
+
         AttendanceService service = new AttendanceService();
         controller = new AttendanceController(service);
-        controller.loadAttendanceToTable(jTableTimeSheet); // Load data at startup
+        Attendance_sp attendance = controller.getAttendance(empId, null, null);
+
+        String employeeName = attendance.getLastName() + " , " + attendance.getFirstName();
+        jTextFieldName.setText(employeeName);
 
     }
 
@@ -42,7 +51,7 @@ public class AttendanceUser extends javax.swing.JFrame {
         java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
         java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
 
-        controller.loadAttendanceToFilteredTable(jTableTimeSheet, employeeId, sqlStartDate, sqlEndDate); // Load data at startup
+        controller.loadBasicAttendanceToFilteredTable(jTableTimeSheet, employeeId, sqlStartDate, sqlEndDate); // Load data at startup
     }
 
     private double displayTotalWorkedHours() throws Exception {
@@ -55,7 +64,7 @@ public class AttendanceUser extends javax.swing.JFrame {
         java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
         java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
 
-        double TotalWorkedHours = service.getTotalRegularHours(employeeId, sqlStartDate, sqlEndDate);
+        double TotalWorkedHours = service.getRegularHours(employeeId, sqlStartDate, sqlEndDate);
         return TotalWorkedHours;
     }
 
@@ -69,7 +78,7 @@ public class AttendanceUser extends javax.swing.JFrame {
         java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
         java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
 
-        double TotalOvertime = service.getOvertimeRegularHours(employeeId, sqlStartDate, sqlEndDate);
+        double TotalOvertime = service.getOvertimeHours(employeeId, sqlStartDate, sqlEndDate);
         return TotalOvertime;
     }
 
@@ -155,11 +164,14 @@ public class AttendanceUser extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        jButtonClose = new javax.swing.JButton();
-        jButtonPrintTimesheet = new javax.swing.JButton();
-        jButtonCalculate = new javax.swing.JButton();
         jLabel12 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jButtonProfile = new javax.swing.JButton();
+        jButtonLeaveApp = new javax.swing.JButton();
+        jButtonPayroll = new javax.swing.JButton();
+        jButtonExit = new javax.swing.JButton();
+        jButtonPayroll1 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jTextFieldName = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -175,6 +187,7 @@ public class AttendanceUser extends javax.swing.JFrame {
         jTableTimeSheet = new javax.swing.JTable();
         jDateChooserEndDate = new com.toedter.calendar.JDateChooser();
         jDateChooserStartDate = new com.toedter.calendar.JDateChooser();
+        jButtonView = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -182,46 +195,100 @@ public class AttendanceUser extends javax.swing.JFrame {
         setAutoRequestFocus(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel2.setBackground(new java.awt.Color(222, 194, 110));
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jButtonClose.setText("CLOSE");
-        jButtonClose.setToolTipText("");
-        jButtonClose.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jButtonClose.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCloseActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButtonClose, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, 150, -1));
-
-        jButtonPrintTimesheet.setText("PRINT TIMESHEET");
-        jButtonPrintTimesheet.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonPrintTimesheetActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButtonPrintTimesheet, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 150, -1));
-
-        jButtonCalculate.setText("CALCULATE");
-        jButtonCalculate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCalculateActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButtonCalculate, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 150, -1));
-
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(8, 207, 180, 283));
-
         jLabel12.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(204, 0, 51));
         getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 60, -1, -1));
+
+        jPanel2.setBackground(new java.awt.Color(222, 194, 110));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel3.setBackground(new java.awt.Color(222, 194, 110));
+
+        jButtonProfile.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
+        jButtonProfile.setText("PROFILE");
+        jButtonProfile.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonProfileActionPerformed(evt);
+            }
+        });
+
+        jButtonLeaveApp.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
+        jButtonLeaveApp.setText("LEAVE ");
+        jButtonLeaveApp.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonLeaveApp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonLeaveAppActionPerformed(evt);
+            }
+        });
+
+        jButtonPayroll.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
+        jButtonPayroll.setText("ATTENDANCE");
+        jButtonPayroll.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonPayroll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPayrolljButtonAttendanceActionPerformed(evt);
+            }
+        });
+
+        jButtonExit.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
+        jButtonExit.setText("Exit");
+        jButtonExit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonExitActionPerformed(evt);
+            }
+        });
+
+        jButtonPayroll1.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
+        jButtonPayroll1.setText("PAYROLL");
+        jButtonPayroll1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonPayroll1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPayroll1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonPayroll, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                    .addComponent(jButtonProfile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonLeaveApp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonPayroll1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addComponent(jButtonProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonPayroll, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addComponent(jButtonPayroll1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonLeaveApp, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addComponent(jButtonExit, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 0, 150, 220));
+
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(8, 207, 180, 283));
 
         jLabel4.setText("Name");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 110, -1, -1));
 
         jTextFieldName.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.gray));
         jTextFieldName.setDisabledTextColor(new java.awt.Color(51, 51, 51));
+        jTextFieldName.setEnabled(false);
         jTextFieldName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldNameActionPerformed(evt);
@@ -240,6 +307,7 @@ public class AttendanceUser extends javax.swing.JFrame {
         jTextFieldEmployeeNum.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.gray));
         jTextFieldEmployeeNum.setCaretColor(new java.awt.Color(51, 51, 51));
         jTextFieldEmployeeNum.setDisabledTextColor(new java.awt.Color(51, 51, 51));
+        jTextFieldEmployeeNum.setEnabled(false);
         jTextFieldEmployeeNum.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldEmployeeNumActionPerformed(evt);
@@ -260,13 +328,13 @@ public class AttendanceUser extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("SUMMARY");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 170, -1, -1));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 220, -1, -1));
 
         jLabel7.setText("Overtime Hours");
-        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 250, -1, -1));
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 290, -1, -1));
 
         jLabel9.setText("Regular Hours");
-        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 210, -1, -1));
+        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 250, -1, -1));
 
         jTextFieldRegularHours.setEditable(false);
         jTextFieldRegularHours.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -275,11 +343,11 @@ public class AttendanceUser extends javax.swing.JFrame {
                 jTextFieldRegularHoursActionPerformed(evt);
             }
         });
-        getContentPane().add(jTextFieldRegularHours, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 210, 50, -1));
+        getContentPane().add(jTextFieldRegularHours, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 250, 50, -1));
 
         jTextFieldOvertimeHours.setEditable(false);
         jTextFieldOvertimeHours.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        getContentPane().add(jTextFieldOvertimeHours, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 250, 50, -1));
+        getContentPane().add(jTextFieldOvertimeHours, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 290, 50, -1));
 
         jTableTimeSheet.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -341,8 +409,16 @@ public class AttendanceUser extends javax.swing.JFrame {
         });
         getContentPane().add(jDateChooserStartDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 70, 160, 30));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/photos/Attendance.jpg"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 810, 620));
+        jButtonView.setText("VIEW");
+        jButtonView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonViewActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonView, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 150, 70, -1));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Attendance.jpg"))); // NOI18N
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 820, 630));
 
         pack();
         setLocationRelativeTo(null);
@@ -371,7 +447,7 @@ public class AttendanceUser extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldRegularHoursActionPerformed
 
-    private void jButtonCalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCalculateActionPerformed
+    private void jButtonViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewActionPerformed
 
         if (!checkAttendanceInputFields()) {
             // One or more fields are empty, so stop further processing
@@ -389,55 +465,7 @@ public class AttendanceUser extends javax.swing.JFrame {
         } catch (Exception ex) {
             Logger.getLogger(AttendanceUser.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        //
-//        String empNum = jTextFieldEmployeeNum.getText().trim();
-//        String startDate = formatDate(jDateChooserStartDate.getDate());
-//        String endDate = formatDate(jDateChooserEndDate.getDate());
-//
-//        // Validate inputs
-//        if (empNum.isEmpty() || startDate.isEmpty() || endDate.isEmpty()) {
-//            JOptionPane.showMessageDialog(this, "Please enter all required fields!", "Error", JOptionPane.ERROR_MESSAGE);
-//            return;
-//        }
-//
-//        if (!isValidDateRange(startDate, endDate)) {
-//            return;
-//        }
-//
-//        try {
-//            loadFilteredAttendanceDetails();
-//        } catch (Exception ex) {
-//            System.getLogger(AttendanceAdmin1.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-//        }
-
-        //
-//        String empNum = jTextFieldEmployeeNum.getText().trim();
-//        String startDate = formatDate(jDateChooserStartDate.getDate());
-//        String endDate = formatDate(jDateChooserEndDate.getDate());
-//
-//        // Validate inputs
-//        if (empNum.isEmpty() || startDate.isEmpty() || endDate.isEmpty()) {
-//            JOptionPane.showMessageDialog(this, "Please enter all required fields!", "Error", JOptionPane.ERROR_MESSAGE);
-//            return;
-//        }
-//
-//        if (!isValidDateRange(startDate, endDate)) {
-//            return;
-//        }
-//
-//        try {
-//            loadFilteredAttendanceDetails();
-//        } catch (Exception ex) {
-//            System.getLogger(AttendanceAdmin1.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-//        }
-
-    }//GEN-LAST:event_jButtonCalculateActionPerformed
-
-    private void jButtonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseActionPerformed
-        // TODO add your handling code here:
-        handleWindowClosing();
-    }//GEN-LAST:event_jButtonCloseActionPerformed
+    }//GEN-LAST:event_jButtonViewActionPerformed
 
     private void jTableTimeSheetMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableTimeSheetMouseClicked
 
@@ -466,9 +494,75 @@ public class AttendanceUser extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jDateChooserStartDateKeyPressed
 
-    private void jButtonPrintTimesheetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrintTimesheetActionPerformed
+    private void jButtonProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonProfileActionPerformed
+        try {
+            new EmployeeProfileUser(empId).setVisible(true);
+            this.setVisible(false);
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeProfileUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonProfileActionPerformed
+
+    private void jButtonLeaveAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLeaveAppActionPerformed
+        try {
+            // TODO add your handling code here:
+
+            LeaveApplicationUser leaveEmployee = new LeaveApplicationUser(empId);
+            leaveEmployee.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception ex) {
+            Logger.getLogger(LeaveApplicationUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_jButtonLeaveAppActionPerformed
+
+    private void jButtonPayrolljButtonAttendanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPayrolljButtonAttendanceActionPerformed
+        try {
+            // TODO add your handling code here:
+
+            AttendanceUser attendance = new AttendanceUser(empId);
+            attendance.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception ex) {
+            Logger.getLogger(AttendanceUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonPayrolljButtonAttendanceActionPerformed
+
+    private void jButtonExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExitActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonPrintTimesheetActionPerformed
+
+        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?", "Confirm Exit",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        // Check the user's response
+        if (response == JOptionPane.YES_OPTION) {
+            try {
+                // Hide the current window
+                setVisible(false);
+
+                // Show the login manager window
+                new LoginView().setVisible(true);
+            } catch (IOException ex) {
+
+            }
+        }
+
+    }//GEN-LAST:event_jButtonExitActionPerformed
+
+    private void jButtonPayroll1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPayroll1ActionPerformed
+        try {
+            // TODO add your handling code here:
+
+            PayrollUser payrollUser = new PayrollUser(empId);
+            payrollUser.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception ex) {
+            Logger.getLogger(PayrollUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonPayroll1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -505,7 +599,7 @@ public class AttendanceUser extends javax.swing.JFrame {
             public void run() {
 
                 try {
-                    new AttendanceUser().setVisible(true);
+                    new AttendanceUser(empId).setVisible(true);
                 } catch (Exception ex) {
                     Logger.getLogger(EmployeeProfileAdmin.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -516,9 +610,12 @@ public class AttendanceUser extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonCalculate;
-    private javax.swing.JButton jButtonClose;
-    private javax.swing.JButton jButtonPrintTimesheet;
+    private javax.swing.JButton jButtonExit;
+    private javax.swing.JButton jButtonLeaveApp;
+    private javax.swing.JButton jButtonPayroll;
+    private javax.swing.JButton jButtonPayroll1;
+    private javax.swing.JButton jButtonProfile;
+    private javax.swing.JButton jButtonView;
     private com.toedter.calendar.JDateChooser jDateChooserEndDate;
     private com.toedter.calendar.JDateChooser jDateChooserStartDate;
     private javax.swing.JLabel jLabel1;
@@ -531,6 +628,7 @@ public class AttendanceUser extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableTimeSheet;
     public javax.swing.JTextField jTextFieldEmployeeNum;

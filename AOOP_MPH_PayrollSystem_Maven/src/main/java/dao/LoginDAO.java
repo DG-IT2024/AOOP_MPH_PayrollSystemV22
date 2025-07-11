@@ -16,7 +16,7 @@ public class LoginDAO {
 
     private Connection conn;
 
-    // Add this constructor
+  
     public LoginDAO(Connection conn) {
         this.conn = conn;
     }
@@ -36,7 +36,7 @@ public class LoginDAO {
                 return login;
             }
         }
-        return null;
+        return null;// Username not found
     }
 
     public Password getPasswordByLoginId(int loginId) throws SQLException {
@@ -56,8 +56,10 @@ public class LoginDAO {
     }
 
     public List<Role> getRolesByLoginId(int loginId) throws SQLException {
-        String sql = "SELECT r.role_id, r.role_name, r.description FROM role r "
-                + "JOIN user_role ur ON r.role_id = ur.role_id WHERE ur.login_id = ?";
+        String sql = "SELECT r.role_id, r.rolename, r.description "
+                + "FROM User_Role ur "
+                + "JOIN Role r ON ur.role_id = r.role_id "
+                + "WHERE ur.login_id = ?";
         List<Role> roles = new ArrayList<>();
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, loginId);
@@ -65,7 +67,7 @@ public class LoginDAO {
             while (rs.next()) {
                 Role role = new Role();
                 role.setRoleId(rs.getInt("role_id"));
-                role.setRoleName(rs.getString("role_name"));
+                role.setRoleName(rs.getString("rolename"));
                 role.setDescription(rs.getString("description"));
                 roles.add(role);
             }
@@ -82,7 +84,16 @@ public class LoginDAO {
         }
     }
 
-// Reset the no_attempt count to 0 for a user (after successful login)
+    // update last_login
+    public void updateLastLogin(String username) throws SQLException {
+        String sql = "UPDATE login SET last_login = CURRENT_TIMESTAMP WHERE username = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            stmt.executeUpdate();
+        }
+    }
+
+    // Reset the no_attempt count to 0 for a user (after successful login)
     public void resetLoginAttempts(String username) throws SQLException {
         String sql = "UPDATE login SET no_attempt = 0 WHERE username = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -91,20 +102,14 @@ public class LoginDAO {
         }
     }
 
-    public Password getRoleByEmpId(int empId) throws SQLException {
-        String sql = "SELECT * FROM role WHERE empId = ?";
+    public void logLastLogin(String username) throws SQLException {
+        String sql = "UPDATE login SET last_login WHERE username = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, empId);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                Password pw = new Password();
-                pw.setPasswordId(rs.getInt("password_id"));
-                pw.setLoginId(rs.getInt("login_id"));
-                pw.setPasswordSaltHash(rs.getString("password_salt_hash"));
-                return pw;
-            }
+            stmt.setString(1, username);
+            stmt.executeUpdate();
         }
-        return null;
     }
+    
+    
 
 }

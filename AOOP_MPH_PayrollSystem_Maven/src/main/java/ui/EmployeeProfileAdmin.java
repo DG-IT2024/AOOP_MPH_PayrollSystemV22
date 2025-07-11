@@ -4,12 +4,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import service.EmployeeService;
-import controller.EmployeeController;
+import controller.*;
+import service.*;
 
 import java.awt.Color;
 import java.awt.Toolkit;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 
 import java.util.ArrayList;
@@ -30,11 +32,14 @@ import static util.DateUtil.formatDate;
 public class EmployeeProfileAdmin extends javax.swing.JFrame {
 
     private EmployeeController controller;
+    private static int empId;
 
-    public EmployeeProfileAdmin() throws Exception {
+    public EmployeeProfileAdmin(int empId) throws Exception {
+        EmployeeProfileAdmin.empId = empId;
         initComponents();
 
         loadEmployeeDetails();
+        showLeaveCounter();
 
     }
 
@@ -199,7 +204,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         int lastNumber = 0;
 
         for (int i = 0; i < rowCount; i++) {
-            list.add(Integer.parseInt(jTableEmployeeList.getValueAt(i, 0).toString()));
+            list.add(Integer.valueOf(jTableEmployeeList.getValueAt(i, 0).toString()));
         }
 
         // Sorting the ArrayList in descending order
@@ -237,80 +242,18 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         return true;
     }
 
-//    public void addEmployeeFromTable() {
-//        List<String> tableIdList = createTableIdList();
-//        boolean isUnique = isUniqueEmployeeId(tableIdList);
-//
-//        if (isUnique) {
-//            DefaultTableModel model = (DefaultTableModel) jTableEmployeeList.getModel();
-//
-//            model.addRow(new Object[]{
-//                jTextFieldEmployeeNum.getText(),
-//                jTextFieldLastName.getText(),
-//                jTextFieldFirstName.getText(),
-//                formatDate(jDateChooserBirthday.getDate()),
-//                jTextAreaAddress.getText(),
-//                jTextFieldPhoneNum.getText(),
-//                jTextFieldSSSnum.getText(),
-//                jTextFieldPhilhealthNum.getText(),
-//                jTextFieldTINnum.getText(),
-//                jTextFieldPagibigNum.getText(),
-//                jTextFieldStatus.getText(),
-//                jTextFieldPosition.getText(),
-//                jTextFieldSupervisor.getText(),
-//                jTextFieldBasicSalary.getText(),
-//                jTextFieldRiceSubsidy.getText(),
-//                jTextFieldPhoneAllow.getText(),
-//                jTextFieldClothAllow.getText()});
-//
-//            JOptionPane.showMessageDialog(this, "Employee added successfully!");
-//        } else {
-//            JOptionPane.showMessageDialog(this, "Failed to add employee", "Duplicate ID", JOptionPane.WARNING_MESSAGE);
-//        }
-//
-//    }
-//    public void updateEmployee() {
-//
-//        // Ask if user wants to proceed with updating the information of the employee
-//        int response = JOptionPane.showConfirmDialog(null, "Do you want to proceed with updating the entry?",
-//                "Update Confirmation",
-//                JOptionPane.YES_NO_OPTION,
-//                JOptionPane.QUESTION_MESSAGE);
-//
-//        // JOptionPane returns: 1 = No, 0 = Yes
-//        // Check the user's response
-//        if (response == JOptionPane.YES_OPTION) {
-//            int selectedRowIndex = jTableEmployeeList.getSelectedRow();
-//            DefaultTableModel model = (DefaultTableModel) jTableEmployeeList.getModel();
-//
-//            if (selectedRowIndex >= 0) {
-//                model.setValueAt(jTextFieldEmployeeNum.getText(), selectedRowIndex, 0);
-//                model.setValueAt(jTextFieldLastName.getText(), selectedRowIndex, 1);
-//                model.setValueAt(jTextFieldFirstName.getText(), selectedRowIndex, 2);
-//                model.setValueAt(formatDate(jDateChooserBirthday.getDate()), selectedRowIndex, 3);
-//                model.setValueAt(jTextAreaAddress.getText(), selectedRowIndex, 4);
-//                model.setValueAt(jTextFieldPhoneNum.getText(), selectedRowIndex, 5);
-//                model.setValueAt(jTextFieldSSSnum.getText(), selectedRowIndex, 6);
-//                model.setValueAt(jTextFieldPhilhealthNum.getText(), selectedRowIndex, 7);
-//                model.setValueAt(jTextFieldTINnum.getText(), selectedRowIndex, 8);
-//                model.setValueAt(jTextFieldPagibigNum.getText(), selectedRowIndex, 9);
-//                model.setValueAt(jTextFieldStatus.getText(), selectedRowIndex, 10);
-//                model.setValueAt(jTextFieldPosition.getText(), selectedRowIndex, 11);
-//                model.setValueAt(jTextFieldSupervisor.getText(), selectedRowIndex, 12);
-//                model.setValueAt(jTextFieldBasicSalary.getText(), selectedRowIndex, 13);
-//                model.setValueAt(jTextFieldRiceSubsidy.getText(), selectedRowIndex, 14);
-//                model.setValueAt(jTextFieldPhoneAllow.getText(), selectedRowIndex, 15);
-//                model.setValueAt(jTextFieldClothAllow.getText(), selectedRowIndex, 16);
-//
-//                JOptionPane.showMessageDialog(this, "Employee information Updated successfully");
-//
-//            } else {
-//                JOptionPane.showMessageDialog(null, "Error");
-//            }
-//        }
-//        // If "No" or dialog is closed, do nothing and exit the dialog
-//
-//    }
+    private int selectedRowEmpId() throws Exception {
+        DefaultTableModel model = (DefaultTableModel) jTableEmployeeList.getModel();
+        int selectedRowIndex = jTableEmployeeList.getSelectedRow();
+        Object empIdObj = model.getValueAt(selectedRowIndex, 0);
+
+        return Integer.parseInt(empIdObj.toString());
+    }
+
+    public void showLeaveCounter() throws Exception {
+        LeaveRequestService leaveRequestService = new LeaveRequestService();
+        jTextFieldPendingLeaveCounter.setText(Integer.toString(leaveRequestService.getPendingLeaveRequestCount()));
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -359,13 +302,12 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         jTextFieldPosition = new javax.swing.JTextField();
         jDateChooserBirthday = new com.toedter.calendar.JDateChooser();
         jPanel2 = new javax.swing.JPanel();
-        jButtonLeaveApplication = new javax.swing.JButton();
         jButtonExit = new javax.swing.JButton();
         jButtonPayrollSummary = new javax.swing.JButton();
+        jButtonLeaveApplication = new javax.swing.JButton();
         jButtonAttendance = new javax.swing.JButton();
-        jButtonSave = new javax.swing.JButton();
-        jButtonUpdateDBS = new javax.swing.JButton();
         jButtonViewEmployee1 = new javax.swing.JButton();
+        jTextFieldPendingLeaveCounter = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTableEmployeeList = new javax.swing.JTable();
         jLabel12 = new javax.swing.JLabel();
@@ -376,7 +318,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("GILTENDEZ | OOP |  A2102");
+        setTitle("AOOP |  A2101");
         setAutoRequestFocus(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -657,17 +599,6 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(222, 194, 110));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButtonLeaveApplication.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        jButtonLeaveApplication.setText("LEAVE APPLICATION");
-        jButtonLeaveApplication.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonLeaveApplication.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
-        jButtonLeaveApplication.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonLeaveApplicationActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButtonLeaveApplication, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 150, 20));
-
         jButtonExit.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jButtonExit.setText("EXIT");
         jButtonExit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -677,7 +608,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
                 jButtonExitActionPerformed(evt);
             }
         });
-        jPanel2.add(jButtonExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 150, 20));
+        jPanel2.add(jButtonExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 260, 150, 20));
 
         jButtonPayrollSummary.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jButtonPayrollSummary.setText("PAYROLL SUMMARY");
@@ -688,7 +619,18 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
                 jButtonPayrollSummaryActionPerformed(evt);
             }
         });
-        jPanel2.add(jButtonPayrollSummary, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 150, 20));
+        jPanel2.add(jButtonPayrollSummary, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 150, 20));
+
+        jButtonLeaveApplication.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
+        jButtonLeaveApplication.setText("LEAVE APPLICATION");
+        jButtonLeaveApplication.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonLeaveApplication.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+        jButtonLeaveApplication.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonLeaveApplicationActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButtonLeaveApplication, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 150, 20));
 
         jButtonAttendance.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jButtonAttendance.setText("ATTENDANCE");
@@ -701,28 +643,6 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         });
         jPanel2.add(jButtonAttendance, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 150, 20));
 
-        jButtonSave.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        jButtonSave.setText("SAVE");
-        jButtonSave.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonSave.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
-        jButtonSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonSaveActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButtonSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 150, 20));
-
-        jButtonUpdateDBS.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        jButtonUpdateDBS.setText("PUBLISH");
-        jButtonUpdateDBS.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonUpdateDBS.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
-        jButtonUpdateDBS.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonUpdateDBSActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButtonUpdateDBS, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 260, 150, 20));
-
         jButtonViewEmployee1.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jButtonViewEmployee1.setText("PAYROLL");
         jButtonViewEmployee1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -732,7 +652,29 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
                 jButtonViewEmployee1ActionPerformed(evt);
             }
         });
-        jPanel2.add(jButtonViewEmployee1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 150, 20));
+        jPanel2.add(jButtonViewEmployee1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 150, 20));
+
+        jTextFieldPendingLeaveCounter.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        jTextFieldPendingLeaveCounter.setForeground(new java.awt.Color(255, 0, 51));
+        jTextFieldPendingLeaveCounter.setText("- -");
+        jTextFieldPendingLeaveCounter.setDisabledTextColor(new java.awt.Color(255, 0, 51));
+        jTextFieldPendingLeaveCounter.setEnabled(false);
+        jTextFieldPendingLeaveCounter.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextFieldPendingLeaveCounterMouseClicked(evt);
+            }
+        });
+        jTextFieldPendingLeaveCounter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldPendingLeaveCounterActionPerformed(evt);
+            }
+        });
+        jTextFieldPendingLeaveCounter.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextFieldPendingLeaveCounterKeyPressed(evt);
+            }
+        });
+        jPanel2.add(jTextFieldPendingLeaveCounter, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 160, 30, -1));
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(8, 207, 180, 283));
 
@@ -801,6 +743,13 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         jLabel12.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(204, 0, 51));
         jLabel12.setText("* All fields are required.");
+        jLabel12.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                jLabel12InputMethodTextChanged(evt);
+            }
+        });
         getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 60, -1, -1));
 
         jButtonClear.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
@@ -847,8 +796,8 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         });
         getContentPane().add(jButtonProfileDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 560, 150, 20));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/photos/EE Information Admin.jpg"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1230, 620));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/EE Information Admin.jpg"))); // NOI18N
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 1220, 620));
 
         pack();
         setLocationRelativeTo(null);
@@ -884,6 +833,17 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
 
     private void jButtonAttendanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAttendanceActionPerformed
         // TODO add your handling code here:
+        try {
+
+            AttendanceAdmin attendance = new AttendanceAdmin(selectedRowEmpId(), empId);
+            // Display the window
+            attendance.setVisible(true);
+            attendance.pack();
+            attendance.setDefaultCloseOperation(PayrollProcessing.DISPOSE_ON_CLOSE); //if viewEmployeeFrame is close, main frame will not close.
+
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeProfileAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
 
     }//GEN-LAST:event_jButtonAttendanceActionPerformed
@@ -952,36 +912,6 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         jTextFieldRiceSubsidy.setText(EmployeeTableUtil.safeGetValue(model, selectedRowIndex, 14));
         jTextFieldPhoneAllow.setText(EmployeeTableUtil.safeGetValue(model, selectedRowIndex, 15));
         jTextFieldClothAllow.setText(EmployeeTableUtil.safeGetValue(model, selectedRowIndex, 16));
-
-//        textFieldEditSetting(false);
-//        DefaultTableModel model = (DefaultTableModel) jTableEmployeeList.getModel();
-//        int selectedRowIndex = jTableEmployeeList.getSelectedRow();
-//        Object birthday = model.getValueAt(selectedRowIndex, 3);
-//        Date birthday_ = null;
-//        try {
-//            birthday_ = convertToDate(birthday);
-//        } catch (ParseException ex) {
-//            Logger.getLogger(EmployeeProfileAdmin.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//
-//        jTextFieldEmployeeNum.setText(model.getValueAt(selectedRowIndex, 0).toString());
-//        jTextFieldLastName.setText(model.getValueAt(selectedRowIndex, 1).toString());
-//        jTextFieldFirstName.setText(model.getValueAt(selectedRowIndex, 2).toString());
-//        jDateChooserBirthday.setDate(birthday_);
-//        jTextAreaAddress.setText(model.getValueAt(selectedRowIndex, 4).toString());
-//        jTextFieldPhoneNum.setText(model.getValueAt(selectedRowIndex, 5).toString());
-//        jTextFieldSSSnum.setText(model.getValueAt(selectedRowIndex, 6).toString());
-//        jTextFieldPhilhealthNum.setText(model.getValueAt(selectedRowIndex, 7).toString());
-//        jTextFieldTINnum.setText(model.getValueAt(selectedRowIndex, 8).toString());
-//        jTextFieldPagibigNum.setText(model.getValueAt(selectedRowIndex, 9).toString());
-//        jTextFieldStatus.setText(model.getValueAt(selectedRowIndex, 10).toString());
-//        jTextFieldPosition.setText(model.getValueAt(selectedRowIndex, 11).toString());
-//        jTextFieldSupervisor.setText(model.getValueAt(selectedRowIndex, 12).toString());
-//        jTextFieldBasicSalary.setText(model.getValueAt(selectedRowIndex, 13).toString());
-//        jTextFieldRiceSubsidy.setText(model.getValueAt(selectedRowIndex, 14).toString());
-//        jTextFieldPhoneAllow.setText(model.getValueAt(selectedRowIndex, 15).toString());
-//        jTextFieldClothAllow.setText(model.getValueAt(selectedRowIndex, 16).toString());
-
     }//GEN-LAST:event_jTableEmployeeListMouseClicked
 
 
@@ -1009,7 +939,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
             EmployeeService employeeService = new EmployeeService();
             try {
                 employeeService.addEmployee(emp);
-            } catch (Exception addEx) {
+            } catch (SQLException addEx) {
                 JOptionPane.showMessageDialog(this, "Failed to add employee: " + addEx.getMessage());
                 return;
             }
@@ -1022,65 +952,29 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "System Error: " + e.getMessage());
             // Optionally, System.exit(1); if you want to terminate the whole application (usually not recommended in desktop apps)
             // System.exit(1);
-            return;
         }
 
-//        try {
-//
-//            if (!checkFieldsUnique()) {
-//                // Error message is shown by checkFieldsUnique, or add here if not
-//                return; // Stop processing if not unique
-//            }
-//
-//            String newEmployeeId = Integer.toString(generateUniqueId());
-//            jTextFieldEmployeeNum.setText(newEmployeeId);
-//            Employee emp = getEmployeeFromForm();
-//            EmployeeService employeeService = new EmployeeService();
-//            employeeService.addEmployee(emp);
-//            JOptionPane.showMessageDialog(this, "Employee added successfully.");
-//
-//            loadEmployeeDetails();
-//
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
-//        }
     }//GEN-LAST:event_jButtonProfileAddActionPerformed
-
-    private void jButtonUpdateDBSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateDBSActionPerformed
-        // TODO add your handling code here:
-        int response = JOptionPane.showConfirmDialog(null, "Do you want to proceed with saving the changes to the database?",
-                "Update Database Confirmation",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-
-        if (response == JOptionPane.YES_OPTION) {
-
-        }
-
-    }//GEN-LAST:event_jButtonUpdateDBSActionPerformed
 
 
     private void jScrollPane2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane2MouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_jScrollPane2MouseClicked
 
-    private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveActionPerformed
-
-
-    }//GEN-LAST:event_jButtonSaveActionPerformed
-
     private void jButtonLeaveApplicationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLeaveApplicationActionPerformed
-        // TODO add your handling code here:
-//        try {
-//            LeaveApplicationAdmin leaveEmployee = new LeaveApplicationAdmin();
-//            // Display the window
-//            leaveEmployee.setVisible(true);
-//            leaveEmployee.pack();
-//            leaveEmployee.setDefaultCloseOperation(PayrollProcessing.DISPOSE_ON_CLOSE); //if viewEmployeeFrame is close, main frame will not close.
-//
-//        } catch (IOException ex) {
-//            Logger.getLogger(EmployeeProfile.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+            // TODO add your handling code here:
+
+            LeaveApplicationAdmin leaveEmployee = new LeaveApplicationAdmin(empId);
+            // Display the window
+            leaveEmployee.setVisible(true);
+            leaveEmployee.pack();
+            leaveEmployee.setDefaultCloseOperation(PayrollProcessing.DISPOSE_ON_CLOSE); //if viewEmployeeFrame is close, main frame will not close.
+
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeProfileAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
 
     }//GEN-LAST:event_jButtonLeaveApplicationActionPerformed
 
@@ -1209,12 +1103,22 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
     private void jButtonPayrollSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPayrollSummaryActionPerformed
         // TODO add your handling code here:
 
+        try {
+            PayrollSummaryView payrollSummaryView;
+            payrollSummaryView = new PayrollSummaryView();
+             payrollSummaryView.setVisible(true);
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeProfileAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        // Display the window
+       
+
 
     }//GEN-LAST:event_jButtonPayrollSummaryActionPerformed
 
     private void jTextFieldLastNameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldLastNameKeyTyped
         // TODO add your handling code here:
-       InputValidator.allowValidNameCharacters(evt);
+        InputValidator.allowValidNameCharacters(evt);
     }//GEN-LAST:event_jTextFieldLastNameKeyTyped
 
     private void jTextFieldFirstNameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldFirstNameKeyTyped
@@ -1232,6 +1136,17 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextFieldSupervisorKeyTyped
 
     private void jButtonViewEmployee1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewEmployee1ActionPerformed
+        try {
+            // TODO add your handling code here:
+
+            PayrollProcessing payroll = new PayrollProcessing(selectedRowEmpId());
+            // Display the window
+            payroll.setVisible(true);
+
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeProfileAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         // TODO add your handling code here:
 
     }//GEN-LAST:event_jButtonViewEmployee1ActionPerformed
@@ -1246,6 +1161,28 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_jTextAreaAddressMouseClicked
+
+    private void jLabel12InputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jLabel12InputMethodTextChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel12InputMethodTextChanged
+
+    private void jTextFieldPendingLeaveCounterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldPendingLeaveCounterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldPendingLeaveCounterActionPerformed
+
+    private void jTextFieldPendingLeaveCounterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldPendingLeaveCounterKeyPressed
+
+    }//GEN-LAST:event_jTextFieldPendingLeaveCounterKeyPressed
+
+    private void jTextFieldPendingLeaveCounterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldPendingLeaveCounterMouseClicked
+        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            showLeaveCounter();
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeProfileAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jTextFieldPendingLeaveCounterMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1276,13 +1213,17 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
 
                 try {
-                    new EmployeeProfileAdmin().setVisible(true);
+                    new EmployeeProfileAdmin(empId).setVisible(true);
                 } catch (Exception ex) {
                     Logger.getLogger(EmployeeProfileAdmin.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1301,8 +1242,6 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
     private javax.swing.JButton jButtonProfileAdd;
     private javax.swing.JButton jButtonProfileDelete;
     private javax.swing.JButton jButtonProfileUpdate;
-    private javax.swing.JButton jButtonSave;
-    private javax.swing.JButton jButtonUpdateDBS;
     private javax.swing.JButton jButtonViewEmployee1;
     private com.toedter.calendar.JDateChooser jDateChooserBirthday;
     private javax.swing.JLabel jLabel1;
@@ -1337,6 +1276,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldFirstName;
     private javax.swing.JTextField jTextFieldLastName;
     private javax.swing.JTextField jTextFieldPagibigNum;
+    private javax.swing.JTextField jTextFieldPendingLeaveCounter;
     private javax.swing.JTextField jTextFieldPhilhealthNum;
     private javax.swing.JTextField jTextFieldPhoneAllow;
     private javax.swing.JTextField jTextFieldPhoneNum;

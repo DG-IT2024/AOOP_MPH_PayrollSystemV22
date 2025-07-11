@@ -1,10 +1,9 @@
 package ui;
 
-import java.sql.Date;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import service.LeaveRequestService;
 import util.DateUtil;
 
@@ -15,24 +14,27 @@ Doesn't allow startDate to be after endDate
 User can update or cancel leave application that is still pending
 Leave Status will be marked as pending, approved and rejected
  */
-public class LeaveApplicationUser extends javax.swing.JFrame {
+public final class LeaveApplicationUser extends javax.swing.JFrame {
 
-    private int empId;
+    private static int empId;
 
     /**
      * Creates new form LeaveApplicationUser
      *
+     * @param empId
      * @throws java.lang.Exception
      */
-    public LeaveApplicationUser() throws Exception {
+    public LeaveApplicationUser(int empId) throws Exception {
+        LeaveApplicationUser.empId = empId;
+
         initComponents();
         viewUserLeave();
         displayUserDetails();
+
     }
 
     public void viewUserLeave() throws Exception {
         LeaveRequestService service = new LeaveRequestService();
-        empId = 10005;   //to be changed
         service.loadLeaveToTable(jTableLeaveApplications, empId, null);
     }
 
@@ -77,17 +79,6 @@ public class LeaveApplicationUser extends javax.swing.JFrame {
     }
 
     public double calculateLeave(java.util.Date startDate, java.util.Date endDate) throws Exception {
-
-        // Defensive: Check if dates are selected
-        if (startDate == null || endDate == null) {
-            throw new Exception("Please select both start and end dates.");
-        }
-
-        // Defensive: Ensure start date is not after end date
-        if (startDate.after(endDate)) {
-            throw new Exception("Start date should not be after end date.");
-        }
-
         int leaveDays = DateUtil.getLeaveDaysExcludingSundays(startDate, endDate);
 
         // If you want to allow double return for future half-day handling
@@ -107,13 +98,6 @@ public class LeaveApplicationUser extends javax.swing.JFrame {
         jRadioButtonVacationLeave1 = new javax.swing.JRadioButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
-        jButtonProfile = new javax.swing.JButton();
-        jButtonLeaveApp = new javax.swing.JButton();
-        jButtonPayroll = new javax.swing.JButton();
-        jButtonExit = new javax.swing.JButton();
-        jButtonPayroll1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -133,6 +117,12 @@ public class LeaveApplicationUser extends javax.swing.JFrame {
         jButtonSubmit = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableLeaveApplications = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        jButtonProfile = new javax.swing.JButton();
+        jButtonLeaveApp = new javax.swing.JButton();
+        jButtonPayroll = new javax.swing.JButton();
+        jButtonExit = new javax.swing.JButton();
+        jButtonPayroll1 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
 
         jRadioButtonVacationLeave1.setText("Vacation Leave");
@@ -156,94 +146,8 @@ public class LeaveApplicationUser extends javax.swing.JFrame {
         jScrollPane3.setViewportView(jTable2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("GILTENDEZ | OOP |  A2102");
+        setTitle("AOOP |   A2101");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jPanel2.setBackground(new java.awt.Color(222, 194, 110));
-        jPanel2.setMinimumSize(new java.awt.Dimension(0, 0));
-        jPanel2.setPreferredSize(new java.awt.Dimension(132, 220));
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jPanel4.setBackground(new java.awt.Color(222, 194, 110));
-
-        jButtonProfile.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        jButtonProfile.setText("PROFILE");
-        jButtonProfile.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonProfile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonProfileActionPerformed(evt);
-            }
-        });
-
-        jButtonLeaveApp.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        jButtonLeaveApp.setText("LEAVE ");
-        jButtonLeaveApp.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonLeaveApp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonLeaveAppActionPerformed(evt);
-            }
-        });
-
-        jButtonPayroll.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        jButtonPayroll.setText("ATTENDANCE");
-        jButtonPayroll.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonPayroll.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonPayrolljButtonAttendanceActionPerformed(evt);
-            }
-        });
-
-        jButtonExit.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        jButtonExit.setText("Exit");
-        jButtonExit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonExitActionPerformed(evt);
-            }
-        });
-
-        jButtonPayroll1.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        jButtonPayroll1.setText("PAYROLL");
-        jButtonPayroll1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonPayroll1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonPayroll1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButtonPayroll1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonPayroll, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
-                    .addComponent(jButtonProfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonLeaveApp, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
-                .addGap(21, 21, 21))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(jButtonProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonPayroll, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonPayroll1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonLeaveApp, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(47, 47, 47)
-                .addComponent(jButtonExit, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, -10, 150, 220));
-
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 180, 150, 220));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255, 0));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -389,10 +293,87 @@ public class LeaveApplicationUser extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 290, 710, 160));
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/photos/Leave Application.jpg"))); // NOI18N
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, 0, 1010, 530));
+        jPanel4.setBackground(new java.awt.Color(222, 194, 110));
+
+        jButtonProfile.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
+        jButtonProfile.setText("PROFILE");
+        jButtonProfile.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonProfileActionPerformed(evt);
+            }
+        });
+
+        jButtonLeaveApp.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
+        jButtonLeaveApp.setText("LEAVE ");
+        jButtonLeaveApp.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonLeaveApp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonLeaveAppActionPerformed(evt);
+            }
+        });
+
+        jButtonPayroll.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
+        jButtonPayroll.setText("ATTENDANCE");
+        jButtonPayroll.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonPayroll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPayrolljButtonAttendanceActionPerformed(evt);
+            }
+        });
+
+        jButtonExit.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
+        jButtonExit.setText("Exit");
+        jButtonExit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonExitActionPerformed(evt);
+            }
+        });
+
+        jButtonPayroll1.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
+        jButtonPayroll1.setText("PAYROLL");
+        jButtonPayroll1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonPayroll1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPayroll1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonPayroll, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                    .addComponent(jButtonProfile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonLeaveApp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonPayroll1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addComponent(jButtonProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonPayroll, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addComponent(jButtonPayroll1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonLeaveApp, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addComponent(jButtonExit, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, 150, 220));
+
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Leave Application.jpg"))); // NOI18N
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 530));
 
         pack();
         setLocationRelativeTo(null);
@@ -436,25 +417,71 @@ public class LeaveApplicationUser extends javax.swing.JFrame {
     }//GEN-LAST:event_jTableLeaveApplicationsMouseClicked
 
     private void jButtonProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonProfileActionPerformed
-
+        try {
+            new EmployeeProfileUser(empId).setVisible(true);
+            this.setVisible(false);
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeProfileUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButtonProfileActionPerformed
 
     private void jButtonLeaveAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLeaveAppActionPerformed
+        try {
+            // TODO add your handling code here:
 
+            LeaveApplicationUser leaveEmployee = new LeaveApplicationUser(empId);
+            leaveEmployee.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception ex) {
+            Logger.getLogger(LeaveApplicationUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButtonLeaveAppActionPerformed
 
     private void jButtonPayrolljButtonAttendanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPayrolljButtonAttendanceActionPerformed
+        try {
+            // TODO add your handling code here:
 
+            AttendanceUser attendance = new AttendanceUser(empId);
+            attendance.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception ex) {
+            Logger.getLogger(AttendanceUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButtonPayrolljButtonAttendanceActionPerformed
 
     private void jButtonExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExitActionPerformed
         // TODO add your handling code here:
 
+        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?", "Confirm Exit",
+            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        // Check the user's response
+        if (response == JOptionPane.YES_OPTION) {
+            try {
+                // Hide the current window
+                setVisible(false);
+
+                // Show the login manager window
+                new LoginView().setVisible(true);
+            } catch (IOException ex) {
+
+            }
+        }
     }//GEN-LAST:event_jButtonExitActionPerformed
 
     private void jButtonPayroll1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPayroll1ActionPerformed
-        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
 
+            PayrollUser payrollUser = new PayrollUser(empId);
+            payrollUser.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception ex) {
+            Logger.getLogger(PayrollUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButtonPayroll1ActionPerformed
 
     /**
@@ -484,12 +511,14 @@ public class LeaveApplicationUser extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new LeaveApplicationUser().setVisible(true);
+                    new LeaveApplicationUser(empId).setVisible(true);
                 } catch (Exception ex) {
                     Logger.getLogger(LeaveApplicationUser.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -517,7 +546,6 @@ public class LeaveApplicationUser extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JRadioButton jRadioButtonVacationLeave1;

@@ -10,14 +10,17 @@ import util.LeaveRequestUtil;
 
 public class LeaveApplicationAdmin extends javax.swing.JFrame {
 
-    private final int approverEmployeeId = 10001;
+    private static int approverEmployeeId;
 
     /**
      * Creates new form LeaveApplicationUser
+     *
+     * @throws java.lang.Exception
      */
-    public LeaveApplicationAdmin() throws Exception {
+    public LeaveApplicationAdmin(int empId) throws Exception {
         initComponents();
         viewAllLeave();
+        approverEmployeeId = empId;
 
     }
 
@@ -161,7 +164,7 @@ public class LeaveApplicationAdmin extends javax.swing.JFrame {
         jTableLeaveApplications = new javax.swing.JTable();
         jRadioButtonPending = new javax.swing.JRadioButton();
         jButtonClose = new javax.swing.JButton();
-        jLabel13 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
 
         jRadioButtonVacationLeave1.setText("Vacation Leave");
         jRadioButtonVacationLeave1.addActionListener(new java.awt.event.ActionListener() {
@@ -186,7 +189,7 @@ public class LeaveApplicationAdmin extends javax.swing.JFrame {
         jLabel16.setText("days");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("GILTENDEZ | OOP |  A2102");
+        setTitle("AOOP |  A2101");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255, 0));
@@ -423,10 +426,8 @@ public class LeaveApplicationAdmin extends javax.swing.JFrame {
         });
         getContentPane().add(jButtonClose, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 274, 150, -1));
 
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/photos/Leave Application Admin.jpg"))); // NOI18N
-        getContentPane().add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 930, 440));
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Leave Application Admin.jpg"))); // NOI18N
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 930, 440));
 
         pack();
         setLocationRelativeTo(null);
@@ -582,8 +583,7 @@ public class LeaveApplicationAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_jRadioButtonPendingActionPerformed
 
     private void jButtonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseActionPerformed
-        // TODO add your handling code here:
-//        handleWindowClosing();
+       this.setVisible(false);
     }//GEN-LAST:event_jButtonCloseActionPerformed
 
     /**
@@ -615,12 +615,16 @@ public class LeaveApplicationAdmin extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new LeaveApplicationAdmin().setVisible(true);
+                    new LeaveApplicationAdmin(approverEmployeeId).setVisible(true);
                 } catch (Exception ex) {
                     Logger.getLogger(LeaveApplicationAdmin.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -636,7 +640,6 @@ public class LeaveApplicationAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
@@ -648,6 +651,7 @@ public class LeaveApplicationAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;

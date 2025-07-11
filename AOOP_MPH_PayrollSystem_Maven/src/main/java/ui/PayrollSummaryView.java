@@ -149,11 +149,10 @@ public class PayrollSummaryView extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jButtonClose = new javax.swing.JButton();
-        jButtonPrint = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("GILTENDEZ | OOP | A1102");
+        setTitle("AOOP | A2101");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jScrollPane2.setBackground(new java.awt.Color(255, 255, 255, 0));
@@ -229,6 +228,8 @@ public class PayrollSummaryView extends javax.swing.JFrame {
         jLabel6.setText("Filter by :");
         jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 50, 600, 90));
+
         jButtonClose.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButtonClose.setText("CLOSE");
         jButtonClose.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.white));
@@ -237,22 +238,10 @@ public class PayrollSummaryView extends javax.swing.JFrame {
                 jButtonCloseActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonClose, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 50, 70, 23));
+        getContentPane().add(jButtonClose, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 360, 140, 30));
 
-        jButtonPrint.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButtonPrint.setText("PRINT");
-        jButtonPrint.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.white));
-        jButtonPrint.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonPrintActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButtonPrint, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 20, 70, 23));
-
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 50, 600, 90));
-
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/photos/Payroll Summary.jpg"))); // NOI18N
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Payroll Summary.jpg"))); // NOI18N
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 860, 440));
 
         pack();
         setLocationRelativeTo(null);
@@ -282,12 +271,8 @@ public class PayrollSummaryView extends javax.swing.JFrame {
 
     private void jButtonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseActionPerformed
         // TODO add your handling code here:
-          setVisible(false);
+          this.setVisible(false);
     }//GEN-LAST:event_jButtonCloseActionPerformed
-
-    private void jButtonPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrintActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonPrintActionPerformed
 
     /**
      * @param args the command line arguments
@@ -322,6 +307,14 @@ public class PayrollSummaryView extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -340,13 +333,12 @@ public class PayrollSummaryView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonClose;
-    private javax.swing.JButton jButtonPrint;
     private javax.swing.JComboBox<String> jComboBoxCoveredPeriod;
     private javax.swing.JComboBox<String> jComboBoxEmployeeNumber;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;

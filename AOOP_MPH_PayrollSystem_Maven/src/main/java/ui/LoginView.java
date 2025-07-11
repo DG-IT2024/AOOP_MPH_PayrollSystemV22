@@ -4,7 +4,6 @@ import controller.LoginController;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.awt.Toolkit;
 import javax.swing.*;
 import service.LoginService;
 
@@ -18,17 +17,11 @@ public class LoginView extends javax.swing.JFrame {
 
     public LoginView() throws IOException {
         initComponents();
+
         try {
             loginController = new LoginController(new LoginService());
         } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to initialize login service.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-//        setIconImage();
-    }
-
-    private void setIconImage() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo.jpg")));
     }
 
     /**
@@ -52,7 +45,7 @@ public class LoginView extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("GILTENDEZ | OOP |  A2102");
+        setTitle("AOOP |  A2101");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel2.setBackground(new java.awt.Color(192, 168, 137, 220));
@@ -120,8 +113,7 @@ public class LoginView extends javax.swing.JFrame {
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 190, 270, 160));
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/photos/Login Page.jpg"))); // NOI18N
-        jLabel4.setToolTipText("");
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Login Page.jpg"))); // NOI18N
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 390, 690));
 
         pack();
@@ -133,14 +125,17 @@ public class LoginView extends javax.swing.JFrame {
         String inputPassword = new String(jPasswordFieldInput.getPassword());
 
         boolean isLoggedIn = loginController.processLogin(inputUsername, inputPassword);
-
         if (isLoggedIn) {
-            JOptionPane.showMessageDialog(this, "Login successful");
-            // open dashboard or next screen
+            try {
+                loginController.directToPanel(inputUsername);// open dashboard or next screen
+                this.setVisible(false);
+            } catch (Exception ex) {
+                Logger.getLogger(LoginView.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
             
-        }
 
+        }
 
     }//GEN-LAST:event_jButtonLogInActionPerformed
 
@@ -199,6 +194,10 @@ public class LoginView extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(LoginView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>

@@ -4,13 +4,20 @@
 
 package com.mycompany.aoop_mph_payrollsystem_maven;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import ui.LoginView;
+
 /**
  *
  * @author danilo
  */
 public class AOOP_MPH_PayrollSystem_Maven {
 
-    public static void main(String[] args) {
-        System.out.println("Hello World!");
+    
+     public static void main(String[] args) throws IOException, SQLException {
+        new LoginView().setVisible(true);
+
     }
+    
 }

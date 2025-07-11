@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import model.Employee;
 import model.PayrollSummary;
 import util.DBConnect;
 import util.PayrollUtil;
@@ -29,7 +30,7 @@ public class PayrollSummaryService {
     }
 
     public List<PayrollSummary> listPayrollSummary(Integer empID, Date startDate, Date endDate) throws SQLException {
-        return payrollSummaryDAO.getPayrollSummaries(empID,startDate, endDate);
+        return payrollSummaryDAO.getPayrollSummaries(empID, startDate, endDate);
     }
 
     public void fetchPayrollSummaries(JTable table, Integer empID, Date startDate, Date endDate) throws SQLException {
@@ -40,9 +41,19 @@ public class PayrollSummaryService {
     }
 
     public void fetchAllPayrollSummaries(JTable table) throws SQLException {
-        List<PayrollSummary> summaries = listPayrollSummary(null,null, null);
+        List<PayrollSummary> summaries = listPayrollSummary(null, null, null);
         DefaultTableModel model = PayrollUtil.loadToJTable(summaries);
         table.setModel(model);
+    }
+
+    public double benefits(int empId) throws Exception {
+        EmployeeService service = new EmployeeService();
+        Employee employee = service.findEmployeeById(empId);
+
+        double totalBenefits = employee.getRiceSubsidy() + employee.getPhoneAllowance() + employee.getClothingAllowance();
+
+        return totalBenefits ;
 
     }
+
 }

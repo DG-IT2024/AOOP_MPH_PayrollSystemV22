@@ -87,7 +87,6 @@ public class LeaveRequestDAO {
             stmt.execute();
         }
     }
-    
-    
 
+   
 }

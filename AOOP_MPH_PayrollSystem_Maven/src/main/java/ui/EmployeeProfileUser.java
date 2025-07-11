@@ -4,75 +4,80 @@ import service.EmployeeService;
 import controller.EmployeeController;
 
 import java.awt.Toolkit;
+import java.io.IOException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import model.Employee;
+import ui.PayrollUser;
 
-public class EmployeeProfileUser extends javax.swing.JFrame {
+
+public final class EmployeeProfileUser extends javax.swing.JFrame {
+
+    private static int empId;
 
     private final EmployeeService service = new EmployeeService();
 
-    public EmployeeProfileUser() throws Exception {
+    public EmployeeProfileUser(int empId) throws Exception {
+        EmployeeProfileUser.empId = empId;
+
         initComponents();
-        int employeeNumber = 10005;
-        showDetailsFromDB(employeeNumber); 
+        showDetailsFromDB();
     }
 
-    public void showDetailsFromDB(int employeeNumber) {
-    try {
-        Employee employee = service.findEmployeeById(employeeNumber);
-        if (employee != null) {
-            jTextFieldEmployeeNum.setText(String.valueOf(employee.getEmployeeId()));
-            jTextFieldLastName.setText(employee.getLastName());
-            jTextFieldFirstName.setText(employee.getFirstName());
+    public void showDetailsFromDB() {
+        try {
+            Employee employee = service.findEmployeeById(empId);
+            if (employee != null) {
+                jTextFieldEmployeeNum.setText(String.valueOf(employee.getEmployeeId()));
+                jTextFieldLastName.setText(employee.getLastName());
+                jTextFieldFirstName.setText(employee.getFirstName());
 
-            // Format birthdate (Date to String)
-            if (employee.getBirthdate() != null) {
-                jTextFieldBirthday.setText(new java.text.SimpleDateFormat("yyyy-MM-dd")
-                        .format(employee.getBirthdate()));
+                // Format birthdate (Date to String)
+                if (employee.getBirthdate() != null) {
+                    jTextFieldBirthday.setText(new java.text.SimpleDateFormat("yyyy-MM-dd")
+                            .format(employee.getBirthdate()));
+                } else {
+                    jTextFieldBirthday.setText("");
+                }
+
+                // Combine address fields
+                String address = String.format("%s, %s, %s, %s, %s",
+                        safe(employee.getStreet()),
+                        safe(employee.getBarangay()),
+                        safe(employee.getCity()),
+                        safe(employee.getProvince()),
+                        safe(employee.getZip()));
+                jTextAreaAddress.setText(address);
+
+                jTextFieldPhoneNum.setText(employee.getPhoneNumber());
+                jTextFieldSSSnum.setText(employee.getSssNumber());
+                jTextFieldPhilhealthNum.setText(employee.getPhilhealthNumber());
+                jTextFieldTINnum.setText(employee.getTinNumber());
+                jTextFieldPagibigNum.setText(employee.getPagibigNumber());
+                jTextFieldStatus.setText(employee.getStatus());
+                jTextFieldPosition.setText(employee.getPosition());
+                jTextFieldSupervisor.setText(employee.getImmediateSupervisor());
+
+                // For double values, handle formatting as string
+                jTextFieldBasicSalary.setText(String.format("%.2f", employee.getBasicSalary()));
+                jTextFieldRiceSubsidy.setText(String.format("%.2f", employee.getRiceSubsidy()));
+                jTextFieldPhoneAllow.setText(String.format("%.2f", employee.getPhoneAllowance()));
+                jTextFieldClothAllow.setText(String.format("%.2f", employee.getClothingAllowance()));
             } else {
-                jTextFieldBirthday.setText("");
+                JOptionPane.showMessageDialog(null, "Employee not found.");
             }
-
-            // Combine address fields
-            String address = String.format("%s, %s, %s, %s, %s",
-                    safe(employee.getStreet()),
-                    safe(employee.getBarangay()),
-                    safe(employee.getCity()),
-                    safe(employee.getProvince()),
-                    safe(employee.getZip()));
-            jTextAreaAddress.setText(address);
-
-            jTextFieldPhoneNum.setText(employee.getPhoneNumber());
-            jTextFieldSSSnum.setText(employee.getSssNumber());
-            jTextFieldPhilhealthNum.setText(employee.getPhilhealthNumber());
-            jTextFieldTINnum.setText(employee.getTinNumber());
-            jTextFieldPagibigNum.setText(employee.getPagibigNumber());
-            jTextFieldStatus.setText(employee.getStatus());
-            jTextFieldPosition.setText(employee.getPosition());
-            jTextFieldSupervisor.setText(employee.getImmediateSupervisor());
-
-            // For double values, handle formatting as string
-            jTextFieldBasicSalary.setText(String.format("%.2f", employee.getBasicSalary()));
-            jTextFieldRiceSubsidy.setText(String.format("%.2f", employee.getRiceSubsidy()));
-            jTextFieldPhoneAllow.setText(String.format("%.2f", employee.getPhoneAllowance()));
-            jTextFieldClothAllow.setText(String.format("%.2f", employee.getClothingAllowance()));
-        } else {
-            JOptionPane.showMessageDialog(null, "Employee not found.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage());
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage());
     }
-}
 
 // Optional helper to avoid "null" strings in address
-private String safe(String s) {
-    return s == null ? "" : s;
-}
-
+    private String safe(String s) {
+        return s == null ? "" : s;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -120,7 +125,7 @@ private String safe(String s) {
         jTextAreaAddress = new javax.swing.JTextArea();
         jLabel18 = new javax.swing.JLabel();
         jTextFieldPosition = new javax.swing.JTextField();
-        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
         jButtonProfile = new javax.swing.JButton();
         jButtonLeaveApp = new javax.swing.JButton();
         jButtonPayroll = new javax.swing.JButton();
@@ -382,7 +387,7 @@ private String safe(String s) {
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 80, 720, 410));
 
-        jPanel2.setBackground(new java.awt.Color(222, 194, 110));
+        jPanel3.setBackground(new java.awt.Color(222, 194, 110));
 
         jButtonProfile.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jButtonProfile.setText("PROFILE");
@@ -407,7 +412,7 @@ private String safe(String s) {
         jButtonPayroll.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonPayroll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAttendanceActionPerformed(evt);
+                jButtonPayrolljButtonAttendanceActionPerformed(evt);
             }
         });
 
@@ -429,23 +434,23 @@ private String safe(String s) {
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButtonPayroll1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonPayroll, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                    .addComponent(jButtonProfile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButtonExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonPayroll, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonProfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonLeaveApp, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
-                .addGap(21, 21, 21))
+                    .addComponent(jButtonLeaveApp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonPayroll1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addComponent(jButtonProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -459,12 +464,10 @@ private String safe(String s) {
                 .addContainerGap())
         );
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, 150, 220));
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, 150, 220));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/photos/EE Information.jpg"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 990, 530));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/EE Information.jpg"))); // NOI18N
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 540));
 
         pack();
         setLocationRelativeTo(null);
@@ -562,23 +565,71 @@ private String safe(String s) {
     }//GEN-LAST:event_jTextFieldEmployeeNumKeyPressed
 
     private void jButtonProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonProfileActionPerformed
-        // TODO add your handling code here:
-
+        try {
+            new EmployeeProfileUser(empId).setVisible(true);
+            this.setVisible(false);
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeProfileUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButtonProfileActionPerformed
 
     private void jButtonLeaveAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLeaveAppActionPerformed
+        try {
+            // TODO add your handling code here:
+
+            LeaveApplicationUser leaveEmployee = new LeaveApplicationUser(empId);
+            leaveEmployee.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception ex) {
+            Logger.getLogger(LeaveApplicationUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButtonLeaveAppActionPerformed
 
-    private void jButtonAttendanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAttendanceActionPerformed
-    }//GEN-LAST:event_jButtonAttendanceActionPerformed
+    private void jButtonPayrolljButtonAttendanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPayrolljButtonAttendanceActionPerformed
+        try {
+            // TODO add your handling code here:
+
+            AttendanceUser attendance = new AttendanceUser(empId);
+            attendance.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception ex) {
+            Logger.getLogger(AttendanceUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonPayrolljButtonAttendanceActionPerformed
 
     private void jButtonExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExitActionPerformed
         // TODO add your handling code here:
 
+        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?", "Confirm Exit",
+            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        // Check the user's response
+        if (response == JOptionPane.YES_OPTION) {
+            try {
+                // Hide the current window
+                setVisible(false);
+
+                // Show the login manager window
+                new LoginView().setVisible(true);
+            } catch (IOException ex) {
+
+            }
+        }
     }//GEN-LAST:event_jButtonExitActionPerformed
 
     private void jButtonPayroll1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPayroll1ActionPerformed
-        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+
+            PayrollUser payrollUser = new PayrollUser(empId);
+            payrollUser.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception ex) {
+            Logger.getLogger(PayrollUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButtonPayroll1ActionPerformed
 
     /**
@@ -607,12 +658,13 @@ private String safe(String s) {
             java.util.logging.Logger.getLogger(EmployeeProfileUser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new EmployeeProfileUser().setVisible(true);
+                    new EmployeeProfileUser(empId).setVisible(true);
                 } catch (Exception ex) {
                     Logger.getLogger(EmployeeProfileUser.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -646,7 +698,7 @@ private String safe(String s) {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabelBasicSalary;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextAreaAddress;
     private javax.swing.JTextField jTextFieldBasicSalary;

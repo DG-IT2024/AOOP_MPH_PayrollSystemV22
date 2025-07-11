@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import model.Attendance;
 import model.Attendance_sp;
@@ -43,6 +44,39 @@ public class AttendanceUtil {
                 att.getTimeOut() != null ? att.getTimeOut().toString() : "",
                 att.getRegularHoursCalc() != null ? att.getRegularHoursCalc().toString() : "",
                 att.getOvertimeHoursCalc() != null ? att.getOvertimeHoursCalc().toString() : ""
+            };
+            model.addRow(row);
+        }
+
+        return model;
+    }
+
+    public static DefaultTableModel attendanceListToTableModel(List<Attendance_sp> attendanceList) {
+        String[] columnNames = {
+            "Attendance ID", "Employee ID", "Date", "Time In", "Time Out",
+            "Regular Hours", "Overtime Rate", "Overtime Hours",
+            "Overtime Updated", "Last Name", "First Name",
+            "Overtime Approver ID", "OT Approver Last Name", "OT Approver First Name"
+        };
+
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+
+        for (Attendance_sp att : attendanceList) {
+            Object[] row = {
+                att.getAttendanceId(),
+                att.getEmployeeId(),
+                att.getDate(),
+                att.getTimeIn(),
+                att.getTimeOut(),
+                att.getRegularHoursCalc(),
+                att.getOvertimeRate(),
+                att.getOvertimeHoursCalc(),
+                att.getOvertimeUpdatedDate(),
+                att.getLastName(),
+                att.getFirstName(),
+                att.getOvertimeApproverId(),
+                att.getOvertimeApproverLastName(),
+                att.getOvertimeApproverFirstName()
             };
             model.addRow(row);
         }
@@ -173,5 +207,24 @@ public class AttendanceUtil {
 
     public static boolean isValidTimeFormat(String time) {
         return time.matches("\\d{2}:\\d{2}") || time.matches("([01]?[0-9]|2[0-3]):[0-5][0-9]");
+    }
+
+    public static ArrayList<Integer> getAttendanceIdsFromTable(JTable table) {
+        ArrayList<Integer> attendanceIds = new ArrayList<>();
+        int rowCount = table.getRowCount();
+
+        // Assuming column 1 contains attendance_id (index 1)
+        for (int i = 0; i < rowCount; i++) {
+            Object value = table.getValueAt(i, 0); 
+            if (value != null) {
+           
+                try {
+                    attendanceIds.add(Integer.valueOf(value.toString()));
+                } catch (NumberFormatException ex) {
+                    
+                }
+            }
+        }
+        return attendanceIds;
     }
 }
