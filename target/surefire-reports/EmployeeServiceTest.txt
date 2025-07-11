@@ -1,0 +1,40 @@
+-------------------------------------------------------------------------------
+Test set: EmployeeServiceTest
+-------------------------------------------------------------------------------
+Tests run: 19, Failures: 0, Errors: 4, Skipped: 0, Time elapsed: 1.486 s <<< FAILURE! -- in EmployeeServiceTest
+EmployeeServiceTest.testCase01_AddNewEmployee -- Time elapsed: 0.043 s <<< ERROR!
+java.lang.IllegalArgumentException: Duplicate government ID found
+	at service.EmployeeService.isIdDuplicate(EmployeeService.java:71)
+	at service.EmployeeService.addEmployee(EmployeeService.java:31)
+	at EmployeeServiceTest.testCase01_AddNewEmployee(EmployeeServiceTest.java:56)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+EmployeeServiceTest.testCase20_AddressFieldFormatting -- Time elapsed: 0.032 s <<< ERROR!
+java.lang.IllegalArgumentException: Duplicate government ID found
+	at service.EmployeeService.isIdDuplicate(EmployeeService.java:71)
+	at service.EmployeeService.addEmployee(EmployeeService.java:31)
+	at EmployeeServiceTest.testCase20_AddressFieldFormatting(EmployeeServiceTest.java:306)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+EmployeeServiceTest.testCase23_SpecialCharacterHandling -- Time elapsed: 0.027 s <<< ERROR!
+java.lang.IllegalArgumentException: Duplicate government ID found
+	at service.EmployeeService.isIdDuplicate(EmployeeService.java:71)
+	at service.EmployeeService.addEmployee(EmployeeService.java:31)
+	at EmployeeServiceTest.testCase23_SpecialCharacterHandling(EmployeeServiceTest.java:354)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+EmployeeServiceTest.testCase04_DeleteEmployee -- Time elapsed: 0.028 s <<< ERROR!
+java.lang.IllegalArgumentException: Duplicate government ID found
+	at service.EmployeeService.isIdDuplicate(EmployeeService.java:71)
+	at service.EmployeeService.addEmployee(EmployeeService.java:31)
+	at EmployeeServiceTest.testCase04_DeleteEmployee(EmployeeServiceTest.java:118)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
