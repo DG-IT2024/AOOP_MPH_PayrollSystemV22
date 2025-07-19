@@ -40,7 +40,7 @@ public final class PayrollUser extends javax.swing.JFrame {
      * @throws java.io.FileNotFoundException
      */
     public PayrollUser(int empId) throws Exception {
-        this.empId = empId = 10001;
+        this.empId = empId ;
 
         initComponents();
         showEmployeeDetails();

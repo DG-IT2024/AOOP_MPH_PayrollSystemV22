@@ -27,7 +27,7 @@ public final class LeaveApplicationUser extends javax.swing.JFrame {
      * @throws java.lang.Exception
      */
     public LeaveApplicationUser(int empId) throws Exception {
-        LeaveApplicationUser.empId = empId=10001;
+        LeaveApplicationUser.empId = empId;
 
         initComponents();
         viewUserLeave();

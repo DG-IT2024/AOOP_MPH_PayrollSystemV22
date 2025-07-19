@@ -44,7 +44,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
     private AttendanceAdmin attendanceWindow = null;
 
     public EmployeeProfileAdmin(int empId) throws Exception {
-        EmployeeProfileAdmin.empId = empId=10001;
+        EmployeeProfileAdmin.empId = empId;
         initComponents();
 
         loadEmployeeDetails();
@@ -442,6 +442,9 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
             }
         });
         jTextFieldLastName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextFieldLastNameKeyPressed(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 jTextFieldLastNameKeyTyped(evt);
             }
@@ -457,6 +460,9 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
             }
         });
         jTextFieldSSSnum.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextFieldSSSnumKeyPressed(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 jTextFieldSSSnumKeyTyped(evt);
             }
@@ -474,12 +480,22 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
 
         jTextFieldTINnum.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.gray));
         jTextFieldTINnum.setDisabledTextColor(new java.awt.Color(51, 51, 51));
+        jTextFieldTINnum.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                jTextFieldTINnumInputMethodTextChanged(evt);
+            }
+        });
         jTextFieldTINnum.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldTINnumActionPerformed(evt);
             }
         });
         jTextFieldTINnum.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextFieldTINnumKeyPressed(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 jTextFieldTINnumKeyTyped(evt);
             }
@@ -494,6 +510,9 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
             }
         });
         jTextFieldPhoneNum.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextFieldPhoneNumKeyPressed(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 jTextFieldPhoneNumKeyTyped(evt);
             }
@@ -1295,6 +1314,26 @@ int response = JOptionPane.showConfirmDialog(
             System.exit(0);
         }        // TODO add your handling code here:
     }//GEN-LAST:event_formWindowClosing
+
+    private void jTextFieldLastNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldLastNameKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldLastNameKeyPressed
+
+    private void jTextFieldPhoneNumKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldPhoneNumKeyPressed
+ InputValidator.allowOnlyDigitsSpecial(evt, jTextFieldPhoneNum.getText(), 10);        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldPhoneNumKeyPressed
+
+    private void jTextFieldTINnumKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldTINnumKeyPressed
+  InputValidator.allowOnlyDigitsSpecial(evt, jTextFieldTINnum.getText().trim(), 20);        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldTINnumKeyPressed
+
+    private void jTextFieldSSSnumKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSSSnumKeyPressed
+  InputValidator.allowOnlyDigitsSpecial(evt, jTextFieldTINnum.getText().trim(), 20);        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldSSSnumKeyPressed
+
+    private void jTextFieldTINnumInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jTextFieldTINnumInputMethodTextChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldTINnumInputMethodTextChanged
 
     /**
      * @param args the command line arguments

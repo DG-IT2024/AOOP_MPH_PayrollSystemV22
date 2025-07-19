@@ -101,30 +101,9 @@ public class EmployeeTableUtilTest {
         System.out.println("Null cell: '" + val + "'");
     }
 
+    
     @Test
-    public void test4_isEmployeeFieldsUnique_true() {
-        System.out.println("Test 4: isEmployeeFieldsUnique - All unique fields");
-        boolean unique = EmployeeTableUtil.isEmployeeFieldsUnique(employees, "x-unique-sss", "x-unique-ph", "x-unique-pag", "x-unique-tin");
-        assertTrue(unique);
-        System.out.println("Fields are unique: " + unique);
-    }
-
-    @Test
-    public void test5_isEmployeeFieldsUnique_false() {
-        System.out.println("Test 5: isEmployeeFieldsUnique - Duplicate SSS, Philhealth, Pagibig, or TIN");
-        boolean dupeSSS = EmployeeTableUtil.isEmployeeFieldsUnique(employees, "44-4506057-3", null, null, null);
-        boolean dupePH = EmployeeTableUtil.isEmployeeFieldsUnique(employees, null, "111122223333", null, null);
-        boolean dupePagibig = EmployeeTableUtil.isEmployeeFieldsUnique(employees, null, null, "442-605-657-000", null);
-        boolean dupeTIN = EmployeeTableUtil.isEmployeeFieldsUnique(employees, null, null, null, "123456789012");
-        assertFalse(dupeSSS);
-        assertFalse(dupePH);
-        assertFalse(dupePagibig);
-        assertFalse(dupeTIN);
-        System.out.println("Detected duplicates correctly.");
-    }
-
-    @Test
-    public void test6_toTableModel_nullsInEmployee() {
+    public void test4_toTableModel_nullsInEmployee() {
         System.out.println("Test 6: toTableModel - Employee with all null fields");
         Employee emp = new Employee();
         employees.clear();

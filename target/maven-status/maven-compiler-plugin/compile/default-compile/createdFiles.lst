@@ -163,6 +163,7 @@ ui\admin\TimesheetDialog2.class
 ui\employeeuser\AttendanceUser$6.class
 model\Attendance_sp.class
 ui\admin\EmployeeProfileAdmin$15.class
+ui\admin\EmployeeProfileAdmin$48.class
 ui\admin\EmployeeProfileAdmin$7.class
 ui\employeeuser\PayrollUser$3.class
 model\Role.class

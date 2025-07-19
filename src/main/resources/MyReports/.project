@@ -22,6 +22,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>Payslip.jrxml</name>
+			<type>1</type>
+			<location>C:/Users/danilo/Documents/NetBeansProjects/AOOP-MS2-Group5-MotorPH-Payroll-System/src/report/Payslip.jrxml</location>
+		</link>
+		<link>
 			<name>employee_payslip.jasper</name>
 			<type>1</type>
 			<location>C:/Users/danilo/Documents/AOOP_MPH_PayrollSystem/src/Report/MyReports/employee_payslip.jasper</location>
@@ -43,6 +48,11 @@
 		</link>
 		<link>
 			<name>employee_payslip_2.jrxml</name>
+			<type>1</type>
+			<location>C:/Users/danilo/Documents/NetBeansProjects/AOOP_MPH_PayrollSystem_Maven/src/main/resources/reports/employee_payslip.jrxml</location>
+		</link>
+		<link>
+			<name>employee_payslip_3.jrxml</name>
 			<type>1</type>
 			<location>C:/Users/danilo/Documents/NetBeansProjects/AOOP_MPH_PayrollSystem_Maven/src/main/resources/reports/employee_payslip.jrxml</location>
 		</link>
