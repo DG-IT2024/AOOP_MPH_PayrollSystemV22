@@ -70,6 +70,7 @@ util\AttendanceUtil$TableModelBuilder.class
 ui\admin\EmployeeProfileAdmin$17.class
 ui\admin\PayrollProcessing$21.class
 service\AttendanceService.class
+ui\admin\EmployeeProfileAdmin$47.class
 ui\employeeuser\PayrollUser$2.class
 util\AttendanceUtil.class
 ui\employeeuser\PayrollUser$12.class

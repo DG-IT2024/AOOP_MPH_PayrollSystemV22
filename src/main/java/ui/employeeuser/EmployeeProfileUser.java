@@ -19,7 +19,7 @@ public final class EmployeeProfileUser extends javax.swing.JFrame {
     private final EmployeeService service = new EmployeeService();
 
     public EmployeeProfileUser(int empId) throws Exception {
-        EmployeeProfileUser.empId = empId = 10001;
+        EmployeeProfileUser.empId = empId = 10004;
 
         initComponents();
         showDetailsFromDB();

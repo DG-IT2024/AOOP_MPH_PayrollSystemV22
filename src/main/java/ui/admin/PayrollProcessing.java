@@ -122,7 +122,7 @@ public class PayrollProcessing extends javax.swing.JFrame {
             double regularHours = payDetails.get(0);
 
             // 0.0 or null checker for regular hours
-            if (regularHours == 0.0 || jTextFieldRegularHours.getText() == null || jTextFieldRegularHours.getText().trim().isEmpty()) {
+            if (regularHours == 0.0) {
                 clearFields() ;
                 JOptionPane.showMessageDialog(null, "Invalid date range.");
                 return;
