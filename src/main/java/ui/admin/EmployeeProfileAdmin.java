@@ -44,7 +44,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
     private AttendanceAdmin attendanceWindow = null;
 
     public EmployeeProfileAdmin(int empId) throws Exception {
-        EmployeeProfileAdmin.empId = empId;
+        EmployeeProfileAdmin.empId = empId=10001;
         initComponents();
 
         loadEmployeeDetails();
@@ -780,6 +780,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         });
         jTableEmployeeList.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jTableEmployeeList.setAutoscrolls(false);
+        jTableEmployeeList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jTableEmployeeList.getTableHeader().setReorderingAllowed(false);
         jTableEmployeeList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

@@ -127,11 +127,7 @@ AND pay_period_end = $P{endDate}
 		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
 	</field>
 	<background splitType="Stretch"/>
-	<title height="99" splitType="Stretch">
-		<element kind="image" uuid="67b9575b-9a4e-4e2a-b336-17d69794c941" x="10" y="8" width="544" height="83">
-			<expression><![CDATA["C:/Users/danilo/Documents/AOOP_MPH_PayrollSystem/src/header.png"]]></expression>
-		</element>
-	</title>
+	<title height="99" splitType="Stretch"/>
 	<pageHeader height="40" splitType="Stretch">
 		<element kind="staticText" uuid="ce5c729e-bd31-4fe9-9a98-c1524ebbb605" x="0" y="10" width="549" height="30" forecolor="#000066" fontSize="19.0" bold="true" underline="true" hTextAlign="Center">
 			<text><![CDATA[EMPLOYEE PAYSLIP]]></text>

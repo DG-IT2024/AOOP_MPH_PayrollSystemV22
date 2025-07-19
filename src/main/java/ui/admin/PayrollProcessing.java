@@ -91,10 +91,10 @@ public class PayrollProcessing extends javax.swing.JFrame {
         jTextFieldRegularHours.setText("");
         jTextFieldOvertimeHours.setText("");
         jTextFieldBenefits.setText("");
+        jDateChooserStartDate.setDate(null);
+        jDateChooserEndDate.setDate(null);
 
     }
-
-  
 
     private void displayPayDetails() {
         try {
@@ -114,7 +114,7 @@ public class PayrollProcessing extends javax.swing.JFrame {
             List<Double> payDetails = payrollService.getPayDetails(empId, sqlStartDate, sqlEndDate);
 
             if (payDetails == null || payDetails.size() < 5) {
-                clearFields() ;
+                clearFields();
                 JOptionPane.showMessageDialog(null, "Invalid date range.");
                 return;
             }
@@ -123,7 +123,7 @@ public class PayrollProcessing extends javax.swing.JFrame {
 
             // 0.0 or null checker for regular hours
             if (regularHours == 0.0) {
-                clearFields() ;
+                clearFields();
                 JOptionPane.showMessageDialog(null, "Invalid date range.");
                 return;
             }
