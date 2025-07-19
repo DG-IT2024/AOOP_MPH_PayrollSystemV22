@@ -1,0 +1,300 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="employee_payslip" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="13224f3a-08b9-47a8-87b2-a40b6451cc44">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter"/>
+	<parameter name="empId" class="java.lang.Integer"/>
+	<parameter name="startDate" class="java.sql.Date"/>
+	<parameter name="endDate" class="java.sql.Date"/>
+	<query language="SQL"><![CDATA[SELECT *
+  FROM Payslip_View
+  WHERE employee_id = $P{empId}
+  AND pay_period_start = $P{startDate}
+AND pay_period_end = $P{endDate}
+]]></query>
+	<field name="employee_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="employee_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="employee_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payroll"/>
+	</field>
+	<field name="employee_full_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="employee_full_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="employee_full_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
+	</field>
+	<field name="job_position" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="job_position"/>
+		<property name="com.jaspersoft.studio.field.label" value="job_position"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="job_position"/>
+	</field>
+	<field name="department_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="department_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="department_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="department"/>
+	</field>
+	<field name="pay_period_start" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="pay_period_start"/>
+		<property name="com.jaspersoft.studio.field.label" value="pay_period_start"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payroll"/>
+	</field>
+	<field name="pay_period_end" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="pay_period_end"/>
+		<property name="com.jaspersoft.studio.field.label" value="pay_period_end"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payroll"/>
+	</field>
+	<field name="basic_salary" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="basic_salary"/>
+		<property name="com.jaspersoft.studio.field.label" value="basic_salary"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="compensation"/>
+	</field>
+	<field name="daily_rate" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="daily_rate"/>
+		<property name="com.jaspersoft.studio.field.label" value="daily_rate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
+	</field>
+	<field name="total_worked_hours" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="total_worked_hours"/>
+		<property name="com.jaspersoft.studio.field.label" value="total_worked_hours"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
+	</field>
+	<field name="overtime_hours" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="overtime_hours"/>
+		<property name="com.jaspersoft.studio.field.label" value="overtime_hours"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
+	</field>
+	<field name="days_worked" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="days_worked"/>
+		<property name="com.jaspersoft.studio.field.label" value="days_worked"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
+	</field>
+	<field name="gross_salary_calc" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="gross_salary_calc"/>
+		<property name="com.jaspersoft.studio.field.label" value="gross_salary_calc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payroll"/>
+	</field>
+	<field name="rice_subsidy" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="rice_subsidy"/>
+		<property name="com.jaspersoft.studio.field.label" value="rice_subsidy"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="compensation"/>
+	</field>
+	<field name="phone_allowance" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="phone_allowance"/>
+		<property name="com.jaspersoft.studio.field.label" value="phone_allowance"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="compensation"/>
+	</field>
+	<field name="clothing_allowance" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="clothing_allowance"/>
+		<property name="com.jaspersoft.studio.field.label" value="clothing_allowance"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="compensation"/>
+	</field>
+	<field name="total_benefits" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="total_benefits"/>
+		<property name="com.jaspersoft.studio.field.label" value="total_benefits"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
+	</field>
+	<field name="sss_deduction" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="sss_deduction"/>
+		<property name="com.jaspersoft.studio.field.label" value="sss_deduction"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
+	</field>
+	<field name="philhealth" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="philhealth"/>
+		<property name="com.jaspersoft.studio.field.label" value="philhealth"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
+	</field>
+	<field name="pagibig" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="pagibig"/>
+		<property name="com.jaspersoft.studio.field.label" value="pagibig"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
+	</field>
+	<field name="taxable_income" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="taxable_income"/>
+		<property name="com.jaspersoft.studio.field.label" value="taxable_income"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
+	</field>
+	<field name="withholding_tax" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="withholding_tax"/>
+		<property name="com.jaspersoft.studio.field.label" value="withholding_tax"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
+	</field>
+	<field name="total_deductions" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="total_deductions"/>
+		<property name="com.jaspersoft.studio.field.label" value="total_deductions"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
+	</field>
+	<field name="takehome_pay" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="takehome_pay"/>
+		<property name="com.jaspersoft.studio.field.label" value="takehome_pay"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payslip_view"/>
+	</field>
+	<background splitType="Stretch"/>
+	<title height="99" splitType="Stretch">
+		<element kind="image" uuid="67b9575b-9a4e-4e2a-b336-17d69794c941" x="10" y="8" width="544" height="83">
+			<expression><![CDATA["C:/Users/danilo/Documents/AOOP_MPH_PayrollSystem/src/header.png"]]></expression>
+		</element>
+	</title>
+	<pageHeader height="40" splitType="Stretch">
+		<element kind="staticText" uuid="ce5c729e-bd31-4fe9-9a98-c1524ebbb605" x="0" y="10" width="549" height="30" forecolor="#000066" fontSize="19.0" bold="true" underline="true" hTextAlign="Center">
+			<text><![CDATA[EMPLOYEE PAYSLIP]]></text>
+		</element>
+	</pageHeader>
+	<detail>
+		<band height="126" splitType="Stretch">
+			<element kind="staticText" uuid="49d759b6-7ca5-4131-94ff-9ce286d2a61f" mode="Opaque" x="33" y="30" width="100" height="20" forecolor="#FFFFFF" backcolor="#000066" fontName="SansSerif" bold="true">
+				<text><![CDATA[PAYSLIP NO.]]></text>
+			</element>
+			<element kind="staticText" uuid="a59ce0de-0d5d-45b2-b184-3c9c5c530af7" mode="Opaque" x="33" y="51" width="100" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="SansSerif" bold="true">
+				<text><![CDATA[EMPLOYEE ID	]]></text>
+			</element>
+			<element kind="staticText" uuid="a99bae7e-000e-4ab3-a5a8-e3a1c571d6a2" mode="Opaque" x="33" y="71" width="100" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="SansSerif" bold="true">
+				<text><![CDATA[EMPLOYEE NAME]]></text>
+			</element>
+			<element kind="staticText" uuid="f588b9c0-3f91-44ec-8e26-b510aa5f9287" mode="Opaque" x="288" y="30" width="140" height="20" forecolor="#FFFFFF" backcolor="#000066" fontName="SansSerif" bold="true">
+				<text><![CDATA[PERIOD START DATE]]></text>
+			</element>
+			<element kind="textField" uuid="fa522ce2-08e4-4a05-9943-ca617aa4cb21" x="139" y="30" width="100" height="18">
+				<expression><![CDATA[$F{employee_id}+" - 1"]]></expression>
+			</element>
+			<element kind="staticText" uuid="44ee041a-ef97-4ab2-94a6-2c66363ff645" mode="Opaque" x="288" y="51" width="140" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="SansSerif" bold="true">
+				<text><![CDATA[PERIOD END DATE]]></text>
+			</element>
+			<element kind="staticText" uuid="96a9bc17-0ee9-4bcd-b860-f68a43c4f5b1" mode="Opaque" x="288" y="71" width="140" height="30" forecolor="#FFFFFF" backcolor="#000066" fontName="SansSerif" bold="true">
+				<text><![CDATA[EMPLOYEE POSITION/DEPARTMENT]]></text>
+			</element>
+			<element kind="textField" uuid="d60a79a6-704a-4ea5-b90d-a0e84748b425" x="433" y="71" width="100" height="30">
+				<expression><![CDATA[$F{job_position} + " / " + $F{department_name}]]></expression>
+			</element>
+			<element kind="textField" uuid="4f2dc8c3-405b-48a6-8818-8934b93af765" x="138" y="50" width="100" height="20">
+				<expression><![CDATA[$P{empId}]]></expression>
+			</element>
+			<element kind="textField" uuid="6a919f24-6ef1-4874-95df-401173feebd3" x="137" y="71" width="152" height="18">
+				<expression><![CDATA[$F{employee_full_name}]]></expression>
+			</element>
+			<element kind="textField" uuid="3aa9a850-92b1-4792-93f4-c207a86e59c7" x="433" y="30" width="100" height="20" linkType="None" linkTarget="Self">
+				<expression><![CDATA[$P{startDate}]]></expression>
+			</element>
+			<element kind="textField" uuid="50779a18-3066-4ae1-bba8-257e8dc4c2bb" x="433" y="51" width="100" height="19">
+				<expression><![CDATA[$P{endDate}]]></expression>
+			</element>
+		</band>
+		<band height="113">
+			<element kind="staticText" uuid="3c037c25-6d71-46cb-9968-fe0afba8cbf9" mode="Opaque" x="30" y="0" width="500" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="Arial Black">
+				<text><![CDATA[EARNINGS]]></text>
+			</element>
+			<element kind="staticText" uuid="a49eabe2-a229-47fb-be0e-e39f68ab783a" x="30" y="20" width="100" height="19">
+				<text><![CDATA[Monthly Rate]]></text>
+			</element>
+			<element kind="staticText" uuid="213a538a-4d04-491a-af7a-8e54ba0c4058" x="30" y="38" width="100" height="19">
+				<text><![CDATA[Daily Rate]]></text>
+			</element>
+			<element kind="staticText" uuid="c1a88b02-f91a-4dd6-b4ed-fc0baf8c89ef" x="30" y="58" width="100" height="19" fontName="SansSerif">
+				<text><![CDATA[Days Worked]]></text>
+			</element>
+			<element kind="textField" uuid="1a77243b-47d3-47cd-9120-4a155feedcf9" x="428" y="20" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA[$F{basic_salary}]]></expression>
+			</element>
+			<element kind="textField" uuid="496a4933-9821-4543-a93d-7e9bf4d00e3d" x="428" y="38" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA[$F{daily_rate}]]></expression>
+			</element>
+			<element kind="staticText" uuid="8f1f49af-66ec-42f9-801a-6a862a02f79e" x="30" y="77" width="100" height="19" fontName="Arial Black">
+				<text><![CDATA[GROSS INCOME]]></text>
+			</element>
+			<element kind="textField" uuid="1dded4d7-face-4a28-ae36-c40e2abb5cb3" x="430" y="74" width="100" height="19" fontName="Arial Black" hTextAlign="Right">
+				<expression><![CDATA[$F{gross_salary_calc}]]></expression>
+			</element>
+			<element kind="textField" uuid="ecea70b0-6904-4242-a4aa-413a0be12951" x="430" y="56" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA[$F{days_worked}]]></expression>
+			</element>
+		</band>
+		<band height="111">
+			<element kind="staticText" uuid="a07cd819-7942-4870-9259-ca1268108fdb" mode="Opaque" x="30" y="0" width="500" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="Arial Black">
+				<text><![CDATA[BENEFITS]]></text>
+			</element>
+			<element kind="staticText" uuid="7903201c-28f8-4dc5-8e79-2e9668459d5f" x="30" y="20" width="100" height="19">
+				<text><![CDATA[Rice Subsidy]]></text>
+			</element>
+			<element kind="staticText" uuid="e66f5451-2b59-4d3a-b822-c75257d50a73" x="30" y="38" width="100" height="19">
+				<text><![CDATA[Phone Allowance]]></text>
+			</element>
+			<element kind="staticText" uuid="7b086991-6af8-4450-8af6-7ee408a22160" x="30" y="58" width="100" height="19" fontName="SansSerif">
+				<text><![CDATA[Clothing Allowance]]></text>
+			</element>
+			<element kind="textField" uuid="e993404d-34ea-4852-b665-ef5caa7c6c8b" x="428" y="20" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA[$F{rice_subsidy}]]></expression>
+			</element>
+			<element kind="textField" uuid="2630455d-bea7-4efa-a456-e95e66e16708" x="428" y="38" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA[$F{phone_allowance}]]></expression>
+			</element>
+			<element kind="staticText" uuid="c27251c5-bde9-4e49-9172-e1b892d49eac" x="30" y="77" width="100" height="19" fontName="Arial Black">
+				<text><![CDATA[TOTAL]]></text>
+			</element>
+			<element kind="textField" uuid="c996ca8f-e4ed-4646-aba6-71b1df861b01" x="430" y="74" width="100" height="19" fontName="Arial Black" hTextAlign="Right">
+				<expression><![CDATA[$F{total_benefits}]]></expression>
+			</element>
+			<element kind="textField" uuid="112b9bd8-384d-423f-aef0-8361e8264509" x="430" y="56" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA[$F{clothing_allowance}]]></expression>
+			</element>
+		</band>
+		<band height="260">
+			<element kind="staticText" uuid="c2361487-c395-4922-94ca-b63ba42f0b7a" mode="Opaque" x="32" y="10" width="500" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="Arial Black">
+				<text><![CDATA[DEDUCTIONS]]></text>
+			</element>
+			<element kind="staticText" uuid="32f13202-abc6-4b9b-8017-2ca92039f126" x="32" y="30" width="100" height="19">
+				<text><![CDATA[Social Security System]]></text>
+			</element>
+			<element kind="staticText" uuid="e82d3167-c9a8-4087-b483-50280832b7d9" x="32" y="48" width="100" height="19">
+				<text><![CDATA[Philhealth]]></text>
+			</element>
+			<element kind="staticText" uuid="38949def-5541-4bd2-882d-f8a1a6a79a78" x="32" y="68" width="100" height="19" fontName="SansSerif">
+				<text><![CDATA[Pag-ibig]]></text>
+			</element>
+			<element kind="textField" uuid="eea56cd8-2820-4b2d-b7d4-73e9d0802c78" x="430" y="30" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA[$F{sss_deduction}]]></expression>
+			</element>
+			<element kind="textField" uuid="fba88298-65e7-4e92-9503-d722d664701d" x="430" y="48" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA[$F{philhealth}]]></expression>
+			</element>
+			<element kind="staticText" uuid="13f62e5c-9a6d-4541-9133-f37164fed310" x="32" y="110" width="100" height="19" fontName="Arial Black">
+				<text><![CDATA[TOTAL]]></text>
+			</element>
+			<element kind="textField" uuid="49e28bbd-584d-4aa8-8f3a-540d390861b7" x="433" y="87" width="100" height="19" hTextAlign="Right">
+				<expression><![CDATA[$F{withholding_tax}]]></expression>
+			</element>
+			<element kind="textField" uuid="f2c20bd2-cc77-4d78-90c8-4c39816edb3d" x="432" y="66" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA[$F{pagibig}]]></expression>
+			</element>
+			<element kind="staticText" uuid="a130beb9-e340-4cd9-899c-b415e0e432bc" x="32" y="87" width="100" height="19" fontName="SansSerif">
+				<text><![CDATA[Withholding Tax]]></text>
+			</element>
+			<element kind="textField" uuid="523b2751-850b-4bd4-aa95-ce887825866d" x="432" y="106" width="100" height="19" fontName="Arial Black" hTextAlign="Right">
+				<expression><![CDATA[$F{total_deductions}]]></expression>
+			</element>
+			<element kind="staticText" uuid="3b3f9cfb-29ad-46b1-8861-98ccd7c65d80" mode="Opaque" x="30" y="150" width="500" height="19" forecolor="#FFFFFF" backcolor="#000066" fontName="Arial Black">
+				<text><![CDATA[SUMMARY]]></text>
+			</element>
+			<element kind="staticText" uuid="de6eae8a-b04c-4155-9c3a-d3f5aae6d7e4" x="30" y="170" width="100" height="19">
+				<text><![CDATA[Gross Income]]></text>
+			</element>
+			<element kind="staticText" uuid="e30d50a9-a640-4397-9225-07bbbbf9692d" x="30" y="188" width="100" height="19">
+				<text><![CDATA[Benefits]]></text>
+			</element>
+			<element kind="staticText" uuid="3cf3d139-d6b6-4ead-b479-fa2bb748ae0e" x="30" y="208" width="100" height="19" fontName="SansSerif">
+				<text><![CDATA[Deductions]]></text>
+			</element>
+			<element kind="textField" uuid="157e38fb-f8f3-4e89-83d0-10c852288c4d" x="430" y="172" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA[$F{gross_salary_calc}]]></expression>
+			</element>
+			<element kind="textField" uuid="31522ddd-4378-4fe5-a0a4-7c5bdaccdeae" x="430" y="190" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA[$F{total_benefits}]]></expression>
+			</element>
+			<element kind="textField" uuid="8f20965c-9bc4-4032-86ed-fb62baa40ed5" x="432" y="226" width="100" height="24" fontName="Arial Black" hTextAlign="Right">
+				<expression><![CDATA[$F{takehome_pay}]]></expression>
+			</element>
+			<element kind="textField" uuid="b70a7484-0e1a-4707-8623-801194b8545b" x="432" y="208" width="100" height="18" hTextAlign="Right">
+				<expression><![CDATA[$F{total_deductions}]]></expression>
+			</element>
+			<element kind="staticText" uuid="5c827017-3cd9-45ee-8346-5f5f3329a34c" x="30" y="233" width="100" height="19" fontName="Arial Black">
+				<text><![CDATA[TAKE HOME PAY]]></text>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

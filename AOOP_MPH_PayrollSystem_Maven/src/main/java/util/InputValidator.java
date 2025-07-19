@@ -26,7 +26,9 @@ public class InputValidator {
             evt.consume();
         }
     }
-
+    
+        
+   
     // Allow only digits with max length
     public static void allowOnlyDigits(KeyEvent evt, JTextField textField, int maxLength) {
         char c = evt.getKeyChar();
@@ -57,11 +59,16 @@ public class InputValidator {
         }
     }
 
-// Allow only digits and special characters (-) with max length
+// Allow only digits and '-' with max length, but allow Backspace/Delete anytime
     public static void allowOnlyDigitsSpecial(KeyEvent evt, String currentText, int maxLength) {
         char c = evt.getKeyChar();
+
+        if (c == '\b' || c == '\u007F') {
+            return;
+        }
+
         if ((!Character.isDigit(c) && c != '-') || currentText.length() >= maxLength) {
-            evt.consume(); // Prevent input
+            evt.consume();
         }
     }
 
@@ -141,18 +148,12 @@ public class InputValidator {
         return input != null && input.length() <= maxLength && input.chars().allMatch(Character::isLetterOrDigit);
     }
 
-    public static void validateEmployee(Employee employee) throws SQLException {
+    public static boolean isNumericSpecial(String input, int maxLength) {
+        // Allows digits and hyphens
+        return input != null && input.length() <= maxLength && input.matches("^[0-9\\-]+$");
+    }
 
-        // First and last name
-        if (employee.getFirstName() == null || employee.getLastName() == null) {
-            throw new IllegalArgumentException("First name and last name cannot be null.");
-        }
-        if (!employee.getFirstName().chars().allMatch(c -> isValidNameCharacter((char) c))) {
-            throw new IllegalArgumentException("First name contains invalid characters.");
-        }
-        if (!employee.getLastName().chars().allMatch(c -> isValidNameCharacter((char) c))) {
-            throw new IllegalArgumentException("Last name contains invalid characters.");
-        }
+    public static void validateEmployee(Employee employee) throws SQLException {
 
         // Status
         if (employee.getStatus() == null || employee.getStatus().trim().isEmpty()) {
@@ -160,16 +161,16 @@ public class InputValidator {
         }
 
         // ID numbers
-        if (!isAlphanumeric(employee.getSssNumber(), 20)) {
+        if (!isNumericSpecial(employee.getSssNumber(), 20)) {
             throw new IllegalArgumentException("Invalid SSS number.");
         }
-        if (!isAlphanumeric(employee.getPhilhealthNumber(), 20)) {
+        if (!isNumericSpecial(employee.getPhilhealthNumber(), 20)) {
             throw new IllegalArgumentException("Invalid PhilHealth number.");
         }
-        if (!isAlphanumeric(employee.getPagibigNumber(), 20)) {
+        if (!isNumericSpecial(employee.getPagibigNumber(), 20)) {
             throw new IllegalArgumentException("Invalid Pag-IBIG number.");
         }
-        if (!isAlphanumeric(employee.getTinNumber(), 20)) {
+        if (!isNumericSpecial(employee.getTinNumber(), 20)) {
             throw new IllegalArgumentException("Invalid TIN number.");
         }
 
@@ -179,20 +180,6 @@ public class InputValidator {
             throw new IllegalArgumentException("Salary and allowances must be non-negative.");
         }
 
-        // Phone number
-        if (!employee.getPhoneNumber().chars().allMatch(c -> isOnlyDigitOrDash((char) c))) {
-            throw new IllegalArgumentException("Invalid phone number format.");
-        }
-
-        // ZIP code
-        if (employee.getZip().length() != 4) {
-            throw new IllegalArgumentException("ZIP code must be exactly 4 digits.");
-        }
-
-        // Birthdate
-        if (employee.getBirthdate() == null) {
-            throw new IllegalArgumentException("Birthdate cannot be null.");
-        }
 
     }
 

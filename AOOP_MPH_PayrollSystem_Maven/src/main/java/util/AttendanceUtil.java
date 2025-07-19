@@ -11,96 +11,99 @@ import model.Attendance_sp;
 
 public class AttendanceUtil {
 
-    public static DefaultTableModel toTableModelTruncated(List<Attendance> attendanceList) {
+    public interface TableModelBuilder<T> {
+        DefaultTableModel toTableModel(List<T> list);
+    }
 
-        String[] columnNames = {
-            "Date", "Time In", "Time Out", "Regular Hours", "Overtime Hours"
-        };
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-
-        for (Attendance att : attendanceList) {
-            String[] row = new String[]{
-                att.getDate() != null ? att.getDate().toString() : "",
-                att.getTimeIn() != null ? att.getTimeIn().toString() : "",
-                att.getTimeOut() != null ? att.getTimeOut().toString() : "",
-                String.valueOf(att.getRegularHoursCalc())
+    public static class AttendanceTableModelBuilder implements TableModelBuilder<Attendance> {
+        @Override
+        public DefaultTableModel toTableModel(List<Attendance> attendanceList) {
+            String[] columnNames = {
+                "Date", "Time In", "Time Out", "Regular Hours", "Overtime Hours"
             };
-            model.addRow(row);
+            DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+            for (Attendance att : attendanceList) {
+                String[] row = new String[]{
+                    att.getDate() != null ? att.getDate().toString() : "",
+                    att.getTimeIn() != null ? att.getTimeIn().toString() : "",
+                    att.getTimeOut() != null ? att.getTimeOut().toString() : "",
+                    String.valueOf(att.getRegularHoursCalc())
+                };
+                model.addRow(row);
+            }
+            return model;
         }
+    }
 
-        return model;
+    public static class AttendanceSPTableModelBuilder implements TableModelBuilder<Attendance_sp> {
+        @Override
+        public DefaultTableModel toTableModel(List<Attendance_sp> attendanceList) {
+            String[] columnNames = {
+                "Date", "Time In", "Time Out", "Regular Hours", "Overtime Hours"
+            };
+            DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+            for (Attendance_sp att : attendanceList) {
+                String[] row = new String[]{
+                    att.getDate() != null ? att.getDate().toString() : "",
+                    att.getTimeIn() != null ? att.getTimeIn().toString() : "",
+                    att.getTimeOut() != null ? att.getTimeOut().toString() : "",
+                    att.getRegularHoursCalc() != null ? att.getRegularHoursCalc().toString() : "",
+                    att.getOvertimeHoursCalc() != null ? att.getOvertimeHoursCalc().toString() : ""
+                };
+                model.addRow(row);
+            }
+            return model;
+        }
+    }
+
+    public static class AttendanceSPFullTableModelBuilder implements TableModelBuilder<Attendance_sp> {
+        @Override
+        public DefaultTableModel toTableModel(List<Attendance_sp> attendanceList) {
+            String[] columnNames = {
+                "Attendance ID", "Employee ID", "Date", "Time In", "Time Out",
+                "Regular Hours", "Overtime Rate", "Overtime Hours",
+                "Overtime Updated",
+//                "Last Name", "First Name",
+//                "Overtime Approver ID", "OT Approver Last Name", "OT Approver First Name"
+            };
+            DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+            for (Attendance_sp att : attendanceList) {
+                Object[] row = {
+                    att.getAttendanceId(),
+                    att.getEmployeeId(),
+                    att.getDate(),
+                    att.getTimeIn(),
+                    att.getTimeOut(),
+                    att.getRegularHoursCalc(),
+                    att.getOvertimeRate(),
+                    att.getOvertimeHoursCalc(),
+                    att.getOvertimeUpdatedDate(),
+//                    att.getLastName(),
+//                    att.getFirstName(),
+//                    att.getOvertimeApproverId(),
+//                    att.getOvertimeApproverLastName(),
+//                    att.getOvertimeApproverFirstName()
+                };
+                model.addRow(row);
+            }
+            return model;
+        }
+    }
+
+    public static DefaultTableModel toTableModelTruncated(List<Attendance> attendanceList) {
+        return new AttendanceTableModelBuilder().toTableModel(attendanceList);
     }
 
     public static DefaultTableModel toTableModel_sp(List<Attendance_sp> attendanceList) {
-        String[] columnNames = {
-            "Date", "Time In", "Time Out", "Regular Hours", "Overtime Hours"
-        };
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-
-        for (Attendance_sp att : attendanceList) {
-            String[] row = new String[]{
-                att.getDate() != null ? att.getDate().toString() : "",
-                att.getTimeIn() != null ? att.getTimeIn().toString() : "",
-                att.getTimeOut() != null ? att.getTimeOut().toString() : "",
-                att.getRegularHoursCalc() != null ? att.getRegularHoursCalc().toString() : "",
-                att.getOvertimeHoursCalc() != null ? att.getOvertimeHoursCalc().toString() : ""
-            };
-            model.addRow(row);
-        }
-
-        return model;
+        return new AttendanceSPTableModelBuilder().toTableModel(attendanceList);
     }
 
     public static DefaultTableModel attendanceListToTableModel(List<Attendance_sp> attendanceList) {
-        String[] columnNames = {
-            "Attendance ID", "Employee ID", "Date", "Time In", "Time Out",
-            "Regular Hours", "Overtime Rate", "Overtime Hours",
-            "Overtime Updated", "Last Name", "First Name",
-            "Overtime Approver ID", "OT Approver Last Name", "OT Approver First Name"
-        };
-
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-
-        for (Attendance_sp att : attendanceList) {
-            Object[] row = {
-                att.getAttendanceId(),
-                att.getEmployeeId(),
-                att.getDate(),
-                att.getTimeIn(),
-                att.getTimeOut(),
-                att.getRegularHoursCalc(),
-                att.getOvertimeRate(),
-                att.getOvertimeHoursCalc(),
-                att.getOvertimeUpdatedDate(),
-                att.getLastName(),
-                att.getFirstName(),
-                att.getOvertimeApproverId(),
-                att.getOvertimeApproverLastName(),
-                att.getOvertimeApproverFirstName()
-            };
-            model.addRow(row);
-        }
-
-        return model;
+        return new AttendanceSPFullTableModelBuilder().toTableModel(attendanceList);
     }
 
     public static DefaultTableModel toTableModel(List<Attendance> attendanceList) {
-
-        String[] columnNames = {
-            "Date", "Time In", "Time Out", "Regular Hours", "Overtime Hours"
-        };
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-
-        for (Attendance att : attendanceList) {
-            String[] row = new String[]{
-                att.getDate() != null ? att.getDate().toString() : "",
-                att.getTimeIn() != null ? att.getTimeIn().toString() : "",
-                att.getTimeOut() != null ? att.getTimeOut().toString() : "",
-                String.valueOf(att.getRegularHoursCalc()),};
-            model.addRow(row);
-        }
-
-        return model;
+        return new AttendanceTableModelBuilder().toTableModel(attendanceList);
     }
 
     public double getTotalRegularHours(List<Attendance_sp> attendanceList) {
@@ -213,15 +216,13 @@ public class AttendanceUtil {
         ArrayList<Integer> attendanceIds = new ArrayList<>();
         int rowCount = table.getRowCount();
 
-        // Assuming column 1 contains attendance_id (index 1)
         for (int i = 0; i < rowCount; i++) {
             Object value = table.getValueAt(i, 0); 
             if (value != null) {
-           
                 try {
                     attendanceIds.add(Integer.valueOf(value.toString()));
                 } catch (NumberFormatException ex) {
-                    
+                    // Skip invalid values
                 }
             }
         }

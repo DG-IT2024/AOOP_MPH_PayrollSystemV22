@@ -71,7 +71,7 @@ public class EmployeeDAO {
         try (CallableStatement stmt = conn.prepareCall(sql)) {
             stmt.setString(1, emp.getLastName());
             stmt.setString(2, emp.getFirstName());
-            // SAFELY handle null date
+          
             if (emp.getBirthdate() != null) {
                 stmt.setDate(3, new java.sql.Date(emp.getBirthdate().getTime()));
             } else {

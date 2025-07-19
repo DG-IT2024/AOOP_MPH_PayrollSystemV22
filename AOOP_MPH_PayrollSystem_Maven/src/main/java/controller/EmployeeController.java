@@ -23,7 +23,6 @@ public class EmployeeController {
             DefaultTableModel model = EmployeeTableUtil.toTableModel(employees);
             table.setModel(model);
         } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -37,7 +36,6 @@ public class EmployeeController {
         try {
             service.addEmployee(employee);
         } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -45,7 +43,6 @@ public class EmployeeController {
         try {
             service.updateEmployee(employee);
         } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -53,7 +50,6 @@ public class EmployeeController {
         try {
             service.removeEmployee(employeeId);
         } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 }

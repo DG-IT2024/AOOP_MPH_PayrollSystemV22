@@ -73,5 +73,24 @@ public class EmployeeService {
        
    }
    
+       public static boolean isEmployeeFieldsUnique(List<Employee> employees, String sssNum, String philhealthNum, String pagibigNum, String tinNum) {
+        for (Employee emp : employees) {
+            if (sssNum != null && sssNum.equals(emp.getSssNumber())) {
+                return false;
+            }
+            if (philhealthNum != null && philhealthNum.equals(emp.getPhilhealthNumber())) {
+                return false;
+            }
+            if (pagibigNum != null && pagibigNum.equals(emp.getPagibigNumber())) {
+                return false;
+            }
+            if (tinNum != null && tinNum.equals(emp.getTinNumber())) {
+                return false;
+            }
+        }
+        return true;
+    }
+   
+   
 
 }

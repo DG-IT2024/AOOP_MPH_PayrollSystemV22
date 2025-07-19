@@ -1,85 +1,56 @@
 package util;
 
-import controller.EmployeeController;
-import java.sql.SQLException;
-
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.view.JasperViewer;
 
 import java.sql.Connection;
-import java.util.HashMap;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import net.sf.jasperreports.view.JasperViewer;
-import service.EmployeeService;
+import java.util.HashMap;
 
 public class ReportUtil {
 
-    public static void connectJaspter(int empId, String Name, java.sql.Date startDate, java.sql.Date endDate) {
-        Connection conn = null;
+    private static final String JRXML_PATH = "src/main/resources/reports/employee_payslip.jrxml";
+    private static final String REPORT_DIR = "src/main/resources/reports/";
 
-        try {
-
-            conn = DBConnect.getConnection(); // Get database connection
-
-            String reportPath = "C:/Users/danilo/Documents/AOOP_MPH_PayrollSystem/src/Report/MyReports/employee_payslip.jrxml";
-
-            HashMap<String, Object> parameters = new HashMap<>();     // Set up parameters if needed        // Example: parameters.put("paramName", value);
-            parameters.put("empId", empId);
-            parameters.put("startDate", startDate);
-            parameters.put("endDate", endDate);
-
-            JasperPrint jasperPrint = generateReport(reportPath, parameters, conn);     // Generate report
+    private static Map<String, Object> createParams(int empId, java.sql.Date startDate, java.sql.Date endDate) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("empId", empId);
+        params.put("startDate", startDate);
+        params.put("endDate", endDate);
+        return params;
+    }
 
 
-            String fileName = Name;
-            String pdfPath = "C:/Users/danilo/Documents/AOOP_MPH_PayrollSystem/src/Report/MyReports/" + fileName + ".pdf";
-            exportToPdf(jasperPrint, pdfPath);
-
-        } catch (SQLException | JRException e) {
-        } finally {
-
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-            }
+    public static void generatePayslip(int empId, String name, java.sql.Date startDate, java.sql.Date endDate) {
+        try (Connection conn = DBConnect.getConnection()) {
+            Map<String, Object> params = createParams(empId, startDate, endDate);
+            JasperPrint jp = generateReport(JRXML_PATH, params, conn);
+            String pdfPath = REPORT_DIR + name + getTodayYYYYMMDD() + ".pdf";
+            JasperExportManager.exportReportToPdfFile(jp, pdfPath);
+        } catch (SQLException | JRException ignored) {
         }
-
     }
 
-    public static JasperPrint generateReport(String jrxmlPath, Map<String, Object> parameters, Connection connection) throws JRException {
+    public static void viewPayslip(int empId, java.sql.Date startDate, java.sql.Date endDate) {
+        try (Connection conn = DBConnect.getConnection()) {
 
-        JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlPath);          // Compile the JRXML file to a JasperReport object
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);  // Fill the report (fetch data from DB using parameters)
-
-        return jasperPrint;
+            Map<String, Object> params = createParams(empId, startDate, endDate);
+            JasperPrint jp = generateReport(JRXML_PATH, params, conn);
+            JasperViewer viewer = new JasperViewer(jp, false); // Prevent app from exiting
+            viewer.setVisible(true);
+        } catch (SQLException | JRException ignored) {
+        }
     }
 
-    public static void viewReport(int empId, java.sql.Date startDate, java.sql.Date endDate) throws SQLException, JRException {
-        java.sql.Connection conn = DBConnect.getConnection();
-
-        String reportPath = "C:/Users/danilo/Documents/AOOP_MPH_PayrollSystem/src/Report/MyReports/employee_payslip.jrxml";
-
-        HashMap<String, Object> parameters = new HashMap<>();
-        parameters.put("empId", empId);
-        parameters.put("startDate", startDate);
-        parameters.put("endDate", endDate);
-
-        JasperReport jr = JasperCompileManager.compileReport(reportPath);
-        JasperPrint jp = JasperFillManager.fillReport(jr, parameters, conn);
-        JasperViewer.viewReport(jp);
-
+    public static JasperPrint generateReport(String jrxmlPath, Map<String, Object> params, Connection conn) throws JRException {
+        JasperReport jr = JasperCompileManager.compileReport(jrxmlPath);
+        return JasperFillManager.fillReport(jr, params, conn);
     }
 
-    public static void exportToPdf(JasperPrint jasperPrint, String pdfPath) throws JRException {
-        JasperExportManager.exportReportToPdfFile(jasperPrint, pdfPath);
+    public static String getTodayYYYYMMDD() {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     }
-
-    /**
-     * Exports a JasperPrint to a PDF file.
-     *
-     * @param jasperPrint JasperPrint object (filled report).
-     * @param pdfPath Output PDF file path.
-     * @throws JRException if exporting fails.
-     */
 }

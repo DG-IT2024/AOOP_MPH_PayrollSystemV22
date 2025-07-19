@@ -13,18 +13,26 @@ public class PayrollDAO {
         this.conn = conn;
     }
 
-
     public Payroll getPayrollDetails(Integer employeeId, Date periodStart, Date periodEnd) throws SQLException {
         String sql = "{CALL sp_payslip(?, ?, ?)}";
         try (CallableStatement stmt = conn.prepareCall(sql)) {
-            if (employeeId != null) stmt.setInt(1, employeeId);
-            else stmt.setNull(1, Types.INTEGER);
+            if (employeeId != null) {
+                stmt.setInt(1, employeeId);
+            } else {
+                stmt.setNull(1, Types.INTEGER);
+            }
 
-            if (periodStart != null) stmt.setDate(2, periodStart);
-            else stmt.setNull(2, Types.DATE);
+            if (periodStart != null) {
+                stmt.setDate(2, periodStart);
+            } else {
+                stmt.setNull(2, Types.DATE);
+            }
 
-            if (periodEnd != null) stmt.setDate(3, periodEnd);
-            else stmt.setNull(3, Types.DATE);
+            if (periodEnd != null) {
+                stmt.setDate(3, periodEnd);
+            } else {
+                stmt.setNull(3, Types.DATE);
+            }
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -34,15 +42,26 @@ public class PayrollDAO {
         return null;
     }
 
- 
-    public List<Payroll> getAllPayroll() throws SQLException {
+    public List<Payroll> getPayroll(Integer employeeId) throws SQLException {
+        List<Payroll> payrollList = new ArrayList<>();
+        String sql = "{CALL sp_payslip(?, null, null)}";
+        try (CallableStatement stmt = conn.prepareCall(sql)) {
+            stmt.setInt(1, employeeId); // employeeId
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                payrollList.add(mapResultSetToPayroll(rs));
+            }
+        }
+        return payrollList;
+    }
+
+    public List<Payroll> getPayroll(Integer employeeId, Date periodStart, Date periodEnd) throws SQLException {
         List<Payroll> payrollList = new ArrayList<>();
         String sql = "{CALL sp_payslip(?, ?, ?)}";
         try (CallableStatement stmt = conn.prepareCall(sql)) {
-            stmt.setNull(1, Types.INTEGER); // employeeId
-            stmt.setNull(2, Types.DATE);    // periodStart
-            stmt.setNull(3, Types.DATE);    // periodEnd
-
+            stmt.setInt(1, employeeId); // employeeId
+            stmt.setDate(2, periodStart);
+            stmt.setDate(3, periodEnd);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 payrollList.add(mapResultSetToPayroll(rs));
@@ -52,7 +71,7 @@ public class PayrollDAO {
     }
 
     public boolean insertPayroll(Payroll payroll) throws SQLException {
-     
+
         String sql = "INSERT INTO payroll (employee_id, employee_full_name, job_position, department_name, pay_period_start, pay_period_end, basic_salary, daily_rate, total_worked_hours, overtime_hours, days_worked, gross_salary_calc, rice_subsidy, phone_allowance, clothing_allowance, total_benefits, sss_deduction, philhealth, pagibig, taxable_income, withholding_tax, total_deductions, takehome_pay) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, payroll.getEmployeeId());

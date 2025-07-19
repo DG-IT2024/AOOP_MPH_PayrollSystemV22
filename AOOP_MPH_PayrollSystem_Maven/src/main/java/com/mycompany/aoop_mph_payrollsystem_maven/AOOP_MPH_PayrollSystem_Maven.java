@@ -6,7 +6,7 @@ package com.mycompany.aoop_mph_payrollsystem_maven;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import ui.LoginView;
+import ui.admin.LoginView;
 
 /**
  *

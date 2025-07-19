@@ -249,6 +249,7 @@ public class AttendanceAdmin extends javax.swing.JFrame {
         jDateChooserEndDate = new com.toedter.calendar.JDateChooser();
         jDateChooserStartDate = new com.toedter.calendar.JDateChooser();
         jLabel1 = new javax.swing.JLabel();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("GILTENDEZ | OOP |  A2102");
@@ -414,6 +415,7 @@ public class AttendanceAdmin extends javax.swing.JFrame {
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/photos/Attendance.jpg"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 810, 620));
+        getContentPane().add(jDateChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 300, -1, -1));
 
         pack();
         setLocationRelativeTo(null);
@@ -551,6 +553,7 @@ public class AttendanceAdmin extends javax.swing.JFrame {
     private javax.swing.JButton jButtonCalculate2;
     private javax.swing.JButton jButtonClose;
     private javax.swing.JButton jButtonPublish1;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooserEndDate;
     private com.toedter.calendar.JDateChooser jDateChooserStartDate;
     private javax.swing.JLabel jLabel1;

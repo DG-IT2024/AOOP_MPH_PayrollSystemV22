@@ -14,6 +14,7 @@ import model.Password;
 
 import util.DBConnect;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -77,6 +78,15 @@ public class LoginService {
         return match;
     }
 
+    public boolean isLoginEmpty(String username) throws SQLException {
+        Login login = loginDAO.getLoginByUsername(username);
+        if (login == null) {
+
+            return true;
+        }
+        return false;
+    }
+
     // Check if user is blocked
     public boolean isBlocked(String username) throws Exception {
         Login login = loginDAO.getLoginByUsername(username);
@@ -119,6 +129,5 @@ public class LoginService {
     public Login getLoginDetail(String username) throws Exception {
         return loginDAO.getLoginByUsername(username);
     }
-
 
 }

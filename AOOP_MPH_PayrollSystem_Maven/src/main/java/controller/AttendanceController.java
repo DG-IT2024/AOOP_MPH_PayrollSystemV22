@@ -33,13 +33,12 @@ public class AttendanceController {
         DefaultTableModel model = AttendanceUtil.attendanceListToTableModel(attendance);
         table.setModel(model);
     }
-    
+
     public void loadBasicAttendanceToFilteredTable(JTable table, int employeeId, Date startDate, Date endDate) throws SQLException {
         List<Attendance_sp> attendance = service.listAttendanceByEmployeeAndDateRange(employeeId, startDate, endDate);
         DefaultTableModel model = AttendanceUtil.toTableModel_sp(attendance);
         table.setModel(model);
     }
-    
 
     public Attendance_sp getAttendance(int id, Date startDate, Date endDate) {
         try {
@@ -49,20 +48,20 @@ public class AttendanceController {
         }
     }
 
-    public void modifyAttendance(Attendance att) {
-        try {
-            service.updateAttendance(att);
-        } catch (SQLException e) {
-        }
-    }
+//    public void modifyAttendance(Attendance att) {
+//        try {
+//            service.updateAttendance(att);
+//        } catch (SQLException e) {
+//        }
+//    }
 
     public ArrayList<Integer> getAttendanceIds(JTable table) {
 
         ArrayList<Integer> ids = AttendanceUtil.getAttendanceIdsFromTable(table);
-        // Print each ID
         for (Integer id : ids) {
-          }
+        }
         return ids;
     }
 
+  
 }

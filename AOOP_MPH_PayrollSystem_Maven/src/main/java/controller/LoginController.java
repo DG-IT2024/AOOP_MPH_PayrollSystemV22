@@ -4,9 +4,10 @@
  */
 package controller;
 
+import ui.employeeuser.EmployeeProfileUser;
+import ui.admin.EmployeeProfileAdmin;
 import model.Login;
 import service.*;
-import ui.*;
 
 public class LoginController {
 
