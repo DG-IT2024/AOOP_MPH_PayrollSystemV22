@@ -125,13 +125,13 @@ public class AttendanceAdmin extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jTextFieldRegularHours = new javax.swing.JTextField();
         jTextFieldOvertimeHours = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTableTimeSheet = new javax.swing.JTable();
         jDateChooserEndDate = new com.toedter.calendar.JDateChooser();
         jDateChooserStartDate = new com.toedter.calendar.JDateChooser();
         jButtonUpdate = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jButtonAdd = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableTimeSheet = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -159,7 +159,7 @@ public class AttendanceAdmin extends javax.swing.JFrame {
                 jButtonCalculateActionPerformed(evt);
             }
         });
-        jPanel2.add(jButtonCalculate, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 150, 20));
+        jPanel2.add(jButtonCalculate, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 150, 30));
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(8, 207, 180, 283));
 
@@ -235,25 +235,6 @@ public class AttendanceAdmin extends javax.swing.JFrame {
         });
         getContentPane().add(jTextFieldOvertimeHours, new org.netbeans.lib.awtextra.AbsoluteConstraints(1130, 340, 50, -1));
 
-        jTableTimeSheet.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        jTableTimeSheet.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jTableTimeSheet.getTableHeader().setReorderingAllowed(false);
-        jTableTimeSheet.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTableTimeSheetMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jTableTimeSheet);
-
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 170, 830, 390));
-
         jDateChooserEndDate.setBackground(new java.awt.Color(255, 255, 255));
         jDateChooserEndDate.setToolTipText("");
         jDateChooserEndDate.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -294,6 +275,22 @@ public class AttendanceAdmin extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButtonAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 490, 100, -1));
+
+        jScrollPane2.setBackground(new java.awt.Color(255, 255, 255, 0));
+
+        jTableTimeSheet.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jTableTimeSheet.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jTableTimeSheet.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane2.setViewportView(jTableTimeSheet);
+
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 170, 810, 370));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Attendance.jpg"))); // NOI18N
         jLabel1.setText("]");
@@ -345,10 +342,6 @@ public class AttendanceAdmin extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_jButtonCloseActionPerformed
-
-    private void jTableTimeSheetMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableTimeSheetMouseClicked
-
-    }//GEN-LAST:event_jTableTimeSheetMouseClicked
 
     private void jDateChooserEndDateKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jDateChooserEndDateKeyTyped
         // TODO add your handling code here:
@@ -468,7 +461,7 @@ public class AttendanceAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTableTimeSheet;
     public javax.swing.JTextField jTextFieldEmployeeNum;
     public javax.swing.JTextField jTextFieldName;

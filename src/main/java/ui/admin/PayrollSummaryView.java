@@ -13,6 +13,8 @@ import java.util.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import model.Employee;
 import model.PayrollSummary;
 import service.EmployeeService;
@@ -62,7 +64,6 @@ public class PayrollSummaryView extends javax.swing.JFrame {
         }
     }
 
-    
     private void populateCoveredPeriods() throws Exception {
         PayrollSummaryService service = new PayrollSummaryService();
         List<PayrollSummary> payrolls = service.listPayrollSummary(null, null, null);
@@ -97,7 +98,6 @@ public class PayrollSummaryView extends javax.swing.JFrame {
         Date startDate = null;
         Date endDate = null;
         Integer empId = null;
-     
 
         String empItem = jComboBoxEmployeeNumber.getSelectedItem() != null
                 ? jComboBoxEmployeeNumber.getSelectedItem().toString()
@@ -112,8 +112,8 @@ public class PayrollSummaryView extends javax.swing.JFrame {
                 empId = null;
             }
         }
-        
-          if (!selectedPeriod.isEmpty() && selectedPeriod.contains(" to ")) {
+
+        if (!selectedPeriod.isEmpty() && selectedPeriod.contains(" to ")) {
             String[] dates = selectedPeriod.split(" to ");
             if (dates.length == 2) {
                 try {
@@ -129,6 +129,33 @@ public class PayrollSummaryView extends javax.swing.JFrame {
         PayrollSummaryService service = new PayrollSummaryService();
         service.fetchPayrollSummaries(jTablePayrollSummary, empId, startDate, endDate);
 
+    }
+
+    /**
+     * Searches for a given text in all columns of the JTable. If found, selects
+     * the row.
+     *
+     * @param table the JTable to search
+     * @param searchText the text to search for
+     * @return the first matching row index, or -1 if not found
+     */
+    public int searchTable(JTable table, String searchText) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        searchText = searchText.trim().toLowerCase();
+
+        for (int row = 0; row < model.getRowCount(); row++) {
+            for (int col = 0; col < model.getColumnCount(); col++) {
+                Object value = model.getValueAt(row, col);
+                if (value != null && value.toString().toLowerCase().contains(searchText)) {
+                    // Select and scroll to the found row
+                    table.setRowSelectionInterval(row, row);
+                    table.scrollRectToVisible(table.getCellRect(row, 0, true));
+                    return row;
+                }
+            }
+        }
+        // Not found
+        return -1;
     }
 
     /**
@@ -200,7 +227,7 @@ public class PayrollSummaryView extends javax.swing.JFrame {
             jTablePayrollSummary.getColumnModel().getColumn(16).setResizable(false);
         }
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 150, 600, 240));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 170, 600, 220));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255, 0));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -211,7 +238,7 @@ public class PayrollSummaryView extends javax.swing.JFrame {
                 jComboBoxCoveredPeriodActionPerformed(evt);
             }
         });
-        jPanel1.add(jComboBoxCoveredPeriod, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 50, 200, -1));
+        jPanel1.add(jComboBoxCoveredPeriod, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 70, 200, -1));
 
         jComboBoxEmployeeNumber.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.white, java.awt.Color.white));
         jComboBoxEmployeeNumber.addActionListener(new java.awt.event.ActionListener() {
@@ -219,20 +246,20 @@ public class PayrollSummaryView extends javax.swing.JFrame {
                 jComboBoxEmployeeNumberActionPerformed(evt);
             }
         });
-        jPanel1.add(jComboBoxEmployeeNumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 10, 200, -1));
+        jPanel1.add(jComboBoxEmployeeNumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 30, 200, -1));
 
         jLabel1.setText("Covered Period");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 50, -1, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, -1, -1));
 
         jLabel3.setText("Employee");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 10, -1, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, -1, -1));
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(326, 13, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         jLabel6.setText("Filter by :");
         jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 50, 600, 90));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 50, 600, 110));
 
         jButtonClose.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButtonClose.setText("CLOSE");
@@ -252,7 +279,7 @@ public class PayrollSummaryView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jComboBoxCoveredPeriodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCoveredPeriodActionPerformed
-       try {
+        try {
             // TODO add your handling code here:
             filterByCategory();
         } catch (SQLException ex) {
@@ -263,7 +290,7 @@ public class PayrollSummaryView extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBoxCoveredPeriodActionPerformed
 
     private void jComboBoxEmployeeNumberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxEmployeeNumberActionPerformed
-       try {
+        try {
             // TODO add your handling code here:
             filterByCategory();
         } catch (SQLException ex) {
@@ -275,7 +302,7 @@ public class PayrollSummaryView extends javax.swing.JFrame {
 
     private void jButtonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseActionPerformed
         // TODO add your handling code here:
-          this.dispose();
+        this.dispose();
     }//GEN-LAST:event_jButtonCloseActionPerformed
 
     /**

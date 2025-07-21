@@ -89,7 +89,6 @@ ui\admin\EmployeeProfileAdmin$24.class
 ui\admin\EmployeeProfileAdmin$44.class
 ui\admin\LoginView$6.class
 controller\AttendanceController.class
-ui\admin\AttendanceAdmin$14.class
 ui\employeeuser\LeaveApplicationUser$13.class
 ui\admin\EmployeeProfileAdmin$21.class
 ui\employeeuser\AttendanceUser$2.class
@@ -230,7 +229,6 @@ ui\employeeuser\PayrollUser$24.class
 ui\employeeuser\AttendanceUser$13.class
 ui\employeeuser\EmployeeProfileUser$1.class
 ui\admin\EmployeeProfileAdmin$35.class
-ui\admin\LeaveApplicationAdmin$16.class
 ui\admin\LeaveApplicationAdmin$4.class
 ui\employeeuser\PayrollUser$17.class
 ui\admin\EmployeeProfileAdmin$12.class

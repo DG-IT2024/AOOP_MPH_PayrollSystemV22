@@ -56,5 +56,10 @@
 			<type>1</type>
 			<location>C:/Users/danilo/Documents/NetBeansProjects/AOOP_MPH_PayrollSystem_Maven/src/main/resources/reports/employee_payslip.jrxml</location>
 		</link>
+		<link>
+			<name>employee_payslip_4.jrxml</name>
+			<type>1</type>
+			<location>C:/Users/danilo/Documents/AOOP_MPH_PayrollSystemV22/AOOP_MPH_PayrollSystemV22/src/main/resources/reports/employee_payslip.jrxml</location>
+		</link>
 	</linkedResources>
 </projectDescription>

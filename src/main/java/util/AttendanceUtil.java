@@ -64,7 +64,7 @@ public class AttendanceUtil {
                 "Regular Hours", "Overtime Rate", "Overtime Hours",
                 "Overtime Updated",
 //                "Last Name", "First Name",
-//                "Overtime Approver ID", "OT Approver Last Name", "OT Approver First Name"
+                "Overtime Approver ID", "OT Approver Last Name", "OT Approver First Name"
             };
             DefaultTableModel model = new DefaultTableModel(columnNames, 0);
             for (Attendance_sp att : attendanceList) {
@@ -80,9 +80,9 @@ public class AttendanceUtil {
                     att.getOvertimeUpdatedDate(),
 //                    att.getLastName(),
 //                    att.getFirstName(),
-//                    att.getOvertimeApproverId(),
-//                    att.getOvertimeApproverLastName(),
-//                    att.getOvertimeApproverFirstName()
+                    att.getOvertimeApproverId(),
+                    att.getOvertimeApproverLastName(),
+                    att.getOvertimeApproverFirstName()
                 };
                 model.addRow(row);
             }

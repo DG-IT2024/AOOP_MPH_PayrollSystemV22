@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import model.Employee;
@@ -44,7 +45,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
     private AttendanceAdmin attendanceWindow = null;
 
     public EmployeeProfileAdmin(int empId) throws Exception {
-        EmployeeProfileAdmin.empId = empId=10001;
+        EmployeeProfileAdmin.empId = empId;
         initComponents();
 
         loadEmployeeDetails();
@@ -308,6 +309,25 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         }
         // If Cancel, do nothing
     }
+    
+      public int searchTable(JTable table, String searchText) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        searchText = searchText.trim().toLowerCase();
+
+        for (int row = 0; row < model.getRowCount(); row++) {
+            for (int col = 0; col < model.getColumnCount(); col++) {
+                Object value = model.getValueAt(row, col);
+                if (value != null && value.toString().toLowerCase().contains(searchText)) {
+                   
+                    table.setRowSelectionInterval(row, row);
+                    table.scrollRectToVisible(table.getCellRect(row, 0, true));
+                    return row;
+                }
+            }
+        }
+        // Not found
+        return -1;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -365,11 +385,12 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         jButtonExit1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTableEmployeeList = new javax.swing.JTable();
-        jLabel12 = new javax.swing.JLabel();
         jButtonClear = new javax.swing.JButton();
         jButtonProfileUpdate = new javax.swing.JButton();
         jButtonProfileAdd = new javax.swing.JButton();
         jButtonProfileDelete = new javax.swing.JButton();
+        jTextFieldSearch = new javax.swing.JTextField();
+        jButtonSearch = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -657,7 +678,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
         jComboBoxImmediateSupervisor.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.add(jComboBoxImmediateSupervisor, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 110, 190, 30));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 80, 980, 280));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 100, 980, 280));
 
         jPanel2.setBackground(new java.awt.Color(222, 194, 110));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -682,7 +703,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
                 jButtonPayrollSummaryActionPerformed(evt);
             }
         });
-        jPanel2.add(jButtonPayrollSummary, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 150, 20));
+        jPanel2.add(jButtonPayrollSummary, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 150, 20));
 
         jButtonLeaveApplication.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jButtonLeaveApplication.setText("LEAVE APPLICATION");
@@ -693,7 +714,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
                 jButtonLeaveApplicationActionPerformed(evt);
             }
         });
-        jPanel2.add(jButtonLeaveApplication, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 150, 20));
+        jPanel2.add(jButtonLeaveApplication, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 150, 20));
 
         jButtonAttendance.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jButtonAttendance.setText("ATTENDANCE");
@@ -704,7 +725,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
                 jButtonAttendanceActionPerformed(evt);
             }
         });
-        jPanel2.add(jButtonAttendance, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 150, 20));
+        jPanel2.add(jButtonAttendance, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 0, 150, 20));
 
         jButtonViewEmployee1.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jButtonViewEmployee1.setText("PAYROLL");
@@ -715,7 +736,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
                 jButtonViewEmployee1ActionPerformed(evt);
             }
         });
-        jPanel2.add(jButtonViewEmployee1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 150, 20));
+        jPanel2.add(jButtonViewEmployee1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 150, 20));
 
         jTextFieldPendingLeaveCounter.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
         jTextFieldPendingLeaveCounter.setForeground(new java.awt.Color(255, 0, 51));
@@ -737,7 +758,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
                 jTextFieldPendingLeaveCounterKeyPressed(evt);
             }
         });
-        jPanel2.add(jTextFieldPendingLeaveCounter, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 130, 30, -1));
+        jPanel2.add(jTextFieldPendingLeaveCounter, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 110, 30, -1));
 
         jButtonExit1.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jButtonExit1.setText("SWITCH ACCOUNT");
@@ -813,19 +834,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
             jTableEmployeeList.getColumnModel().getColumn(20).setMinWidth(100);
         }
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 370, 980, 180));
-
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(204, 0, 51));
-        jLabel12.setText("* All fields are required.");
-        jLabel12.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-            }
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-                jLabel12InputMethodTextChanged(evt);
-            }
-        });
-        getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 60, -1, -1));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 380, 980, 170));
 
         jButtonClear.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jButtonClear.setText("CLEAR");
@@ -870,6 +879,15 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButtonProfileDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 560, 150, 20));
+        getContentPane().add(jTextFieldSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 60, 310, 30));
+
+        jButtonSearch.setText("Search");
+        jButtonSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSearchActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 60, -1, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/EE Information Admin.jpg"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1220, 610));
@@ -1265,10 +1283,6 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jTextAreaAddressMouseClicked
 
-    private void jLabel12InputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jLabel12InputMethodTextChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jLabel12InputMethodTextChanged
-
     private void jTextFieldPendingLeaveCounterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldPendingLeaveCounterActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldPendingLeaveCounterActionPerformed
@@ -1335,6 +1349,13 @@ int response = JOptionPane.showConfirmDialog(
     private void jTextFieldTINnumInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jTextFieldTINnumInputMethodTextChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldTINnumInputMethodTextChanged
+
+    private void jButtonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchActionPerformed
+        // TODO add your handling code here:
+        String searchText= jTextFieldSearch.getText();
+
+        searchTable(jTableEmployeeList, searchText);
+    }//GEN-LAST:event_jButtonSearchActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1419,6 +1440,7 @@ int response = JOptionPane.showConfirmDialog(
     private javax.swing.JButton jButtonProfileAdd;
     private javax.swing.JButton jButtonProfileDelete;
     private javax.swing.JButton jButtonProfileUpdate;
+    private javax.swing.JButton jButtonSearch;
     private javax.swing.JButton jButtonViewEmployee1;
     private javax.swing.JComboBox<String> jComboBoxImmediateSupervisor;
     private javax.swing.JComboBox<String> jComboBoxPosition;
@@ -1427,7 +1449,6 @@ int response = JOptionPane.showConfirmDialog(
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
@@ -1462,6 +1483,7 @@ int response = JOptionPane.showConfirmDialog(
     private javax.swing.JTextField jTextFieldPhoneNum;
     private javax.swing.JTextField jTextFieldRiceSubsidy;
     private javax.swing.JTextField jTextFieldSSSnum;
+    private javax.swing.JTextField jTextFieldSearch;
     private javax.swing.JTextField jTextFieldTINnum;
     // End of variables declaration//GEN-END:variables
 
