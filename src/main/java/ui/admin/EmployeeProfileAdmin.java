@@ -45,7 +45,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
     private AttendanceAdmin attendanceWindow = null;
 
     public EmployeeProfileAdmin(int empId) throws Exception {
-        EmployeeProfileAdmin.empId = empId=10001;
+        EmployeeProfileAdmin.empId = empId;
         initComponents();
 
         loadEmployeeDetails();
