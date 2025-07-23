@@ -409,6 +409,11 @@ public class LeaveApplicationAdmin extends javax.swing.JFrame {
         ));
         jTableLeaveApplications.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jTableLeaveApplications.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTableLeaveApplications.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableLeaveApplicationsMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTableLeaveApplications);
 
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 290, 700, 120));
@@ -503,7 +508,7 @@ public class LeaveApplicationAdmin extends javax.swing.JFrame {
 //            EmployeeProfileAdmin employeeprofile = new EmployeeProfileAdmin(approverEmployeeId);
 //            employeeprofile. showLeaveCounter();
 //              
-            
+
             clearField();
             // Radio checker for Pending
             if (isPendingButtonSelected()) {
@@ -512,8 +517,7 @@ public class LeaveApplicationAdmin extends javax.swing.JFrame {
                 viewAllLeave();
             }
             showSummary();
-          
-         
+
         } catch (Exception ex) {
             System.getLogger(LeaveApplicationAdmin.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
@@ -546,8 +550,30 @@ public class LeaveApplicationAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_jRadioButtonPendingActionPerformed
 
     private void jButtonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseActionPerformed
-       this.dispose();
+        this.dispose();
     }//GEN-LAST:event_jButtonCloseActionPerformed
+
+    private void jTableLeaveApplicationsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableLeaveApplicationsMouseClicked
+        try {
+            // TODO add your handling code here:
+            DefaultTableModel model = (DefaultTableModel) jTableLeaveApplications.getModel();
+            int selectedRowIndex = jTableLeaveApplications.getSelectedRow();
+            String lastName = model.getValueAt(selectedRowIndex, 2).toString();
+            String firstName = model.getValueAt(selectedRowIndex, 3).toString();
+            String fullName = lastName + ", " + firstName;
+
+            jTextFieldEmployeeNum.setText(model.getValueAt(selectedRowIndex, 1).toString());
+            jTextFieldEmployeeName.setText(fullName);
+            jTextFieldDateFiled.setText(model.getValueAt(selectedRowIndex, 5).toString());
+            jTextFieldLeaveReason.setText(model.getValueAt(selectedRowIndex, 6).toString());
+            jTextFieldStartDate.setText(model.getValueAt(selectedRowIndex, 7).toString());
+            jTextFieldEndDate.setText(model.getValueAt(selectedRowIndex, 8).toString());
+            jTextFieldLeaveDays.setText(model.getValueAt(selectedRowIndex, 9).toString());
+            showSummary();
+        } catch (Exception ex) {
+            Logger.getLogger(LeaveApplicationAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jTableLeaveApplicationsMouseClicked
 
     /**
      * @param args the command line arguments
