@@ -197,7 +197,5 @@ public class PayrollSummary {
         this.netPay = takeHomePay;
     }
 
-    public List<PayrollSummary> fetchPayrollSummaries(JTable jTablePayrollSummary, Date startDate, Date endDate) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+  
 }
