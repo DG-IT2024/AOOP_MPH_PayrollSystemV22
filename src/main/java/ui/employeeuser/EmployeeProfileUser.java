@@ -1,11 +1,8 @@
 package ui.employeeuser;
 
 import service.EmployeeService;
-import controller.EmployeeController;
-
 import java.awt.Toolkit;
 import java.io.IOException;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;

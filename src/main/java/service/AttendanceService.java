@@ -197,6 +197,8 @@ public class AttendanceService {
     }
 
     public int getWorkingDays(Date sqlStartDate) {
+        
+        
         int workingDays = 0;
 
         LocalDate localDate = sqlStartDate.toLocalDate();

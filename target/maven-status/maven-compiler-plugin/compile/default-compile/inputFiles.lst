@@ -3,6 +3,8 @@ C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\controller\EmployeeController.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\controller\LoginController.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\dao\AttendanceDAO.java
+C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\dao\DeductionRateDao.java
+C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\dao\DeductionRateDaoImpl.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\dao\EmployeeDAO.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\dao\LeaveRequestDAO.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\dao\LoginDAO.java
@@ -10,6 +12,7 @@ C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\dao\PayrollSummaryDAO.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\model\Attendance.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\model\Attendance_sp.java
+C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\model\DeductionRate.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\model\Employee.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\model\LeaveRequest_sp.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\model\Login.java
@@ -19,6 +22,8 @@ C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\model\Role.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\model\UserRole.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\service\AttendanceService.java
+C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\service\DeductionRateService.java
+C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\service\DeductionRateServiceImpl.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\service\EmployeeService.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\service\LeaveRequestService.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\service\LoginService.java
@@ -31,10 +36,8 @@ C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\ui\admin\LoginView.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\ui\admin\PayrollProcessing.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\ui\admin\PayrollSummaryView.java
-C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\ui\admin\PayslipDialog.java
-C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\ui\admin\PrintDialog.java
-C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\ui\admin\TimesheetDialog.java
-C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\ui\admin\TimesheetDialog2.java
+C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\ui\admin\TimesheetDialogAdd.java
+C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\ui\admin\TimesheetDialogUpdate.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\ui\employeeuser\AttendanceUser.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\ui\employeeuser\EmployeeProfileUser.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\ui\employeeuser\LeaveApplicationUser.java
@@ -47,4 +50,3 @@ C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\util\LeaveRequestUtil.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\util\PayrollUtil.java
 C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\util\ReportUtil.java
-C:\Users\danilo\Documents\NetBeansProjects\AOOP_MPH_PayrollSystem_Maven\src\main\java\util\StatutoryDeductions.java

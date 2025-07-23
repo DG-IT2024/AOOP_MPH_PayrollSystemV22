@@ -73,11 +73,11 @@ public class LoginController {
         }
 
     }
-
-    public int pendingCounter() throws Exception {
-        LeaveRequestService leave = new LeaveRequestService();
-        return leave.getPendingLeaveRequestCount();
-    }
-   
+//
+//    public int pendingCounter() throws Exception {
+//        LeaveRequestService leave = new LeaveRequestService();
+//        return leave.getPendingLeaveRequestCount();
+//    }
+//   
 
 }

@@ -78,14 +78,14 @@ public class LoginService {
         return match;
     }
 
-    public boolean isLoginEmpty(String username) throws SQLException {
-        Login login = loginDAO.getLoginByUsername(username);
-        if (login == null) {
-
-            return true;
-        }
-        return false;
-    }
+//    public boolean isLoginEmpty(String username) throws SQLException {
+//        Login login = loginDAO.getLoginByUsername(username);
+//        if (login == null) {
+//
+//            return true;
+//        }
+//        return false;
+//    }
 
     // Check if user is blocked
     public boolean isBlocked(String username) throws Exception {

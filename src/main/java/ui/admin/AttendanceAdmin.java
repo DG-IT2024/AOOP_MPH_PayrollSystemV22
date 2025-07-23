@@ -20,7 +20,7 @@ public class AttendanceAdmin extends javax.swing.JFrame {
     private static int approverId;
 
     public AttendanceAdmin(int empId, int approverId) throws Exception {
-        this.empId = empId ;
+        this.empId = empId;
         this.approverId = approverId;
         controller = new AttendanceController(service);
 
@@ -363,22 +363,38 @@ public class AttendanceAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_jDateChooserStartDateKeyPressed
 
     private void jButtonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateActionPerformed
-          int selectedRow = jTableTimeSheet.getSelectedRow();
-            
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Please select a row before editing!", "No Selection", JOptionPane.WARNING_MESSAGE);
+        int selectedRow = jTableTimeSheet.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a row before editing!", "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) jTableTimeSheet.getModel();
+        int selectedRowIndex = jTableTimeSheet.getSelectedRow();
+        String attendance_Id = model.getValueAt(selectedRowIndex, 0).toString();
+        int attendanceId = Integer.parseInt(attendance_Id);
+
+        TimesheetDialogUpdate dialog = new TimesheetDialogUpdate(this, attendanceId, approverId);
+        dialog.setVisible(true);
+        if (dialog.isSubmitted()) {
+            if (!checkAttendanceInputFields()) {              // One or more fields are empty, so stop further processing
+
                 return;
             }
-            
-            DefaultTableModel model = (DefaultTableModel) jTableTimeSheet.getModel();
-            int selectedRowIndex = jTableTimeSheet.getSelectedRow();
-            String attendance_Id = model.getValueAt(selectedRowIndex, 0).toString();
-            int attendanceId = Integer.parseInt(attendance_Id);
-            
-            TimesheetDialog dialog = new TimesheetDialog(this, attendanceId, approverId);
-            dialog.setVisible(true);
-            if (dialog.isSubmitted()) {
+
+            try {
+                getHours();
+                loadFilteredAttendanceDetails();
+
+                jTextFieldOvertimeHours.setText(String.valueOf(displayTotalOvertime()));
+                jTextFieldRegularHours.setText(String.valueOf(displayTotalWorkedHours()));
+
+            } catch (Exception ex) {
+                Logger.getLogger(AttendanceAdmin.class.getName()).log(Level.SEVERE, null, ex);
             }
+
+        }
 
     }//GEN-LAST:event_jButtonUpdateActionPerformed
 
@@ -392,10 +408,25 @@ public class AttendanceAdmin extends javax.swing.JFrame {
 
     private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
         // TODO add your handling code here:
-             
-        TimesheetDialog2 dialog = new TimesheetDialog2(empId);
+
+        TimesheetDialogAdd dialog = new TimesheetDialogAdd(empId);
         dialog.setVisible(true);
         if (dialog.isSubmitted()) {
+            if (!checkAttendanceInputFields()) {              // One or more fields are empty, so stop further processing
+
+                return;
+            }
+
+            try {
+                getHours();
+                loadFilteredAttendanceDetails();
+
+                jTextFieldOvertimeHours.setText(String.valueOf(displayTotalOvertime()));
+                jTextFieldRegularHours.setText(String.valueOf(displayTotalWorkedHours()));
+
+            } catch (Exception ex) {
+                Logger.getLogger(AttendanceAdmin.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }        // TODO add your handling code here:
     }//GEN-LAST:event_jButtonAddActionPerformed
 

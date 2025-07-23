@@ -12,7 +12,6 @@ import java.util.List;
 import model.Employee;
 
 import util.DBConnect;
-import util.StatutoryDeductions;
 
 public class PayrollService {
 
@@ -41,7 +40,7 @@ public class PayrollService {
 
     }
 
-    public Payroll computePayroll(int employeeId, java.sql.Date start, java.sql.Date end) throws SQLException {
+    public Payroll computePayroll(int employeeId, java.sql.Date start, java.sql.Date end) throws Exception {
         Payroll payroll = new Payroll();
 
         // Set employee info (assuming you have a method to get Employee object)
@@ -61,7 +60,7 @@ public class PayrollService {
         double basicSalary = employee.getBasicSalary();
         payroll.setBasicSalary(basicSalary);
 
-        double dailyRate = getdailyRate(employeeId, start);
+        double dailyRate = getdailyRate(employeeId, start, end);
         payroll.setDailyRate(dailyRate);
 
         double totalWorkedHours = getTotalRegularHours(employeeId, start, end);
@@ -71,7 +70,7 @@ public class PayrollService {
         payroll.setOvertimeHours(overtimeHours);
 
         java.sql.Date sqlStart = new java.sql.Date(start.getTime());
-        java.sql.Date sqlEnd = new java.sql.Date(end.getTime());     
+        java.sql.Date sqlEnd = new java.sql.Date(end.getTime());
         int daysWorked = attendanceService.getWorkingDays(sqlStart);
 
         payroll.setDaysWorked(daysWorked);
@@ -86,23 +85,25 @@ public class PayrollService {
         double totalBenefits = payroll.getRiceSubsidy() + payroll.getPhoneAllowance() + payroll.getClothingAllowance();
         payroll.setTotalBenefits(totalBenefits);
 
+        DeductionRateService service = new DeductionRateServiceImpl();
+
         // Deductions (call your deduction helper/class)
-        double sssDeduction = StatutoryDeductions.calculateSSS(grossSalaryCalc);
+        double sssDeduction = service.computeSss(grossSalaryCalc);
         payroll.setSssDeduction(sssDeduction);
 
-        double philhealth = StatutoryDeductions.calculatePhilHealth(grossSalaryCalc);
+        double philhealth = service.computePhilHealth(grossSalaryCalc);
         payroll.setPhilhealth(philhealth);
 
-        double pagibig = StatutoryDeductions.calculatePagIbig(grossSalaryCalc);
+        double pagibig = service.computePagIbig(grossSalaryCalc);
         payroll.setPagibig(pagibig);
 
-        double taxableIncome = StatutoryDeductions.taxableIncome(grossSalaryCalc);
+        double taxableIncome = service.taxableIncome(grossSalaryCalc);
         payroll.setTaxableIncome(taxableIncome);
 
-        double withholdingTax = StatutoryDeductions.calculateWHTax(taxableIncome);
+        double withholdingTax = service.computeWithholdingTax(taxableIncome);
         payroll.setWithholdingTax(withholdingTax);
 
-        double totalDeductions = StatutoryDeductions.totalDeduction(grossSalaryCalc, taxableIncome);
+        double totalDeductions = service.totalDeduction(grossSalaryCalc);
         payroll.setTotalDeductions(totalDeductions);
 
         // Take-home pay
@@ -131,34 +132,41 @@ public class PayrollService {
         return employee.getBasicSalary();
     }
 
-    public double getdailyRate(int employeeId, Date sqlStartDate) throws SQLException {
+    public double getdailyRate(int employeeId, Date sqlStartDate, Date sqlEndDate) throws Exception {
         double basicSalary = getBasicRate(employeeId);
-        int workingDayMonthly = attendanceService.getWorkingDays(sqlStartDate);
+        Payroll payroll = getPayroll(employeeId, sqlStartDate, sqlEndDate);
+        int workingDayMonthly;
+//        if (payroll.getDaysWorked() != 0) {
+//            workingDayMonthly = payroll.getDaysWorked();
+//        } else {
+            workingDayMonthly = attendanceService.getWorkingDays(sqlStartDate);
+//        }
+
         return basicSalary / workingDayMonthly;
     }
 
-    public double getHourlyRate(int employeeId, Date sqlStartDate) throws SQLException {
-        return getdailyRate(employeeId, sqlStartDate) / 8;
+    public double getHourlyRate(int employeeId, Date sqlStartDate, Date sqlEndDate) throws Exception {
+        return getdailyRate(employeeId, sqlStartDate, sqlEndDate) / 8;
     }
 
     public double getWeightedOvertimeRate(int employeeId, Date sqlStartDate, Date sqlEndDate) throws SQLException {
         return attendanceService.getWeightedOvertimes(employeeId, sqlStartDate, sqlEndDate);
     }
 
-    public double getGrossIncome(int employeeId, Date periodStart, Date periodEnd) throws SQLException {
-        double hourlyRate = getHourlyRate(employeeId, periodStart); // usually the rate doesn't change but add params if needed
+    public double getGrossIncome(int employeeId, Date periodStart, Date periodEnd) throws Exception {
+        double hourlyRate = getHourlyRate(employeeId, periodStart, periodEnd); // usually the rate doesn't change but add params if needed
         double totalRegularHours = getTotalRegularHours(employeeId, periodStart, periodEnd);
         double totalOvertimePay = hourlyRate * getWeightedOvertimeRate(employeeId, periodStart, periodEnd); // this should return already weighted OT
         double grossIncome = (hourlyRate * totalRegularHours) + totalOvertimePay;
         return grossIncome;
     }
 
-    public List<Double> getPayDetails(int employeeId, Date sqlStartDate, Date sqlEndDate) throws SQLException {
+    public List<Double> getPayDetails(int employeeId, Date sqlStartDate, Date sqlEndDate) throws Exception {
         List<Double> payDetails = new ArrayList<>();
         payDetails.add(getTotalRegularHours(employeeId, sqlStartDate, sqlEndDate));
         payDetails.add(getTotalOvertimeHours(employeeId, sqlStartDate, sqlEndDate));
         payDetails.add(getBasicRate(employeeId));//Basic Salary
-        payDetails.add(getHourlyRate(employeeId, sqlStartDate)); // hourly rate
+        payDetails.add(getHourlyRate(employeeId, sqlStartDate, sqlEndDate)); // hourly rate
         payDetails.add(getGrossIncome(employeeId, sqlStartDate, sqlEndDate));
 
         return payDetails;
@@ -174,12 +182,12 @@ public class PayrollService {
         return totalBenefit;
     }
 
-    public double getTakehomePay(int employeeId, Date sqlStartDate, Date sqlEndDate) throws SQLException {
+    public double getTakehomePay(int employeeId, Date sqlStartDate, Date sqlEndDate) throws Exception {
+        DeductionRateService service = new DeductionRateServiceImpl();
 
         double grossIncome = getGrossIncome(employeeId, sqlStartDate, sqlEndDate);
         double TotalBenefit = getTotalBenefit(employeeId);
-        double taxableIncome = StatutoryDeductions.taxableIncome(grossIncome);
-        double TotalDeduction = StatutoryDeductions.totalDeduction(grossIncome, taxableIncome);
+        double TotalDeduction = service.totalDeduction(grossIncome);
         double takeHomePay = grossIncome + TotalBenefit - TotalDeduction;
         return takeHomePay;
 

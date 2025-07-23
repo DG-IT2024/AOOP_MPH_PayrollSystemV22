@@ -45,7 +45,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
     private AttendanceAdmin attendanceWindow = null;
 
     public EmployeeProfileAdmin(int empId) throws Exception {
-        EmployeeProfileAdmin.empId = empId;
+        EmployeeProfileAdmin.empId = empId=10001;
         initComponents();
 
         loadEmployeeDetails();
@@ -879,7 +879,7 @@ public class EmployeeProfileAdmin extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButtonProfileDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 560, 150, 20));
-        getContentPane().add(jTextFieldSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 60, 310, 30));
+        getContentPane().add(jTextFieldSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 60, 300, 30));
 
         jButtonSearch.setText("Search");
         jButtonSearch.addActionListener(new java.awt.event.ActionListener() {

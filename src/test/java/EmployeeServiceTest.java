@@ -18,7 +18,7 @@ public class EmployeeServiceTest {
     @BeforeAll
     public static void setupDB() throws Exception {
         conn = DBConnect.getConnection();
-        System.out.println("Database connection established for LeaveTest.");
+        System.out.println("Database connection established for EmployeeServiceTest.");
     }
 
     @BeforeEach
@@ -98,36 +98,19 @@ public class EmployeeServiceTest {
     // 4. Delete Employee
     @Test
     public void testCase04_DeleteEmployee() throws Exception {
-        System.out.println("== CASE 4: Delete Employee ==");
-        Employee emp = new Employee();
-        emp.setLastName("ToDelete");
-        emp.setFirstName("Emp");
-        emp.setBirthdate(new Date());
-        emp.setStatus("Active");
-        emp.setSssNumber("DEL123");
-        emp.setPhilhealthNumber("DEL123");
-        emp.setPagibigNumber("DEL123");
-        emp.setTinNumber("DEL123");
-        emp.setBasicSalary(10000);
-        emp.setRiceSubsidy(0);
-        emp.setPhoneAllowance(0);
-        emp.setClothingAllowance(0);
-        emp.setPhoneNumber("456780");
-        emp.setZip("1000");
 
-        service.addEmployee(emp);
         List<Employee> all = service.listAllEmployees();
-        Employee added = all.get(all.size() - 1);
+        Employee toBeRemoved = all.get(all.size() - 1);
 
-        System.out.println("Employee to delete: " + added);
-        service.removeEmployee(added.getEmployeeId());
+        System.out.println("Employee to delete: " + toBeRemoved);
+        service.removeEmployee(toBeRemoved.getEmployeeId());
         System.out.println("Employee deleted.");
-        Employee shouldBeNull = service.findEmployeeById(added.getEmployeeId());
+        Employee shouldBeNull = service.findEmployeeById(toBeRemoved.getEmployeeId());
         System.out.println("After deletion, found: " + shouldBeNull);
         assertNull(shouldBeNull);
     }
 
-    // 5. Get All Employees
+  
     @Test
     public void testCase05_GetAllEmployees() throws Exception {
         System.out.println("== CASE 5: Get All Employees ==");
@@ -140,11 +123,10 @@ public class EmployeeServiceTest {
         assertTrue(all.size() >= 0);
     }
 
-  
-    // 8. Date Utility
+ 
     @Test
-    public void testCase08_DateUtility() throws Exception {
-        System.out.println("== CASE 8: Date Utility ==");
+    public void testCase06_DateUtility() throws Exception {
+        System.out.println("== CASE 6: Date Utility ==");
         Date d1 = DateUtil.convertToDate("2024-12-25");
         Date d2 = DateUtil.convertToDate("12/25/2024");
         String s1 = DateUtil.dateToDefaultString(d1);
@@ -156,10 +138,10 @@ public class EmployeeServiceTest {
         assertTrue(DateUtil.isSameDay(d1, d2));
     }
 
-    // 9. Retrieve Employee With Non-Existent ID
+    
     @Test
-    public void testCase09_RetrieveNonExistentID() throws Exception {
-        System.out.println("== CASE 9: Retrieve Non-Existent Employee ID ==");
+    public void testCase07_RetrieveNonExistentID() throws Exception {
+        System.out.println("== CASE 7: Retrieve Non-Existent Employee ID ==");
         int nonExistentId = -99999;
         Employee emp = service.findEmployeeById(nonExistentId);
         System.out.println("Result: " + emp);
@@ -168,8 +150,8 @@ public class EmployeeServiceTest {
 
     // 10. Add Employee With Missing Required Fields
     @Test
-    public void testCase10_AddMissingRequiredFields() throws Exception {
-        System.out.println("== CASE 10: Add Employee With Missing Required Fields ==");
+    public void testCase08_AddMissingRequiredFields() throws Exception {
+        System.out.println("== CASE 8: Add Employee With Missing Required Fields ==");
         Employee emp = new Employee();
         try {
             service.addEmployee(emp);
@@ -180,10 +162,10 @@ public class EmployeeServiceTest {
         }
     }
 
-    // 11. Update Non-Existent Employee
+    
     @Test
-    public void testCase11_UpdateNonExistentEmployee() throws Exception {
-        System.out.println("== CASE 11: Update Non-Existent Employee ==");
+    public void testCase09_UpdateNonExistentEmployee() throws Exception {
+        System.out.println("== CASE 9 : Update Non-Existent Employee ==");
         Employee emp = new Employee();
         emp.setEmployeeId(-1234567);
         emp.setLastName("Ghost");
@@ -197,10 +179,10 @@ public class EmployeeServiceTest {
         }
     }
 
-    // 12. Delete Non-Existent Employee
+    
     @Test
-    public void testCase12_DeleteNonExistentEmployee() throws Exception {
-        System.out.println("== CASE 12: Delete Non-Existent Employee ==");
+    public void testCase10_DeleteNonExistentEmployee() throws Exception {
+        System.out.println("== CASE 10: Delete Non-Existent Employee ==");
         int nonExistentId = -12345;
         try {
             service.removeEmployee(nonExistentId);
@@ -212,10 +194,10 @@ public class EmployeeServiceTest {
         }
     }
 
-    // 13. Add Employee With Extreme Field Values
+   
     @Test
-    public void testCase13_AddExtremeFieldValues() throws Exception {
-        System.out.println("== CASE 13: Add Employee With Extreme Field Values ==");
+    public void testCase11_AddExtremeFieldValues() throws Exception {
+        System.out.println("== CASE 11: Add Employee With Extreme Field Values ==");
         Employee emp = new Employee();
         String longName = "A".repeat(300);
         emp.setLastName(longName);
@@ -240,10 +222,10 @@ public class EmployeeServiceTest {
         }
     }
 
-    // 14. Add Employee With Invalid Date
+    
     @Test
-    public void testCase14_AddEmployeeWithInvalidDate() throws Exception {
-        System.out.println("== CASE 14: Add Employee With Invalid Date ==");
+    public void testCase12_AddEmployeeWithInvalidDate() throws Exception {
+        System.out.println("== CASE 12: Add Employee With Invalid Date ==");
         try {
             DateUtil.convertToDate("not-a-date");
             fail("Should have thrown ParseException.");
@@ -253,36 +235,28 @@ public class EmployeeServiceTest {
         }
     }
 
-    // 15. List All Employees When None Exist
+  
     @Test
-    public void testCase15_ListWhenNoneExist() throws Exception {
-        System.out.println("== CASE 15: List All Employees When None Exist ==");
+    public void testCase13_ListWhenNoneExist() throws Exception {
+        System.out.println("== CASE 13: List All Employees When None Exist ==");
         List<Employee> all = service.listAllEmployees();
         System.out.println("Employee count: " + all.size());
         assertTrue(all.size() >= 0);
     }
 
-    // 18. Print All Employees
+   
     @Test
-    public void testCase18_PrintAllEmployees() throws Exception {
-        System.out.println("== CASE 18: Print All Employees ==");
+    public void testCase14_PrintAllEmployees() throws Exception {
+        System.out.println("== CASE 14: Print All Employees ==");
         service.printAllEmployees();
         System.out.println("Printed all employees.");
         assertTrue(true);
     }
-
-    // 19. Service Handles DB Connection Failure
+ 
+   
     @Test
-    public void testCase19_HandleDBConnectionFailure() throws Exception {
-        System.out.println("== CASE 19: Handle DB Connection Failure ==");
-        System.out.println("To test this, manually stop the DB or break credentials and run any service method.");
-        assertTrue(true);
-    }
-
-    // 20. Address/Contact Field Formatting
-    @Test
-    public void testCase20_AddressFieldFormatting() throws Exception {
-        System.out.println("== CASE 20: Address Field Formatting ==");
+    public void testCase15_AddressFieldFormatting() throws Exception {
+        System.out.println("== CASE 15: Address Field Formatting ==");
         Employee emp = new Employee();
         emp.setLastName("Format");
         emp.setFirstName("Test");
@@ -310,24 +284,10 @@ public class EmployeeServiceTest {
         assertNotNull(added);
     }
 
-    // 21. UI Table Utility Methods (toTableModel/safeGetValue)
-    @Test
-    public void testCase21_UITableUtility() {
-        System.out.println("== CASE 21: UI Table Utility Methods ==");
-        assertTrue(true);
-    }
 
-    // 22. Uniqueness Utility
     @Test
-    public void testCase22_UniquenessUtility() {
-        System.out.println("== CASE 22: Uniqueness Utility ==");
-        assertTrue(true);
-    }
-
-// 23. Special Character Handling
-    @Test
-    public void testCase23_SpecialCharacterHandling() throws Exception {
-        System.out.println("== CASE 24: Special Character Handling ==");
+    public void testCase16_SpecialCharacterHandling() throws Exception {
+        System.out.println("== CASE 16: Special Character Handling ==");
 
         Employee emp = new Employee();
         emp.setLastName("Nguyễn Văn A"); // for foreign names
@@ -373,4 +333,3 @@ public class EmployeeServiceTest {
         }
     }
 }
-

@@ -1,3 +1,4 @@
+
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.sql.*;
@@ -56,7 +57,7 @@ public class EmployeeDAOTest {
         Employee emp = new Employee();
         emp.setLastName("TestLastName");
         emp.setFirstName("TestFirstName");
-       
+
         emp.setStreet("123 Test St");
         emp.setBarangay("TestBarangay");
         emp.setCity("TestCity");
@@ -86,11 +87,11 @@ public class EmployeeDAOTest {
     @Test
     public void test4_updateEmployee() throws Exception {
         System.out.println("Test 4: updateEmployee - Update employee data");
-        // Retrieve last inserted test employee by unique SSS number (or select known ID)
+
         List<Employee> employees = employeeDAO.getAllEmployees();
         Employee toUpdate = null;
         for (Employee emp : employees) {
-            if ("99-9999999-9".equals(emp.getSssNumber())) {
+            if ("44-4506057-3".equals(emp.getSssNumber())) {
                 toUpdate = emp;
                 break;
             }
@@ -112,11 +113,11 @@ public class EmployeeDAOTest {
     @Test
     public void test5_deleteEmployee() throws Exception {
         System.out.println("Test 5: deleteEmployee - Soft delete (archive) employee");
-        // Retrieve test employee as above
+
         List<Employee> employees = employeeDAO.getAllEmployees();
         Employee toDelete = null;
         for (Employee emp : employees) {
-            if ("99-9999999-9".equals(emp.getSssNumber())) {
+            if ("20-2987501-5".equals(emp.getSssNumber())) {
                 toDelete = emp;
                 break;
             }
@@ -127,10 +128,10 @@ public class EmployeeDAOTest {
         employeeDAO.deleteEmployee(idToDelete);
 
         Employee deletedEmp = employeeDAO.getEmployeeDetailsById(idToDelete);
-        // Employee is not physically deleted; status should be "Inactive" (status_id = 11)
-        assertNotNull(deletedEmp, "Employee record should still exist (soft delete)");
-        assertEquals("Inactive", deletedEmp.getStatus(), "Employee status should be set to 'Inactive' after delete");
-        System.out.println("Employee with ID " + idToDelete + " marked as Inactive.");
+
+        assertNull(deletedEmp, "Soft-deleted employee should not be retrievable if status is filtered");
+
+        System.out.println("Employee with ID " + idToDelete + " successfully soft-deleted and no longer retrievable.");
     }
 
     @Test

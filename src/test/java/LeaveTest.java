@@ -28,7 +28,6 @@ public class LeaveTest {
         leaveRequestService = new LeaveRequestService();
     }
 
-    // EMPLOYEE TESTS
     @Test
     public void testCase1_SubmitValidLeaveRequest() throws Exception {
         int employeeId = 10005;

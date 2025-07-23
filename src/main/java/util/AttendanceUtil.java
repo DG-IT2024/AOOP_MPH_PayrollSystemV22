@@ -208,10 +208,6 @@ public class AttendanceUtil {
         return overtimeHourPay;
     }
 
-    public static boolean isValidTimeFormat(String time) {
-        return time.matches("\\d{2}:\\d{2}") || time.matches("([01]?[0-9]|2[0-3]):[0-5][0-9]");
-    }
-
     public static ArrayList<Integer> getAttendanceIdsFromTable(JTable table) {
         ArrayList<Integer> attendanceIds = new ArrayList<>();
         int rowCount = table.getRowCount();

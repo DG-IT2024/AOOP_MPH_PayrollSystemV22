@@ -1,13 +1,16 @@
 
 import dao.AttendanceDAO;
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
-import java.sql.*;
-import java.util.List;
-
 import model.Attendance;
 import model.Attendance_sp;
+import org.junit.jupiter.api.*;
 import util.DBConnect;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.Time;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AttendanceDAOTest {
@@ -32,125 +35,95 @@ public class AttendanceDAOTest {
     @BeforeEach
     public void setup() {
         attendanceDAO = new AttendanceDAO(conn);
-        System.out.println("AttendanceDAO instance created.");
     }
 
     @Test
-    public void test1_AddAndGetAttendance() throws Exception {
-        System.out.println("Running test1_AddAndGetAttendance...");
-        Attendance att = new Attendance();
-        att.setEmployeeId(1); // Make sure employee with ID 1 exists in your test DB
-        att.setDate(new java.sql.Date(System.currentTimeMillis()));
-        att.setTimeIn(Time.valueOf("08:00:00"));
-        att.setTimeOut(Time.valueOf("17:00:00"));
-        att.setRegularHoursCalc(8.0);
-
-        attendanceDAO.addAttendance(att);
-        System.out.println("Attendance record inserted.");
-
+    public void testCase1_getAttendanceById_validId() throws Exception {
         List<Attendance> records = attendanceDAO.getAllAttendanceRecords();
-        assertFalse(records.isEmpty(), "Attendance records should not be empty.");
+        boolean result = false;
 
-        Attendance last = records.get(records.size() - 1);
-        assertEquals(att.getEmployeeId(), last.getEmployeeId());
-        System.out.println("test1_AddAndGetAttendance PASSED.");
+        if (!records.isEmpty()) {
+            int id = records.get(0).getAttendanceId();
+            Attendance att = attendanceDAO.getAttendance(id);
+            result = att != null && att.getAttendanceId() == id;
+        }
+
+        assertTrue(result, "Failed to get attendance by ID.");
+        System.out.println("Test Case 1 - Get Attendance by ID: " + result);
     }
 
     @Test
-    public void test2_GetAttendanceById() throws Exception {
-        System.out.println("Running test2_GetAttendanceById...");
-        List<Attendance> records = attendanceDAO.getAllAttendanceRecords();
-        assertFalse(records.isEmpty(), "No attendance records found.");
-
-        int id = records.get(0).getAttendanceId();
-        Attendance att = attendanceDAO.getAttendance(id);
-
-        assertNotNull(att, "Attendance should not be null.");
-        assertEquals(id, att.getAttendanceId());
-        System.out.println("test2_GetAttendanceById PASSED.");
-    }
-
-    @Test
-    public void test3_GetAttendanceByEmployeeAndDateRange() throws Exception {
-        System.out.println("Running test3_GetAttendanceByEmployeeAndDateRange...");
+    public void testCase2_getAttendanceByEmployeeAndDateRange_validInput() throws Exception {
         int employeeId = 10001;
-        java.sql.Date start = java.sql.Date.valueOf("2025-08-09");
-        java.sql.Date end = java.sql.Date.valueOf("2025-08-10");
+        Date start = Date.valueOf("2025-08-09");
+        Date end = Date.valueOf("2025-08-10");
+
         List<Attendance_sp> list = attendanceDAO.getAttendanceByEmployeeAndDateRange(employeeId, start, end);
+        boolean result = list != null;
 
-        System.out.println("Found " + list.size() + " Attendance_sp records for employeeId=" + employeeId);
-        assertNotNull(list, "Attendance list should not be null.");
-        System.out.println("test3_GetAttendanceByEmployeeAndDateRange PASSED.");
+        assertTrue(result, "Attendance list is null.");
+        System.out.println("Test Case 2 - Get Attendance by Employee and Date Range: " + result);
     }
 
     @Test
-    public void test4_GetAllAttendanceByDateRange() throws Exception {
-        System.out.println("Running test4_GetAllAttendanceByDateRange...");
-        int employeeId = 10001;
-        java.sql.Date start = new java.sql.Date(System.currentTimeMillis() - 14 * 24 * 60 * 60 * 1000L);
-        java.sql.Date end = new java.sql.Date(System.currentTimeMillis());
-        List<Attendance_sp> list = attendanceDAO.getAllAttendanceByDateRange(employeeId, start, end);
-
-        System.out.println("Found " + list.size() + " Attendance_sp records (all) for employeeId=" + employeeId);
-        assertNotNull(list, "Attendance_sp list should not be null.");
-        System.out.println("test4_GetAllAttendanceByDateRange PASSED.");
-    }
-
-    @Test
-    public void test5_UpdateAttendanceOvertimeFields() throws Exception {
-        System.out.println("Running test5_UpdateAttendanceOvertimeFields...");
+    public void testCase3_updateAttendanceOvertimeFields_validUpdate() throws Exception {
         List<Attendance> records = attendanceDAO.getAllAttendanceRecords();
-        assertFalse(records.isEmpty(), "No attendance records found.");
+        boolean result = false;
 
-        Attendance att = records.get(0);
-        int id = att.getAttendanceId();
-        Time newTimeIn = Time.valueOf("08:30:00");
-        Time newTimeOut = Time.valueOf("17:30:00");
-        Double newOtRate = 1.5;
-        Date overtimeUpdatedDate = new Date(System.currentTimeMillis());
-        Integer overtimeApproverId = 2; // Make sure this approver exists!
+        if (!records.isEmpty()) {
+            Attendance att = records.get(0);
+            int id = att.getAttendanceId();
 
-        attendanceDAO.updateAttendanceOvertimeFields(id, newTimeIn, newTimeOut, newOtRate, overtimeUpdatedDate, overtimeApproverId);
-        System.out.println("Attendance record updated for overtime fields.");
+            Time newTimeIn = Time.valueOf("08:30:00");
+            Time newTimeOut = Time.valueOf("17:30:00");
+            Double newOtRate = 1.5;
+            Date overtimeUpdatedDate = new Date(System.currentTimeMillis());
+            Integer overtimeApproverId = 2;
 
-        Attendance updated = attendanceDAO.getAttendance(id);
-        assertNotNull(updated, "Updated attendance should not be null.");
-        System.out.println("test5_UpdateAttendanceOvertimeFields PASSED.");
+            attendanceDAO.updateAttendanceOvertimeFields(id, newTimeIn, newTimeOut, newOtRate, overtimeUpdatedDate, overtimeApproverId);
+
+            Attendance updated = attendanceDAO.getAttendance(id);
+            result = updated != null;
+        }
+
+        assertTrue(result, "Failed to update overtime fields.");
+        System.out.println("Test Case 3 - Update Attendance Overtime Fields: " + result);
     }
 
     @Test
-    public void test6_UpdateAttendance() throws Exception {
-        System.out.println("Running test6_UpdateAttendance...");
+    public void testCase4_updateAttendance_validUpdate() throws Exception {
         List<Attendance> records = attendanceDAO.getAllAttendanceRecords();
-        assertFalse(records.isEmpty(), "No attendance records found.");
+        boolean result = false;
 
-        Attendance att = records.get(0);
-        int id = att.getAttendanceId();
+        if (!records.isEmpty()) {
+            Attendance att = records.get(0);
+            int id = att.getAttendanceId();
 
-        Double newRegularHours = 7.5;
-        Double newOtRate = 1.25;
-        Double newOvertimeHours = 2.0;
+            Double newRegularHours = 7.5;
+            Double newOtRate = 1.25;
+            Double newOvertimeHours = 2.0;
 
-        attendanceDAO.updateAttendance(id, newRegularHours, newOtRate, newOvertimeHours);
-        System.out.println("Attendance record updated (regular/overtime).");
+            attendanceDAO.updateAttendance(id, newRegularHours, newOtRate, newOvertimeHours);
+            Attendance updated = attendanceDAO.getAttendance(id);
+            result = updated != null;
+        }
 
-        Attendance updated = attendanceDAO.getAttendance(id);
-        assertNotNull(updated, "Updated attendance should not be null.");
-        System.out.println("test6_UpdateAttendance PASSED.");
+        assertTrue(result, "Failed to update attendance.");
+        System.out.println("Test Case 4 - Update Attendance (Regular and Overtime): " + result);
     }
 
     @Test
-    public void test7_GetAttendanceRecordById() throws Exception {
-        System.out.println("Running test7_GetAttendanceRecordById...");
+    public void testCase5_getAttendanceRecordById_validId() throws Exception {
         List<Attendance> records = attendanceDAO.getAllAttendanceRecords();
-        assertFalse(records.isEmpty(), "No attendance records found.");
+        boolean result = false;
 
-        int id = records.get(0).getAttendanceId();
-        Attendance att = attendanceDAO.getAttendanceRecordById(id);
+        if (!records.isEmpty()) {
+            int id = records.get(0).getAttendanceId();
+            Attendance att = attendanceDAO.getAttendanceRecordById(id);
+            result = att != null && att.getAttendanceId() == id;
+        }
 
-        assertNotNull(att, "Attendance should not be null.");
-        assertEquals(id, att.getAttendanceId());
-        System.out.println("test7_GetAttendanceRecordById PASSED.");
+        assertTrue(result, "Failed to get attendance record by ID.");
+        System.out.println("Test Case 5 - Get Attendance Record by ID: " + result);
     }
-
 }

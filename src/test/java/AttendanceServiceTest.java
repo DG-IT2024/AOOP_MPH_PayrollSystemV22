@@ -1,3 +1,4 @@
+
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.sql.*;
@@ -130,4 +131,37 @@ public class AttendanceServiceTest {
         System.out.println("Working days in July 2024: " + workingDays);
         assertTrue(workingDays > 0 && workingDays <= 31);
     }
+
+    @Test
+    public void test10_getTimeInAndTimeOut() throws Exception {
+        System.out.println("Test 10: getTimeInAndTimeOut - Retrieve time in/out for an attendance record");
+        int attendanceId = 1; // replace with a valid test ID
+        Time[] times = attendanceService.getTimeInAndTimeOut(attendanceId);
+        assertNotNull(times, "Time array should not be null");
+        assertEquals(2, times.length, "Time array should have two elements");
+        System.out.println("Time In: " + times[0] + ", Time Out: " + times[1]);
+    }
+
+    @Test
+    public void test11_updateRegularOvertimeHours() throws Exception {
+        System.out.println("Test 11: updateRegularOvertimeHours - Update total regular hours over date range");
+        int employeeId = 10001;
+        Date start = Date.valueOf("2024-06-01");
+        Date end = Date.valueOf("2024-06-30");
+        double updatedTotal = attendanceService.updateRegularOvertimeHours(employeeId, start, end);
+        assertTrue(updatedTotal >= 0, "Updated total should be non-negative");
+        System.out.println("Updated total regular hours: " + updatedTotal);
+    }
+
+    @Test
+    public void test12_calculateRegularOvertimeHours() throws Exception {
+        System.out.println("Test 12: calculateRegularOvertimeHours - Run calc and update regular/overtime hours");
+        int employeeId = 10001;
+        Date start = Date.valueOf("2024-06-01");
+        Date end = Date.valueOf("2024-06-30");
+        assertDoesNotThrow(() -> {
+            attendanceService.calculateRegularOvertimeHours(employeeId, start, end);
+        });
+    }
+
 }

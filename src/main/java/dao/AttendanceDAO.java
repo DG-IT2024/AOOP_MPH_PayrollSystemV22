@@ -106,22 +106,7 @@ public class AttendanceDAO {
         att.setRegularHoursCalc(rs.getDouble("regular_hours_calc"));
         return att;
     }
-//
-//    public void addAttendance(Attendance att) throws SQLException {
-//        String sql = "INSERT INTO sp_add_attendance (employee_id, date, time_in, time_out, regular_hours_calc, otrate, overtime_hours_calc) "
-//                + "VALUES (?, ?, ?, ?, ?, 0, 0)";
-//         try (CallableStatement stmt = conn.prepareCall(sql)){
-//            stmt.setInt(1, att.getEmployeeId());
-//            stmt.setDate(2, att.getDate()); // java.sql.Date
-//            stmt.setTime(3, att.getTimeIn()); // java.sql.Time
-//            stmt.setTime(4, att.getTimeOut()); // java.sql.Time
-//            stmt.setDouble(5, att.getRegularHoursCalc()); // java.math.BigDecimal
-//            stmt.executeUpdate();
-//            
-//            
-//        }
-//    }
-//    
+
      public void addAttendance(Attendance att) throws SQLException {
         String sql = "INSERT INTO attendance (employee_id, date, time_in, time_out, regular_hours_calc) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
@@ -160,18 +145,7 @@ public class AttendanceDAO {
         }
         return null;
     }
-//
-//    public void updateAttendance(Attendance att) throws SQLException {
-//        String sql = "UPDATE attendance SET employee_id=?, date=?, time_in=?, time_out=?, regular_hours_calc=? WHERE attendance_id=?";
-//        PreparedStatement stmt = conn.prepareStatement(sql);
-//        stmt.setInt(1, att.getEmployeeId());
-//        stmt.setDate(2, att.getDate());
-//        stmt.setTime(3, att.getTimeIn());
-//        stmt.setTime(4, att.getTimeOut());
-//        stmt.setDouble(5, att.getRegularHoursCalc());
-//        stmt.setInt(6, att.getAttendanceId());
-//        stmt.executeUpdate();
-//    }
+
 
     public List<Attendance> getAllAttendanceRecords() throws SQLException {
         List<Attendance> attendanceList = new ArrayList<>();

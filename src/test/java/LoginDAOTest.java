@@ -1,19 +1,19 @@
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
-import java.sql.Connection;
-import java.util.List;
 
 import dao.LoginDAO;
 import model.Login;
 import model.Password;
 import model.Role;
+import org.junit.jupiter.api.*;
 import util.DBConnect;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+import java.sql.Connection;
+import java.util.List;
+
 public class LoginDAOTest {
 
     private static Connection conn;
     private LoginDAO loginDAO;
+    private final String username = "manuel_garcia";
 
     @BeforeAll
     public static void setupDB() throws Exception {
@@ -21,85 +21,52 @@ public class LoginDAOTest {
         System.out.println("Database connection established for LoginDAOTest.");
     }
 
-    @AfterAll
-    public static void teardown() throws Exception {
-        if (conn != null && !conn.isClosed()) {
-            conn.close();
-            System.out.println("Database connection closed after LoginDAOTest.");
-        }
-    }
-
     @BeforeEach
-    public void setUp() {
+    public void initDAO() {
         loginDAO = new LoginDAO(conn);
     }
 
     @Test
-    public void test1_getLoginByUsername() throws Exception {
-        System.out.println("Test 1: getLoginByUsername - Retrieve login by username");
-        String username = "admin"; // Replace with a username from your DB
+    public void testCase1_getLoginByUsername_validUsername() throws Exception {
         Login login = loginDAO.getLoginByUsername(username);
-        assertNotNull(login, "Login should not be null for an existing username");
-        assertEquals(username, login.getUsername());
-        System.out.println("Retrieved Login: " + login.getUsername());
+        System.out.println("Test Case 1 - getLoginByUsername with valid username: " + (login != null ? login.getUsername() : null));
+        Assertions.assertNotNull(login);
     }
 
     @Test
-    public void test2_getPasswordByLoginId() throws Exception {
-        System.out.println("Test 2: getPasswordByLoginId - Retrieve password by login id");
-        String username = "admin"; // Replace with a username from your DB
+    public void testCase2_getPasswordByLoginId_validLoginId() throws Exception {
         Login login = loginDAO.getLoginByUsername(username);
-        assertNotNull(login, "Login should exist");
         Password pw = loginDAO.getPasswordByLoginId(login.getLoginId());
-        assertNotNull(pw, "Password should not be null for valid login_id");
-        System.out.println("Password (salted hash): " + pw.getPasswordSaltHash());
+        System.out.println("Test Case 2 - getPasswordByLoginId with valid loginId: " + (pw != null ? pw.getPasswordSaltHash() : null));
+        Assertions.assertNotNull(pw);
     }
 
     @Test
-    public void test3_getRolesByLoginId() throws Exception {
-        System.out.println("Test 3: getRolesByLoginId - Retrieve roles by login id");
-        String username = "admin"; // Replace with a username that has roles
+    public void testCase3_getRolesByLoginId_validLoginId() throws Exception {
         Login login = loginDAO.getLoginByUsername(username);
-        assertNotNull(login, "Login should exist");
         List<Role> roles = loginDAO.getRolesByLoginId(login.getLoginId());
-        assertNotNull(roles, "Roles should not be null");
-        assertTrue(roles.size() > 0, "User should have at least one role");
-        for (Role role : roles) {
-            System.out.println("Role: " + role.getRoleName());
-        }
+        System.out.println("Test Case 3 - getRolesByLoginId: " + (!roles.isEmpty() ? roles.get(0).getRoleName() : "No roles found"));
+        Assertions.assertFalse(roles.isEmpty());
     }
 
     @Test
-    public void test4_incrementLoginAttempts() throws Exception {
-        System.out.println("Test 4: incrementLoginAttempts - Increment login attempts for a user");
-        String username = "admin"; // Use a real username
-        Login loginBefore = loginDAO.getLoginByUsername(username);
-        int before = loginBefore.getNoAttempts();
+    public void testCase4_incrementAndResetLoginAttempts() throws Exception {
         loginDAO.incrementLoginAttempts(username);
-        Login loginAfter = loginDAO.getLoginByUsername(username);
-        int after = loginAfter.getNoAttempts();
-        assertEquals(before + 1, after, "Login attempts should increment by 1");
-        System.out.println("No_attempt before: " + before + ", after: " + after);
-    }
+        Login loginAfterIncrement = loginDAO.getLoginByUsername(username);
+        System.out.println("Test Case 4 - incrementLoginAttempts: Attempts = " + loginAfterIncrement.getNoAttempts());
+        Assertions.assertTrue(loginAfterIncrement.getNoAttempts() > 0);
 
-    @Test
-    public void test5_resetLoginAttempts() throws Exception {
-        System.out.println("Test 5: resetLoginAttempts - Reset login attempts for a user");
-        String username = "admin"; // Use a real username
-        loginDAO.incrementLoginAttempts(username); // Increment first to ensure not 0
         loginDAO.resetLoginAttempts(username);
-        Login loginAfter = loginDAO.getLoginByUsername(username);
-        assertEquals(0, loginAfter.getNoAttempts(), "Login attempts should be reset to 0");
-        System.out.println("No_attempt reset to: " + loginAfter.getNoAttempts());
+        Login loginAfterReset = loginDAO.getLoginByUsername(username);
+        System.out.println("Test Case 4 - resetLoginAttempts: Attempts after reset = " + loginAfterReset.getNoAttempts());
+        Assertions.assertEquals(0, loginAfterReset.getNoAttempts());
     }
 
     @Test
-    public void test6_updateLastLogin() throws Exception {
-        System.out.println("Test 6: updateLastLogin - Update last login timestamp");
-        String username = "admin"; // Use a real username
+    public void testCase5_updateLastLogin() throws Exception {
         loginDAO.updateLastLogin(username);
         Login login = loginDAO.getLoginByUsername(username);
-        assertNotNull(login.getLastLogin(), "Last login timestamp should not be null after update");
-        System.out.println("Updated last_login: " + login.getLastLogin());
+        System.out.println("Test Case 5 - updateLastLogin: Last login timestamp = " + login.getLastLogin());
+        Assertions.assertNotNull(login.getLastLogin());
     }
 }

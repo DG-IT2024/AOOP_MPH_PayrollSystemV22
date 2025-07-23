@@ -29,6 +29,7 @@ ui\employeeuser\AttendanceUser$9.class
 service\PayrollService.class
 ui\admin\EmployeeProfileAdmin$5.class
 ui\employeeuser\PayrollUser$1.class
+service\DeductionRateService.class
 ui\employeeuser\EmployeeProfileUser$4.class
 model\Attendance.class
 ui\admin\AttendanceAdmin$11.class
@@ -51,6 +52,8 @@ ui\employeeuser\LeaveApplicationUser$9.class
 ui\admin\AttendanceAdmin.class
 ui\admin\LeaveApplicationAdmin$9.class
 ui\admin\EmployeeProfileAdmin$14.class
+dao\DeductionRateDaoImpl.class
+model\DeductionRate.class
 ui\employeeuser\EmployeeProfileUser$3.class
 ui\admin\EmployeeProfileAdmin$6.class
 ui\admin\LeaveApplicationAdmin$2.class
@@ -75,6 +78,7 @@ ui\employeeuser\PayrollUser$2.class
 util\AttendanceUtil.class
 ui\employeeuser\PayrollUser$12.class
 ui\admin\AttendanceAdmin$12.class
+ui\admin\TimesheetDialogAdd.class
 ui\employeeuser\EmployeeProfileUser$15.class
 ui\admin\AddressDialog$1.class
 ui\employeeuser\LeaveApplicationUser$10.class
@@ -91,16 +95,19 @@ ui\admin\LoginView$6.class
 controller\AttendanceController.class
 ui\employeeuser\LeaveApplicationUser$13.class
 ui\admin\EmployeeProfileAdmin$21.class
+ui\admin\TimesheetDialogUpdate.class
 ui\employeeuser\AttendanceUser$2.class
 ui\employeeuser\LeaveApplicationUser$3.class
 ui\admin\LoginView.class
 ui\admin\PayrollProcessing$7.class
 ui\employeeuser\PayrollUser$11.class
+dao\DeductionRateDao.class
 ui\admin\PayrollProcessing$16.class
 ui\employeeuser\LeaveApplicationUser$6.class
 ui\employeeuser\EmployeeProfileUser$13.class
 ui\admin\EmployeeProfileAdmin$18.class
 ui\admin\EmployeeProfileAdmin$4.class
+service\DeductionRateServiceImpl.class
 ui\admin\EmployeeProfileAdmin$45.class
 ui\admin\EmployeeProfileAdmin$22.class
 ui\employeeuser\LeaveApplicationUser$11.class
@@ -131,7 +138,6 @@ ui\employeeuser\PayrollUser$16.class
 ui\admin\EmployeeProfileAdmin$23.class
 ui\admin\AttendanceAdmin$4.class
 ui\admin\PayrollProcessing$9.class
-ui\admin\PayslipDialog.class
 ui\admin\EmployeeProfileAdmin$10.class
 ui\admin\EmployeeProfileAdmin$2.class
 ui\employeeuser\AttendanceUser$1.class
@@ -145,7 +151,6 @@ ui\admin\PayrollSummaryView$5.class
 ui\employeeuser\PayrollUser$4.class
 util\LeaveRequestUtil.class
 ui\employeeuser\EmployeeProfileUser$17.class
-ui\admin\TimesheetDialog.class
 ui\employeeuser\PayrollUser$10.class
 ui\admin\PayrollProcessing$18.class
 ui\admin\PayrollProcessing$12.class
@@ -157,8 +162,6 @@ ui\employeeuser\AttendanceUser$16.class
 ui\employeeuser\EmployeeProfileUser$11.class
 ui\admin\EmployeeProfileAdmin$16.class
 ui\admin\EmployeeProfileAdmin$36.class
-ui\admin\PrintDialog.class
-ui\admin\TimesheetDialog2.class
 ui\employeeuser\AttendanceUser$6.class
 model\Attendance_sp.class
 ui\admin\EmployeeProfileAdmin$15.class
@@ -193,7 +196,6 @@ ui\employeeuser\EmployeeProfileUser$18.class
 ui\admin\PayrollProcessing$2.class
 dao\AttendanceDAO.class
 util\AttendanceUtil$AttendanceTableModelBuilder.class
-util\StatutoryDeductions.class
 ui\admin\EmployeeProfileAdmin$27.class
 ui\employeeuser\PayrollUser$8.class
 ui\admin\EmployeeProfileAdmin$37.class

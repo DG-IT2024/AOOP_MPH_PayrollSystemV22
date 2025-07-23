@@ -22,6 +22,16 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>MonthlyPayrollSummary.jasper</name>
+			<type>1</type>
+			<location>C:/Users/danilo/Documents/NetBeansProjects/AOOP-MS2-Group5-MotorPH-Payroll-System/src/report/MonthlyPayrollSummary.jasper</location>
+		</link>
+		<link>
+			<name>MonthlyPayrollSummary.jrxml</name>
+			<type>1</type>
+			<location>C:/Users/danilo/Documents/NetBeansProjects/AOOP-MS2-Group5-MotorPH-Payroll-System/src/report/MonthlyPayrollSummary.jrxml</location>
+		</link>
+		<link>
 			<name>Payslip.jrxml</name>
 			<type>1</type>
 			<location>C:/Users/danilo/Documents/NetBeansProjects/AOOP-MS2-Group5-MotorPH-Payroll-System/src/report/Payslip.jrxml</location>

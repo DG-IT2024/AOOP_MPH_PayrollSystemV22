@@ -102,13 +102,7 @@ public class LoginDAO {
         }
     }
 
-    public void logLastLogin(String username) throws SQLException {
-        String sql = "UPDATE login SET last_login WHERE username = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, username);
-            stmt.executeUpdate();
-        }
-    }
+
     
     
 

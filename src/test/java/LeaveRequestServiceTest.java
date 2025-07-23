@@ -66,10 +66,9 @@ public class LeaveRequestServiceTest {
     @Test
     public void test5_updateLeaveRequestStatus() throws Exception {
         System.out.println("Test 5: updateLeaveRequestStatus");
-        // NOTE: Use a real, existing leaveId for this test!
-        int leaveId = 1; // <-- Change as needed
+        int leaveId = 1; 
         String newStatus = "APPROVED";
-        int approverEmployeeId = 10002; // <-- Use a real approver ID
+        int approverEmployeeId = 10002; 
         Timestamp actionDate = new Timestamp(System.currentTimeMillis());
         assertDoesNotThrow(() ->
             leaveRequestService.updateLeaveRequestStatus(leaveId, newStatus, approverEmployeeId, actionDate)
